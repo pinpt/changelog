@@ -18,19 +18,13 @@ jobs:
         with:
           node-version: 14
       - run: npm ci
-      - name: "Automated Version Bump"
-        uses: "phips28/gh-action-bump-version@master"
-        with:
-          tag-prefix: ""
-        env:
-          GITHUB_TOKEN: ${{ secrets.PP_GITHUB_TOKEN }}
-      - run: npm publish --access public
+      - run: npm publish --access public --tag latest
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v1
         with:
           registry-url: "https://npm.pkg.github.com"
           # Defaults to the user or organization that owns the workflow file
-          scope: "@octocat"
+          scope: "@pinpt"
       # Publish to GitHub Packages
       - run: npm publish
         env:
