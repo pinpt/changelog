@@ -1,6 +1,6 @@
 {
   "name": "@pinpt/changelog-generator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Changelog Generator is the tool for automatically generating static sites published by changelog.so",
   "scripts": {
     "build": "node ./.bin/build.js",
