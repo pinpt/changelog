@@ -24,7 +24,7 @@ jobs:
       - run: npm ci
       - uses: tool3/bump@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PP_GITHUB_TOKEN }}
           user: "Pinpoint Bot"
           email: "pinpointbot@pinpoint.com"
       - run: npm publish --access public
