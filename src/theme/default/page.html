@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{include src="../../head.hbs"}} {{analytics-js site.id changelog.id}}
+  </head>
+  <body>
+    <div class="page">
+      <div class="container">
+        <div>{{include src="../../toolbar.hbs"}}</div>
+        <header>{{include src="../../header.hbs"}}</header>
+
+        <main>
+          <div>{{include src="../../homelink.hbs"}}</div>
+          <div class="container">
+            <aside>
+              <section>
+                <div>{{include src="../../date.hbs"}}</div>
+                <div>{{include src="../../authors.hbs"}}</div>
+              </section>
+              <div class="tagcontainer">
+                {{include src="../../taglist.hbs"}}
+              </div>
+              <div class="highfive">{{include src="../../highfive.hbs"}}</div>
+            </aside>
+            <section>{{{changelog.content_html}}}</section>
+          </div>
+        </main>
+      </div>
+
+      <footer>
+        <div class="container">
+          <div class="my-8 md:mb-0 md:-mt-8 md:order-2">
+            {{include src="../../subscribe.hbs"}}
+          </div>
+          <div class="flex justify-center space-x-6 md:-mt-8 md:order-3 social">
+            {{include src="../../social.hbs"}}
+          </div>
+          <div class="mt-8 md:mt-0 md:order-1">
+            {{include src="../../copyright.hbs"}}
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+<div class="authors order-1 md:order-2">
+  {{#each changelog.authors}}
+    <div class="flex flex-row items-center author">
+      {{#if avatarUrl}}
+        <div class="avatar">
+          <img src="{{avatarUrl}}" />
+        </div>
+      {{/if}}
+      <div class="ml-2 whitespace-nowrap">
+        {{firstName}}
+        {{lastName}}
+      </div>
+    </div>
+  {{/each}}
+</div>

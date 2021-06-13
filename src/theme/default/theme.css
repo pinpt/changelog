@@ -1,0 +1,183 @@
+body {
+  @apply bg-white dark:bg-[#111827];
+}
+
+.page,
+.home {
+  @apply flex flex-col w-full h-screen;
+}
+
+.page > .container {
+  @apply mx-auto pt-5 md:pt-10 px-10 max-w-7xl w-full flex-grow flex-shrink-0;
+}
+
+.home > .container {
+  @apply mx-auto pt-5 px-10 max-w-7xl w-full flex-grow flex-shrink-0;
+}
+
+main .ProseMirror {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 25px;
+  min-height: 300px !important;
+}
+
+main .ProseMirror a[href] {
+  @apply text-indigo-600 dark:text-indigo-400 underline;
+}
+
+header .title {
+  @apply text-black dark:text-white;
+}
+
+header .description {
+  @apply text-gray-500 dark:text-gray-100;
+}
+
+header .subscribe {
+  @apply text-purple-500 dark:text-purple-500;
+}
+
+main {
+  @apply border-gray-200 dark:border-gray-800 mt-5 md:mt-20 pt-5 md:pt-10 border-t;
+}
+
+main aside {
+  @apply mt-2 sm:mt-5 mb-10 sm:mb-0 sm:w-1/4 mr-0 sm:mr-4 flex-shrink-0;
+}
+
+main aside section {
+  @apply flex flex-row md:flex-col items-start justify-between w-full md:space-y-4 mt-5 md:mt-0;
+}
+
+.home main .latest {
+  @apply px-5 mx-auto;
+}
+
+.home main .recent {
+  @apply px-5 mx-auto mt-10 mb-24;
+}
+
+.home main .latest > h1,
+.home main .recent > h1 {
+  @apply text-2xl xl:text-3xl font-medium text-gray-700 dark:text-white mb-10;
+}
+
+main > .container {
+  @apply flex flex-col sm:flex-row;
+}
+
+main .back {
+  @apply text-gray-500 dark:text-gray-500;
+}
+
+main .date {
+  @apply text-gray-500 dark:text-gray-400;
+}
+
+main .author {
+  @apply text-gray-800 dark:text-gray-400;
+}
+
+main .highfive {
+  @apply relative cursor-pointer flex items-center w-10 mt-8;
+}
+
+main .highfive .container {
+  @apply w-12 h-12 inline-flex items-center justify-center text-gray-300 transition-all;
+}
+
+main .highfive .container.animating {
+  @apply text-purple-500;
+}
+
+main .highfive .counter {
+  @apply ml-2 text-gray-500 opacity-100 transition-all select-none;
+}
+
+main .highfive .counter.animating {
+  @apply opacity-0;
+}
+
+main .highfive .counter-animation {
+  @apply opacity-0 -left-10 transition-all absolute bg-gray-700 rounded-full px-3 top-2 text-white text-sm py-1 select-none;
+}
+
+main .highfive .counter-animation.animating {
+  @apply opacity-100 left-12;
+}
+
+.page main .taglist {
+  @apply mt-6 sm:mt-10 flex items-start text-xs space-x-2 font-semibold;
+}
+
+.tiles .grid {
+  @apply -m-4 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 grid-flow-row;
+}
+
+.tile {
+  @apply h-full border-2 border-gray-200 dark:border-gray-800 border-opacity-60 rounded-lg overflow-hidden flex flex-col;
+}
+
+.tile > a > img {
+  @apply lg:h-48 md:h-36 w-full bg-gray-100 dark:bg-gray-200 object-cover object-center border-b border-gray-200 dark:border-gray-400;
+}
+
+.tile .empty {
+  @apply lg:h-48 md:h-36 w-full bg-gradient-to-r from-fuchsia-500 via-red-600 to-orange-400 border-b border-gray-200 dark:border-gray-400;
+}
+
+.tile > .container {
+  @apply p-6 flex flex-col flex-1 dark:bg-white;
+}
+
+.tile > .container > h1 {
+  @apply text-lg font-medium text-gray-900;
+}
+
+.tile > .container > .headline {
+  @apply leading-relaxed mb-3 dark:text-gray-500;
+}
+
+.tile > .container section {
+  @apply mt-auto;
+}
+
+.tile > .container section .pageviews {
+  @apply text-gray-400 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-200;
+}
+
+.tile > .container section .claps {
+  @apply text-gray-400 inline-flex items-center leading-none text-sm;
+}
+
+.tile > .container section .read {
+  @apply text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0;
+}
+
+footer {
+  @apply bg-gray-900 dark:bg-black flex-shrink-0;
+}
+
+footer > .container {
+  @apply max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8;
+}
+
+.covermedia .youtube,
+.covermedia .image {
+  @apply shadow-lg;
+}
+
+.covermedia {
+  @apply rounded-xl relative;
+}
+
+.covermedia .image {
+  background-image: url(https://cdn.osxdaily.com/wp-content/uploads/2020/10/macos-big-sur-wallpaper-1-1536x1536.jpg);
+  @apply rounded-xl flex justify-center items-center overflow-hidden;
+  max-width: 650px;
+}
+
+.covermedia .image > img {
+  @apply object-cover object-center shadow;
+}

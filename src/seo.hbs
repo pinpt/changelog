@@ -1,0 +1,49 @@
+{{#if changelog}}
+  <title>{{changelog.title}} - {{site.name}}</title>
+  <meta name="image" content="{{cover_image_url changelog}}" />
+  <meta name="og:image" content="{{cover_image_url changelog}}" />
+  <meta name="twitter:image" content="{{cover_image_url changelog}}" />
+  <meta name="description" content="{{changelog.headline}}" />
+  <meta property="og:type" content="article" />
+  <meta property="author" content="{{author changelog}}" />
+  <meta property="og:author" content="{{author changelog}}" />
+  <meta
+    property="article:published_time"
+    content="{{iso_date changelog.publishedAt}}"
+  />
+  <meta property="og:title" content="{{changelog.title}}" />
+  <meta name="twitter:title" content="{{changelog.title}}" />
+  <meta property="og:description" content="{{changelog.headline}}" />
+  <meta name="twitter:description" content="{{changelog.headline}}" />
+  <meta property="og:url" content="{{changelog.url}}" />
+{{else}}
+  <title>{{site.theme.description}} - {{site.name}}</title>
+  <meta name="description" content="{{site.theme.description}}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="{{site.theme.description}}" />
+  <meta name="twitter:title" content="{{site.theme.description}}" />
+  <meta property="og:description" content="{{site.theme.description}}" />
+  <meta name="twitter:description" content="{{site.theme.description}}" />
+{{/if}}
+{{#if site.theme.social.twitter}}
+  <meta
+    name="twitter:creator"
+    content="{{twitter_handle site.theme.social.twitter}}"
+  />
+{{/if}}
+<link rel="icon" href="{{site.logoUrl}}" />
+<link rel="shortcut icon" href="{{site.logoUrl}}" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="RSS Feed"
+  href="https://api.changelog.so/rss/{{site.id}}"
+/>
+<meta name="generator" content="changelog.so" />
+<meta property="og:site_name" content="{{site.name}}" />
+<meta name="robots" content="index, follow" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@pinpoint_sw" />
+<meta property="og:url" content="{{url}}" />
+<meta property="twitter:url" content="{{url}}" />
+<link rel="canonical" href="{{url}}" />

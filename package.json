@@ -1,0 +1,34 @@
+{
+  "name": "@pinpt/changelog-generator",
+  "version": "1.0.0",
+  "description": "Changelog Generator is the tool for automatically generating static sites published by changelog.so",
+  "scripts": {
+    "build": "node ./.bin/build.js",
+    "help": "node ./.bin/build.js --help",
+    "build-theme": "node ./.bin/build-theme.js"
+  },
+  "bin": {
+    "build": "node ./.bin/build.js"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-brands-svg-icons": "^5.15.3",
+    "@fortawesome/free-regular-svg-icons": "^5.15.3",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@tailwindcss/aspect-ratio": "^0.2.1",
+    "arg": "^5.0.0",
+    "express": "^4.17.1",
+    "handlebars": "^4.7.7",
+    "html-minifier": "^4.0.0",
+    "humanize-plus": "^1.8.2",
+    "i": "^0.3.6",
+    "mimetype": "0.0.8",
+    "node-fetch": "^2.6.1",
+    "node-watch": "^0.7.1",
+    "npm": "^7.17.0",
+    "ssri": "^8.0.1",
+    "tailwindcss-cli": "^0.1.2",
+    "uglifycss": "0.0.29",
+    "uglifyjs": "^2.4.11"
+  }
+}
