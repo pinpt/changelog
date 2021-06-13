@@ -54,6 +54,8 @@
 
 ## About The Project
 
+Changelog.so is an app built for fast moving product teams to help them manage the way they communicate with their end users. This tool is used by changelog.so to generate static sites published by changelog.so as well as for development on new themes for yor own changelogs.
+
 [![Product Name Screen Shot][product-screenshot]](https://changelog.so)
 
 ### Built With
