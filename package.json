@@ -8,8 +8,8 @@
     "build-theme": "node ./.bin/build-theme.js"
   },
   "bin": {
-    "changelog-gen": "node ./.bin/build.js",
-    "changelog-theme": "node ./.bin/build-theme.js"
+    "changelog-gen": "./.bin/build.js",
+    "changelog-theme": "./.bin/build-theme.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
