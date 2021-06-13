@@ -6,7 +6,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/pinpt/changelog-generator">
-    <img src=".github/logo.png" alt="Changelog Logo" width="526" height="113">
+    <img src=".github/logo.png" alt="Changelog Logo" width="370" height="100">
   </a>
 
   <h3 align="center">Changelog Generator</h3>
@@ -27,7 +27,7 @@
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
-  <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
+  <summary>Table of Contents</summary>
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
@@ -54,7 +54,7 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][.github/product-screenshot.png]](https://changelog.so)
+[![Product Name Screen Shot][product-screenshot]](https://changelog.so)
 
 ### Built With
 
@@ -70,12 +70,16 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+You'll need to install a minimum of NodeJS v14 or later to use this project.
+
+If you just want to generate your site, you can install globally:
 
 - npm
   ```sh
   npm install @pinpt/changelog-generator -g
   ```
+
+To develop a new theme, you need to install the repository.
 
 ### Installation
 
@@ -91,6 +95,8 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 
 ## Usage
+
+If you're using the npm global version, you can replace `npm run` below with `changelog-gen`.
 
 To generate your site statically, you can run the following command:
 
@@ -109,6 +115,8 @@ npm run help
 ```
 
 ### Building a new theme
+
+If you're using the npm global version, you can replace `npm run` below with `changelog-theme`.
 
 If you'd like to customize the look-and-feel of your generated site, you can develop a new theme. First, copy the default theme under the directory `src/theme/default` and create a new folder such as `src/theme/mytheme`. Take care to only modify the files in the theme directory as we only accept HTML and CSS files when uploading your theme.
 
@@ -131,6 +139,12 @@ npm run build-theme -- [theme]
 ```
 
 Replace `[mytheme]` with the name of your theme.
+
+If you're using the npm global version, use:
+
+```sh
+changelog-theme [theme]
+```
 
 This will generate a file such as `[theme].zip` into `$PWD/dist` by default. You can change to location by specifying `--output`.
 
@@ -185,3 +199,4 @@ Project Link: [https://github.com/pinpt/changelog-generator](https://github.com/
 [license-url]: https://github.com/pinpt/changelog-generator/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/company/pinpoint-software
+[product-screenshot]: .github/product-screenshot.png
