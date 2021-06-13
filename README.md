@@ -134,6 +134,14 @@ Such as if you're theme name was `mytheme`
 npm run -- [slug] mytheme
 ```
 
+If you're using the npm global version, use the following instead:
+
+```sh
+changelog-gen [slug] --theme-dir /path/to/my/theme
+```
+
+Replace `/path/to/my/theme` with the path to your theme directory. In this case, you don't need to specify the name of the theme as an argument.
+
 When you're ready to use your theme in production, just run the following command to create your theme file:
 
 ```sh
@@ -182,7 +190,7 @@ Contributions are what make the open source community such an amazing place to b
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Copyright &copy; 2021 by Pinpoint Software, Inc. Distributed under the MIT License. See `LICENSE` for more information.
 
 <!-- CONTACT -->
 
@@ -202,4 +210,3 @@ Project Link: [https://github.com/pinpt/changelog-generator](https://github.com/
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/company/pinpoint-software
 [product-screenshot]: .github/product-screenshot.png
-

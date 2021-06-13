@@ -55,7 +55,7 @@ const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href) => {
   if (!fs.existsSync(fn)) {
     fn = path.join(baseSrcDir, href);
     if (!fs.existsSync(fn)) {
-      throw new Error(`couldn't find css file at ${fn}`);
+      throw new Error(`couldn't find css file at ${fn} (href)`);
     }
   }
   let buf = fs.readFileSync(fn).toString();
@@ -95,13 +95,7 @@ const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href) => {
   return entry;
 };
 
-exports.registerHelpers = ({
-  baseSrcDir,
-  distDir,
-  srcDir,
-  staticDistDir,
-  host,
-}) => {
+exports.registerHelpers = ({ baseSrcDir, srcDir, staticDistDir, host }) => {
   // Adds all the icons from the Solid style into our library for easy lookup
   library.add(fas, fab, far);
 
@@ -164,9 +158,15 @@ exports.registerHelpers = ({
   });
 
   Handlebars.registerHelper("include", function (arg) {
-    const fn = path.resolve(srcDir, arg.hash.src);
+    let fn = path.resolve(srcDir, arg.hash.src);
     if (!fs.existsSync(fn)) {
-      throw new Error(`couldn't include file ${fn}`);
+      // in the case the theme directory is in a different dir tree
+      // then we try and resolve included files as if they were in the
+      // same source tree
+      fn = path.resolve(baseSrcDir, "theme", "default", arg.hash.src);
+      if (!fs.existsSync(fn)) {
+        throw new Error(`couldn't include file ${fn}`);
+      }
     }
     let context = { ...arg.data.root, ...(arg.hash.context || {}) };
     const keys = Object.keys(arg.hash).filter(

@@ -26,6 +26,9 @@ const help = () => {
   console.error("-h, --help         Output usage information");
   console.error("-q, --quiet        Don't log anything except errors");
   console.error("-o, --output       Output to directory instead of ./dist");
+  console.error(
+    "-t, --theme-dir    Use a directory where your theme exists instead of inside src"
+  );
   console.error("-f, --file         Use JSON file as input instead of API");
   console.error("-h, --host         Change the API host (internal use only)");
   console.error(
@@ -46,12 +49,14 @@ const args = arg({
   "--output": String,
   "--watch": Boolean,
   "--port": Number,
+  "--theme-dir": String,
   "-q": "--quiet",
   "-h": "--host",
   "-f": "--file",
   "-o": "--output",
   "-w": "--watch",
   "-p": "--port",
+  "-t": "--theme-dir",
 });
 
 const site = args["_"][0];
@@ -68,16 +73,13 @@ if (!site || args["--help"]) {
 const host = args["--host"] || "api.changelog.so";
 const quiet = args["--quiet"];
 const distDir = path.resolve(
-  args["--output"] || path.join(__dirname, "../dist")
+  args["--output"] || path.join(process.cwd(), "dist")
 );
 
 const baseSrcDir = path.join(__dirname, "../src");
-const srcDir = path.join(baseSrcDir, "theme", theme);
-
-const cssFiles = [
-  path.join(baseSrcDir, "global.css"),
-  path.join(srcDir, "theme.css"),
-];
+const srcDir = path.resolve(
+  args["--theme-dir"] || path.join(baseSrcDir, "theme", theme)
+);
 
 const tailwindCLI = path.join(
   __dirname,
@@ -105,7 +107,7 @@ if (!fs.existsSync(staticDistDir)) {
   fs.mkdirSync(staticDistDir, { recursive: true });
 }
 
-registerHelpers({ baseSrcDir, distDir, srcDir, host, staticDistDir });
+registerHelpers({ baseSrcDir, srcDir, host, staticDistDir });
 
 const createTemplate = (name) => {
   const fn = path.join(srcDir, name);
@@ -161,7 +163,6 @@ const processPage = (site, changelog) => {
     url: changelog.url,
   });
   const basefn = path.join(distDir, "entry", changelog.id + ".html");
-  // console.log(basefn, buf.toString());
   const dir = path.dirname(basefn);
   !fs.existsSync(dir) && fs.mkdirSync(dir, { recursive: true });
   const fn = path.join(basefn);
@@ -179,34 +180,6 @@ const generate = (changelogs, site) => {
     processPage(site, changelog);
   });
   processIndex(site, changelogs); // must come after the others
-};
-
-const generateCSS = (fn) => {
-  // let deleteFile = false;
-  // if (path.basename(fn) === "global.css") {
-  //   const buf = fs.readFileSync(fn).toString() + "\n" + dom.css();
-  //   const tmpfile = path.join(os.tmpdir(), path.basename(fn));
-  //   fs.writeFileSync(tmpfile, buf);
-  //   fn = tmpfile;
-  //   deleteFile = true;
-  // }
-  // const outfn = path.join(distDir, path.basename(fn));
-  // const { stderr, status } = spawnSync(tailwindCLI, ["build", fn, "-o", outfn]);
-  // if (status !== 0) {
-  //   console.error(fn);
-  //   console.error(stderr.toString());
-  // } else {
-  //   verbose(`Generated ${outfn}`);
-  // }
-  // if (deleteFile) {
-  //   fs.unlinkSync(fn);
-  // }
-};
-
-const processJS = (fn) => {
-  // const outfn = path.join(distDir, path.basename(fn));
-  // const buf = fs.readFileSync(fn);
-  // fs.writeFileSync(outfn, buf);
 };
 
 (async () => {
@@ -228,23 +201,11 @@ const processJS = (fn) => {
     changelogs = body.changelogs;
     site = body.site;
   }
-  // console.log({ changelogs: changelogs.map((ch) => ch.stats) });
   site.url = `https://${
     site.hostname && site.hostname.value
       ? site.hostname.value
       : `${site.slug}.changelog.so`
   }`;
-  function compileAllCSSFiles() {
-    cssFiles.forEach((fn) => {
-      if (!fs.existsSync(fn)) {
-        error(`${fn} does not exist`);
-      }
-      generateCSS(fn);
-    });
-  }
-  compileAllCSSFiles();
-  // processJS(path.join(baseSrcDir, "global.js"));
-  // processJS(path.join(baseSrcDir, "theme.js"));
   generate(changelogs, site, url);
   if (args["--watch"]) {
     console.log(`🏁  Watching for changes in ${srcDir}`);

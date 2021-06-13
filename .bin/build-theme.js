@@ -50,7 +50,7 @@ if (!fs.existsSync(themeDir)) {
 }
 
 const outDir = path.resolve(
-  args["--output"] || path.join(__dirname, "../dist")
+  args["--output"] || path.join(process.cwd(), "dist")
 );
 
 !fs.existsSync(outDir) && fs.mkdirSync(outDir, { recursive: true });
