@@ -26,8 +26,6 @@ jobs:
         uses: "phips28/gh-action-bump-version@master"
         env:
           GITHUB_TOKEN: ${{ secrets.PP_GITHUB_TOKEN }}
-        with:
-          commit-message: "CI: bumps version to {{version}} [skip ci]"
       - run: npm publish --access public
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v1
