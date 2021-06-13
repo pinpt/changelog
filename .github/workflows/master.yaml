@@ -22,10 +22,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - name: "Automated Version Bump"
-        uses: "phips28/gh-action-bump-version@master"
-        env:
-          GITHUB_TOKEN: ${{ secrets.PP_GITHUB_TOKEN }}
+      - uses: tool3/bump@v1
+        with:
+          github_token: ${{ secrets.PP_GITHUB_TOKEN }}
+          user: "Pinpoint Bot"
+          email: "pinpointbot@pinpoint.com"
       - run: npm publish --access public
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v1
@@ -36,4 +37,4 @@ jobs:
       # Publish to GitHub Packages
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.PP_GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
