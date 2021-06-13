@@ -11,22 +11,19 @@ jobs:
       contents: read
       packages: write
 
-    strategy:
-      matrix:
-        node-version: [14.x]
-
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14
       - run: npm ci
-      - uses: tool3/bump@v1
+      - name: "Automated Version Bump"
+        uses: "phips28/gh-action-bump-version@master"
         with:
-          github_token: ${{ secrets.PP_GITHUB_TOKEN }}
-          user: "Pinpoint Bot"
-          email: "pinpointbot@pinpoint.com"
+          tag-prefix: ""
+        env:
+          GITHUB_TOKEN: ${{ secrets.PP_GITHUB_TOKEN }}
       - run: npm publish --access public
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v1
