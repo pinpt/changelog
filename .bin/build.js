@@ -9,7 +9,7 @@ const fetch = require("node-fetch");
 const Handlebars = require("handlebars");
 const arg = require("arg");
 const watch = require("node-watch");
-const { registerHelpers } = require("./helpers");
+const { registerHelpers, findBin } = require("./helpers");
 
 const error = (msg) => {
   console.error(msg);
@@ -81,21 +81,8 @@ const srcDir = path.resolve(
   args["--theme-dir"] || path.join(baseSrcDir, "theme", theme)
 );
 
-const tailwindCLI = path.join(
-  __dirname,
-  "../node_modules",
-  ".bin",
-  "tailwindcss-cli"
-);
-
 if (!fs.existsSync(srcDir)) {
   error(`cannot find theme at ${srcDir}`);
-}
-
-if (!fs.existsSync(tailwindCLI)) {
-  error(
-    `Couldn't find the tailwind cli at ${tailwindCLI}. Did you run npm install?`
-  );
 }
 
 if (!fs.existsSync(distDir)) {
@@ -118,23 +105,22 @@ const createTemplate = (name) => {
   return Handlebars.compile(buf.toString());
 };
 
+const htmlMinifier = findBin("html-minifier");
+
 const minifyHTML = (fn) => {
-  const res = spawnSync(
-    path.join(__dirname, "../node_modules/.bin", "html-minifier"),
-    [
-      "--collapse-whitespace",
-      "--remove-comments",
-      "--remove-optional-tags",
-      "--remove-redundant-attributes",
-      "--remove-script-type-attributes",
-      "--remove-tag-whitespace",
-      "--minify-css",
-      "true",
-      "--minify-js",
-      "true",
-      fn,
-    ]
-  );
+  const res = spawnSync(htmlMinifier, [
+    "--collapse-whitespace",
+    "--remove-comments",
+    "--remove-optional-tags",
+    "--remove-redundant-attributes",
+    "--remove-script-type-attributes",
+    "--remove-tag-whitespace",
+    "--minify-css",
+    "true",
+    "--minify-js",
+    "true",
+    fn,
+  ]);
   if (res.status !== 0) {
     throw new Error(`error minifying ${fn}. ${res.stderr}`);
   }

@@ -12,16 +12,28 @@ const fas = require("@fortawesome/free-solid-svg-icons").fas;
 const fab = require("@fortawesome/free-brands-svg-icons").fab;
 const far = require("@fortawesome/free-regular-svg-icons").far;
 const humanize = require("humanize-plus");
+const findNodeModules = require("find-node-modules");
+
+const node_modules = findNodeModules();
+
+const findBin = (name) => {
+  for (let c = 0; c < node_modules.length; c++) {
+    const fn = path.join(node_modules[c], ".bin", name);
+    if (fs.existsSync(fn)) {
+      return fn;
+    }
+  }
+  throw new Error(
+    `couldn't find binary ${bin} in any of ${node_modules.join(", ")}`
+  );
+};
+exports.findBin = findBin;
 
 const cache = {};
 
-const uglifycss = path.join(__dirname, "../node_modules/.bin", "uglifycss");
-const uglifyjs = path.join(__dirname, "../node_modules/.bin", "uglifyjs");
-const tailwind = path.join(
-  __dirname,
-  "../node_modules/.bin",
-  "tailwindcss-cli"
-);
+const uglifycss = findBin("uglifycss");
+const uglifyjs = findBin("uglifyjs");
+const tailwind = findBin("tailwindcss-cli");
 
 const minifyCSS = (fn) => {
   const tmpfn = path.join(os.tmpdir(), String(Date.now()) + ".css");

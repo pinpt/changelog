@@ -19,6 +19,7 @@
     "@tailwindcss/aspect-ratio": "^0.2.1",
     "arg": "^5.0.0",
     "express": "^4.17.1",
+    "find-node-modules": "^2.1.2",
     "handlebars": "^4.7.7",
     "html-minifier": "^4.0.0",
     "humanize-plus": "^1.8.2",
