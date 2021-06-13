@@ -29,7 +29,7 @@
     "npm": "^7.17.0",
     "ssri": "^8.0.1",
     "tailwindcss-cli": "^0.1.2",
-    "uglifycss": "0.0.29",
-    "uglifyjs": "^2.4.11"
+    "uglify-js": "^3.13.9",
+    "uglifycss": "0.0.29"
   }
 }
