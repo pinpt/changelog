@@ -12,6 +12,7 @@ const Handlebars = require("handlebars");
 const arg = require("arg");
 const watch = require("node-watch");
 const { registerHelpers, findBin, sha1 } = require("./helpers");
+const version = require("../package.json").version;
 
 const error = (msg) => {
   console.error(msg);
@@ -40,12 +41,14 @@ const help = () => {
   );
   console.error("-f, --file         Use JSON file as input instead of API");
   console.error("-h, --host         Change the API host (internal use only)");
+  console.error("-v, --version      Print the version");
   console.error(
     "-p, --port         Port when running in watch mode (default:4444)"
   );
   console.error(
     "-w, --watch        Watch the src directory for changes and regenerate"
   );
+  console.error("--skip-index       Skip generating the index page");
   console.error();
   process.exit(0);
 };
@@ -59,7 +62,9 @@ const args = arg({
   "--watch": Boolean,
   "--port": Number,
   "--theme-dir": String,
+  "--skip-index": Boolean,
   "--debug": Boolean,
+  "--version": Boolean,
   "-q": "--quiet",
   "-h": "--host",
   "-f": "--file",
@@ -67,6 +72,7 @@ const args = arg({
   "-w": "--watch",
   "-p": "--port",
   "-t": "--theme-dir",
+  "-v": "--version",
 });
 
 const site = args["_"][0];
@@ -74,18 +80,16 @@ const theme = args["_"][1] || "default";
 const port = args["--port"] || 4444;
 const debug = args["--debug"];
 
-if (!site || args["--help"]) {
-  if (!args["--help"]) {
-    console.error("🛑 missing your site slug or hostname as an argument");
-  }
-  console.error();
-  help();
+if (args["--version"]) {
+  console.log(version);
+  process.exit(0);
 }
 const host = args["--host"] || "api.changelog.so";
 const quiet = args["--quiet"];
 const distDir = path.resolve(
   args["--output"] || path.join(process.cwd(), "dist")
 );
+const skipIndex = args["--skip-index"];
 
 const baseSrcDir = path.join(__dirname, "../src");
 const srcDir = path.resolve(
@@ -217,7 +221,9 @@ const generate = async (changelogs, site) => {
       return processPage(site, changelog);
     }),
   ]);
-  await processIndex(site, changelogs); // must come after the others
+  if (!skipIndex) {
+    await processIndex(site, changelogs); // must come after the others
+  }
 };
 
 (async () => {
