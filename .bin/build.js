@@ -103,7 +103,13 @@ if (!fs.existsSync(staticDistDir)) {
   fs.mkdirSync(staticDistDir, { recursive: true });
 }
 
-registerHelpers({ baseSrcDir, srcDir, distDir, host, staticDistDir });
+const shutdown = registerHelpers({
+  baseSrcDir,
+  srcDir,
+  distDir,
+  host,
+  staticDistDir,
+});
 
 const createTemplate = (name) => {
   const fn = path.join(srcDir, name);
@@ -205,6 +211,7 @@ const generate = (changelogs, site) => {
       : `${site.slug}.changelog.so`
   }`;
   generate(changelogs, site, url);
+  shutdown();
   if (args["--watch"]) {
     console.log(`🏁  Watching for changes in ${srcDir}`);
     const app = express();

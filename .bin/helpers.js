@@ -160,12 +160,6 @@ exports.registerHelpers = ({
   tailwindCfg = path.join(distDir, "tailwind.generated.config.js");
   fs.writeFileSync(tailwindCfg, jsBuf);
 
-  // remove the file when we exit
-  process.on(
-    "exit",
-    () => fs.existsSync(tailwindCfg) && fs.unlinkSync(tailwindCfg)
-  );
-
   Handlebars.registerHelper("formatNumber", function (arg, arg2) {
     return humanize.formatNumber(arg, arg2);
   });
@@ -399,4 +393,6 @@ exports.registerHelpers = ({
   </defs>
 </svg>`);
   });
+
+  return () => fs.existsSync(tailwindCfg) && fs.unlinkSync(tailwindCfg);
 };
