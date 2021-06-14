@@ -156,6 +156,7 @@ exports.registerHelpers = ({
       baseSrcDir + "/*.js",
       srcDir + "/*.css",
       srcDir + "/*.hbs",
+      srcDir + "/*.html",
     ]) +
     "," +
     after;
