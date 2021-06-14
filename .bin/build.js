@@ -4,12 +4,13 @@ const path = require("path");
 const fs = require("fs");
 const mimetype = require("mimetype");
 const express = require("express");
+const compression = require("compression");
 const spawnSync = require("child_process").spawnSync;
 const fetch = require("node-fetch");
 const Handlebars = require("handlebars");
 const arg = require("arg");
 const watch = require("node-watch");
-const { registerHelpers, findBin } = require("./helpers");
+const { registerHelpers, findBin, sha1 } = require("./helpers");
 
 const error = (msg) => {
   console.error(msg);
@@ -215,6 +216,7 @@ const generate = (changelogs, site) => {
   if (args["--watch"]) {
     console.log(`🏁  Watching for changes in ${srcDir}`);
     const app = express();
+    app.use(compression());
     app.get("/", (req, resp) => {
       fn = path.join(distDir, "index.html");
       resp.set("Content-Type", "text/html");
@@ -236,10 +238,15 @@ const generate = (changelogs, site) => {
         return;
       }
       resp.set("Content-Type", mimetype.lookup(fn));
-      resp.set("Content-Disposition", "inline");
-      resp.set("Cache-Control", "max-age=0, no-cache");
       const buf = fs.readFileSync(fn);
-      resp.send(buf);
+      const etag = `"${sha1(buf)}"`;
+      resp.set("ETag", etag);
+      const ifNoneMatch = req.headers["if-none-match"];
+      if (ifNoneMatch === etag) {
+        resp.status(304).end();
+      } else {
+        resp.send(buf);
+      }
     });
     app.listen(port);
     console.log(`🏡  Ready at http://localhost:${port}`);

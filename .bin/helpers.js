@@ -77,6 +77,7 @@ const minifyJS = (fn) => {
 };
 
 const sha1 = (buf) => crypto.createHash("sha1").update(buf).digest("hex");
+exports.sha1 = sha1;
 
 const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href) => {
   let fn = path.join(srcDir, href);
@@ -109,7 +110,10 @@ const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href) => {
       break;
     }
   }
-  const integrity = ssri.create().update(buf).digest();
+  const integrity = ssri
+    .create({ algorithms: ["sha384"] })
+    .update(buf)
+    .digest();
   const sha = integrity.toString();
   const name = path.basename(href);
   const tok = name.split(".");
@@ -248,7 +252,7 @@ exports.registerHelpers = ({
       href
     );
     return new Handlebars.SafeString(
-      `<link rel="stylesheet" type="text/css" href="${relpath}" integrity="${sha}" />`
+      `<link rel="stylesheet" type="text/css" href="${relpath}" integrity="${sha}" crossorigin="anonymous" />`
     );
   });
 
@@ -288,7 +292,7 @@ exports.registerHelpers = ({
       return ""; // ignore if empty
     }
     return new Handlebars.SafeString(
-      `<link rel="stylesheet" type="text/css" href="${relpath}" integrity="${sha}" />`
+      `<link rel="stylesheet" type="text/css" href="${relpath}" integrity="${sha}" crossorigin="anonymous" />`
     );
   });
 
@@ -303,7 +307,7 @@ exports.registerHelpers = ({
       return ""; // ignore if empty
     }
     return new Handlebars.SafeString(
-      `<script src="${relpath}" integrity="${sha}" async defer></script>`
+      `<script src="${relpath}" integrity="${sha}" async defer crossorigin="anonymous"></script>`
     );
   });
 
