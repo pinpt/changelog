@@ -116,7 +116,7 @@ main .highfive .counter-animation.animating {
 }
 
 .tile {
-  @apply h-full border-2 border-gray-200 dark:border-gray-800 border-opacity-60 rounded-lg overflow-hidden flex flex-col;
+  @apply h-full border-2 border-gray-200 dark:border-gray-800 border-opacity-60 rounded-lg overflow-hidden flex flex-col dark:bg-white;
 }
 
 .tile > a > img {
