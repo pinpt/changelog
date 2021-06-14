@@ -168,21 +168,22 @@ footer > .container {
   @apply max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8;
 }
 
-.covermedia .youtube,
-.covermedia .image {
+.covermedia .youtube {
   @apply shadow-lg;
 }
+
+/* .covermedia .image {
+  @apply shadow-lg;
+} */
 
 .covermedia {
   @apply rounded-xl relative;
 }
 
 .covermedia .image {
-  background-image: url(https://cdn.osxdaily.com/wp-content/uploads/2020/10/macos-big-sur-wallpaper-1-1536x1536.jpg);
-  @apply rounded-xl flex justify-center items-center overflow-hidden;
   max-width: 650px;
 }
 
 .covermedia .image > img {
-  @apply object-cover object-center shadow;
+  @apply object-cover object-center;
 }
