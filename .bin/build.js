@@ -6,6 +6,7 @@ const mimetype = require("mimetype");
 const express = require("express");
 const compression = require("compression");
 const _exec = require("child_process").exec;
+const spawnSync = require("child_process").spawnSync;
 const fetch = require("node-fetch");
 const Handlebars = require("handlebars");
 const arg = require("arg");
@@ -123,15 +124,15 @@ const createTemplate = (name) => {
 
 const htmlMinifier = findBin("html-minifier");
 
-const exec = (fn, args) => {
+const exec = (fn, args, opts) => {
   return new Promise((resolve, reject) => {
     const cmd = `${fn} ${args.join(" ")}`;
-    _exec(cmd, (err, stdout, stderr) => {
+    _exec(cmd, opts, (err, stdout, stderr) => {
       if (err) {
         return reject(err);
       }
       if (stderr.length) {
-        return new reject(new Error(stderr));
+        return reject(new Error(stderr));
       }
       resolve(stdout);
     });

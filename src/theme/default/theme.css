@@ -7,6 +7,11 @@ body {
   @apply flex flex-col w-full h-screen;
 }
 
+.page .container,
+.home .container {
+  max-width: 100%;
+}
+
 .page > .container {
   @apply mx-auto pt-5 md:pt-10 px-10 max-w-7xl w-full flex-grow flex-shrink-0;
 }
