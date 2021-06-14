@@ -178,28 +178,32 @@ const minifyAndWriteHTML = (fn, buf) => {
 };
 
 const processIndex = (site, changelogs) => {
-  const buf = indexTemplate({
-    site,
-    changelogs,
-    url: site.url,
+  return new Promise((resolve, reject) => {
+    const buf = indexTemplate({
+      site,
+      changelogs,
+      url: site.url,
+    });
+    const fn = path.join(distDir, "index.html");
+    minifyAndWriteHTML(fn, buf).then(resolve).catch(reject);
   });
-  const fn = path.join(distDir, "index.html");
-  return minifyAndWriteHTML(fn, buf);
 };
 
 const pageTemplate = createTemplate("page.html");
 
 const processPage = (site, changelog) => {
-  const buf = pageTemplate({
-    site,
-    changelog,
-    url: changelog.url,
+  return new Promise((resolve, reject) => {
+    const buf = pageTemplate({
+      site,
+      changelog,
+      url: changelog.url,
+    });
+    const basefn = path.join(distDir, "entry", changelog.id + ".html");
+    const dir = path.dirname(basefn);
+    !fs.existsSync(dir) && fs.mkdirSync(dir, { recursive: true });
+    const fn = path.join(basefn);
+    minifyAndWriteHTML(fn, buf).then(resolve).catch(reject);
   });
-  const basefn = path.join(distDir, "entry", changelog.id + ".html");
-  const dir = path.dirname(basefn);
-  !fs.existsSync(dir) && fs.mkdirSync(dir, { recursive: true });
-  const fn = path.join(basefn);
-  return minifyAndWriteHTML(fn, buf);
 };
 
 const field = site.includes(".") ? "hostname.value" : "slug";
