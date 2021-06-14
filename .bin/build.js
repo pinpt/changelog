@@ -103,7 +103,7 @@ if (!fs.existsSync(staticDistDir)) {
   fs.mkdirSync(staticDistDir, { recursive: true });
 }
 
-registerHelpers({ baseSrcDir, srcDir, host, staticDistDir });
+registerHelpers({ baseSrcDir, srcDir, distDir, host, staticDistDir });
 
 const createTemplate = (name) => {
   const fn = path.join(srcDir, name);

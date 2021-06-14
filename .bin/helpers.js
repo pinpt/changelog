@@ -35,13 +35,26 @@ const uglifycss = findBin("uglifycss");
 const uglifyjs = findBin("uglifyjs");
 const tailwind = findBin("tailwindcss-cli");
 
+const _tailwindCfg = path.join(__dirname, "../tailwind.config.js");
+if (!fs.existsSync(_tailwindCfg)) {
+  throw new Error(`couldn't find required file at ${_tailwindCfg}`);
+}
+let tailwindCfg;
+
 const minifyCSS = (fn) => {
   const tmpfn = path.join(
     os.tmpdir(),
     path.basename(fn) + "-" + String(Date.now()) + ".css"
   );
   try {
-    let res = spawnSync(tailwind, ["build", fn, "-o", tmpfn]);
+    let res = spawnSync(tailwind, [
+      "build",
+      fn,
+      "-o",
+      tmpfn,
+      "-c",
+      tailwindCfg,
+    ]);
     if (res.status !== 0) {
       throw new Error(`error compiling CSS: ${fn}. ${res.stderr}`);
     }
@@ -110,9 +123,42 @@ const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href) => {
   return entry;
 };
 
-exports.registerHelpers = ({ baseSrcDir, srcDir, staticDistDir, host }) => {
+exports.registerHelpers = ({
+  baseSrcDir,
+  srcDir,
+  distDir,
+  staticDistDir,
+  host,
+}) => {
   // Adds all the icons from the Solid style into our library for easy lookup
   library.add(fas, fab, far);
+
+  // we need to write in the purge folders based on where we
+  // read in the theme since it could be in a different place
+  // than our generated folder and we'll run into purge issues if so
+  const tailwindCfgJS = fs.readFileSync(_tailwindCfg).toString();
+  const startIndex = tailwindCfgJS.indexOf("purge:");
+  const endIndex = tailwindCfgJS.indexOf("]", startIndex);
+  const before = tailwindCfgJS.substring(0, startIndex);
+  const after = tailwindCfgJS.substring(endIndex + 2);
+
+  const jsBuf =
+    before +
+    "purge: " +
+    JSON.stringify([
+      baseSrcDir + "/*.html",
+      baseSrcDir + "/*.css",
+      baseSrcDir + "/*.hbs",
+      baseSrcDir + "/*.js",
+      srcDir + "/*.css",
+      srcDir + "/*.hbs",
+    ]) +
+    "," +
+    after;
+
+  // write out the generated tailwind
+  tailwindCfg = path.join(distDir, "tailwind.generated.config.js");
+  fs.writeFileSync(tailwindCfg, jsBuf);
 
   Handlebars.registerHelper("formatNumber", function (arg, arg2) {
     return humanize.formatNumber(arg, arg2);
