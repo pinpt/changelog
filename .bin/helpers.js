@@ -36,7 +36,10 @@ const uglifyjs = findBin("uglifyjs");
 const tailwind = findBin("tailwindcss-cli");
 
 const minifyCSS = (fn) => {
-  const tmpfn = path.join(os.tmpdir(), String(Date.now()) + ".css");
+  const tmpfn = path.join(
+    os.tmpdir(),
+    path.basename(fn) + "-" + String(Date.now()) + ".css"
+  );
   try {
     let res = spawnSync(tailwind, ["build", fn, "-o", tmpfn]);
     if (res.status !== 0) {
@@ -48,7 +51,7 @@ const minifyCSS = (fn) => {
     }
     return res.stdout;
   } finally {
-    fs.unlinkSync(tmpfn);
+    fs.existsSync(tmpfn) && fs.unlinkSync(tmpfn);
   }
 };
 

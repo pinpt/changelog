@@ -16,6 +16,13 @@ const error = (msg) => {
   process.exit(1);
 };
 
+const debugLog = (msg, o) =>
+  !debug
+    ? null
+    : console.log.apply(
+        console,
+        [`🚧  ${msg}`, o ? JSON.stringify(o) : undefined].filter(Boolean)
+      );
 const verbose = (msg) => (quiet ? null : console.log(`✅   ${msg}`));
 
 const help = () => {
@@ -50,6 +57,7 @@ const args = arg({
   "--watch": Boolean,
   "--port": Number,
   "--theme-dir": String,
+  "--debug": Boolean,
   "-q": "--quiet",
   "-h": "--host",
   "-f": "--file",
@@ -62,6 +70,7 @@ const args = arg({
 const site = args["_"][0];
 const theme = args["_"][1] || "default";
 const port = args["--port"] || 4444;
+const debug = args["--debug"];
 
 if (!site || args["--help"]) {
   if (!args["--help"]) {
@@ -163,6 +172,7 @@ const url = `https://${host}/changelog/list/${site}/${field}?html=true&stats=tru
 
 const generate = (changelogs, site) => {
   changelogs.forEach((changelog) => {
+    debugLog(`processing changelog ${changelog.id} ${changelog.title}`);
     processPage(site, changelog);
   });
   processIndex(site, changelogs); // must come after the others
@@ -178,12 +188,14 @@ const generate = (changelogs, site) => {
     const buf = JSON.parse(fs.readFileSync(fn));
     changelogs = buf.changelogs;
     site = buf.site;
+    debugLog(`loaded data from ${fn}`, { data: buf });
   } else {
     const resp = await fetch(url);
     const body = await resp.json();
     if (!body.success) {
       error(`Error fetching changelogs. ${body.message}`);
     }
+    debugLog(`fetched from ${url}`, { body });
     changelogs = body.changelogs;
     site = body.site;
   }
