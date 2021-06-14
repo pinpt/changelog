@@ -5,7 +5,7 @@ const fs = require("fs");
 const mimetype = require("mimetype");
 const express = require("express");
 const compression = require("compression");
-const spawnSync = require("child_process").spawnSync;
+const _exec = require("child_process").exec;
 const fetch = require("node-fetch");
 const Handlebars = require("handlebars");
 const arg = require("arg");
@@ -123,8 +123,23 @@ const createTemplate = (name) => {
 
 const htmlMinifier = findBin("html-minifier");
 
+const exec = (fn, args) => {
+  return new Promise((resolve, reject) => {
+    const cmd = `${fn} ${args.join(" ")}`;
+    _exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        return reject(err);
+      }
+      if (stderr.length) {
+        return new reject(new Error(stderr));
+      }
+      resolve(stdout);
+    });
+  });
+};
+
 const minifyHTML = (fn) => {
-  const res = spawnSync(htmlMinifier, [
+  return exec(htmlMinifier, [
     "--collapse-whitespace",
     "--remove-comments",
     "--remove-optional-tags",
@@ -137,28 +152,44 @@ const minifyHTML = (fn) => {
     "true",
     fn,
   ]);
-  if (res.status !== 0) {
-    throw new Error(`error minifying ${fn}. ${res.stderr}`);
-  }
-  return res.stdout;
+};
+
+const indexTemplate = createTemplate("index.html");
+
+const minifyAndWriteHTML = (fn, buf) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(fn, buf, (err) => {
+      if (err) {
+        return reject(err);
+      }
+      minifyHTML(fn)
+        .then((out) => {
+          fs.writeFile(fn, out, (err) => {
+            if (err) {
+              return reject(err);
+            }
+            verbose(`Generated ${fn}`);
+            resolve();
+          });
+        })
+        .catch(reject);
+    });
+  });
 };
 
 const processIndex = (site, changelogs) => {
-  const indexTemplate = createTemplate("index.html");
   const buf = indexTemplate({
     site,
     changelogs,
     url: site.url,
   });
   const fn = path.join(distDir, "index.html");
-  fs.writeFileSync(fn, buf);
-  const out = minifyHTML(fn);
-  fs.writeFileSync(fn, out);
-  verbose(`Generated ${fn}`);
+  return minifyAndWriteHTML(fn, buf);
 };
 
+const pageTemplate = createTemplate("page.html");
+
 const processPage = (site, changelog) => {
-  const pageTemplate = createTemplate("page.html");
   const buf = pageTemplate({
     site,
     changelog,
@@ -168,21 +199,20 @@ const processPage = (site, changelog) => {
   const dir = path.dirname(basefn);
   !fs.existsSync(dir) && fs.mkdirSync(dir, { recursive: true });
   const fn = path.join(basefn);
-  fs.writeFileSync(fn, buf);
-  const out = minifyHTML(fn);
-  fs.writeFileSync(fn, out);
-  verbose(`Generated ${fn}`);
+  return minifyAndWriteHTML(fn, buf);
 };
 
 const field = site.includes(".") ? "hostname.value" : "slug";
 const url = `https://${host}/changelog/list/${site}/${field}?html=true&stats=true`;
 
-const generate = (changelogs, site) => {
-  changelogs.forEach((changelog) => {
-    debugLog(`processing changelog ${changelog.id} ${changelog.title}`);
-    processPage(site, changelog);
-  });
-  processIndex(site, changelogs); // must come after the others
+const generate = async (changelogs, site) => {
+  await Promise.all([
+    changelogs.map((changelog) => {
+      debugLog(`processing changelog ${changelog.id} ${changelog.title}`);
+      return processPage(site, changelog);
+    }),
+  ]);
+  await processIndex(site, changelogs); // must come after the others
 };
 
 (async () => {
@@ -211,7 +241,9 @@ const generate = (changelogs, site) => {
       ? site.hostname.value
       : `${site.slug}.changelog.so`
   }`;
-  generate(changelogs, site, url);
+  const ts = Date.now();
+  await generate(changelogs, site, url);
+  verbose(`Generated ${changelogs.length} changelogs in ${Date.now() - ts}ms`);
   shutdown();
   if (args["--watch"]) {
     console.log(`🏁  Watching for changes in ${srcDir}`);
@@ -220,7 +252,10 @@ const generate = (changelogs, site) => {
     app.get("/", (req, resp) => {
       fn = path.join(distDir, "index.html");
       resp.set("Content-Type", "text/html");
-      resp.set("Cache-Control", "max-age=0, no-cache");
+      resp.set(
+        "Cache-Control",
+        "public, max-age=0, must-revalidate, stale-if-error=0"
+      );
       resp.send(fs.readFileSync(fn));
     });
     app.get("/a.js", (req, resp) => resp.status(200).end());

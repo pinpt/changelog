@@ -117,7 +117,10 @@ const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href) => {
   const sha = integrity.toString();
   const name = path.basename(href);
   const tok = name.split(".");
-  const _name = `${tok[0]}.${_sha.substring(0, 6)}.${tok.slice(1).join(".")}`;
+  const subsha = _sha.substring(0, 8).replace(/[\/=+]/g, "");
+  const _name = `${tok[0]}.${subsha.substring(0, 6)}.${sha.substring(
+    sha.length - 6
+  )}.${tok.slice(1).join(".")}`;
   const staticName = path.basename(staticDistDir);
   const relpath = `/${staticName}/${_name}`;
   entry = { relpath, sha };
