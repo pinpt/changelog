@@ -85,7 +85,7 @@ main .author {
 }
 
 main .highfive {
-  @apply relative cursor-pointer flex items-center w-10 mt-8;
+  @apply relative cursor-pointer flex items-center w-10 mt-8 select-none;
 }
 
 main .highfive .container {
