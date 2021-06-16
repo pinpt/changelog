@@ -1,3 +1,16 @@
+<p
+  class="text-center sm:text-left text-sm text-gray-500 links flex justify-center items-center sm:justify-start flex-row divide-x divide-gray-700 space-x-2"
+>
+  {{#if site.theme.privacyLink}}
+    <a href="{{site.theme.privacyLink}}">Privacy Policy</a>
+  {{/if}}
+  {{#if site.theme.eulaLink}}
+    <a href="{{site.theme.eulaLink}}">EULA</a>
+  {{/if}}
+  {{#if site.theme.tosLink}}
+    <a href="{{site.theme.tosLink}}">Terms of Service</a>
+  {{/if}}
+</p>
 <p class="text-center sm:text-left text-sm text-gray-500 copyright">
   {{site.theme.copyright}}
 </p>
