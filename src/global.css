@@ -2551,3 +2551,13 @@ body > div.preview_banner > div > div {
 body > div.preview_banner > div > div > p {
   @apply ml-3 font-medium text-yellow-900;
 }
+
+.ProseMirror {
+  padding-left: 0 !important;
+}
+
+div.home main.changelogs-0 {
+  border: none;
+  margin: 0;
+  padding: 0;
+}

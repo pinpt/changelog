@@ -8,7 +8,12 @@
       <div class="container">
         <div>{{include src="../../toolbar.hbs"}}</div>
         <header>{{include src="../../header.hbs"}}</header>
-        <main>
+        <main class="changelogs-{{len changelogs}}">
+          {{#if (empty changelogs)}}
+          <div class="comingsoon">
+            {{include src="../../comingsoon.hbs" context=.}}
+          </div>
+          {{else}}
           <div class="latest">
             <h1>Latest</h1>
             {{include src="../../tile.hbs" context=(first changelogs)}}
@@ -17,22 +22,10 @@
             <h1>Recent</h1>
             {{include src="../../tiles.hbs" changelogs=(after changelogs 1)}}
           </div>
+          {{/if}}
         </main>
       </div>
-
-      <footer>
-        <div class="container">
-          <div class="my-8 md:mb-0 md:-mt-8 md:order-2">
-            {{include src="../../subscribe.hbs"}}
-          </div>
-          <div class="flex justify-center space-x-6 md:-mt-8 md:order-3 social">
-            {{include src="../../social.hbs"}}
-          </div>
-          <div class="mt-8 md:mt-0 md:order-1">
-            {{include src="../../copyright.hbs"}}
-          </div>
-        </div>
-      </footer>
+      <footer>{{include src="../../footer.hbs"}}</footer>
     </div>
   </body>
 </html>

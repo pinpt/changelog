@@ -120,21 +120,23 @@ npm run help
 
 If you're using the npm global version, you can replace `npm run` below with `changelog-theme`.
 
-If you'd like to customize the look-and-feel of your generated site, you can develop a new theme. First, copy the default theme under the directory `src/theme/default` and create a new folder such as `src/theme/mytheme`. Take care to only modify the files in the theme directory as we only accept HTML and CSS files when uploading your theme.
+If you'd like to customize the look-and-feel of your generated site, you can develop a new theme. First, you can generate a new theme by using the command `changelog-create`. Take care to only modify the files in the theme directory as we only accept HTML and CSS files when uploading your theme.
 
-Now, run with your specific theme:
+Create the theme:
+
+```sh
+changelog-theme [name]
+```
+
+By default it will be placed in `$PWD/[name]`. You can change the location of the theme folder by passing in the `--output` directory. This command will copy the default theme files into this new directory. You can modify these files to override the look-n-feel of your generated static pages.
+
+You can run with your specific built-in theme by name:
 
 ```sh
 npm run -- [slug] [theme]
 ```
 
-Such as if you're theme name was `mytheme`
-
-```sh
-npm run -- [slug] mytheme
-```
-
-If you're using the npm global version, use the following instead:
+To run your own theme, such as if you're using the folder `/mytheme`, run:
 
 ```sh
 changelog-gen [slug] --theme-dir /path/to/my/theme
@@ -145,20 +147,22 @@ Replace `/path/to/my/theme` with the path to your theme directory. In this case,
 When you're ready to use your theme in production, just run the following command to create your theme file:
 
 ```sh
-npm run build-theme -- [theme]
+npm run build-theme -- [theme_directory]
 ```
 
-Replace `[mytheme]` with the name of your theme.
+Replace `[theme_directory]` with the path to your theme directory.
 
 If you're using the npm global version, use:
 
 ```sh
-changelog-theme [theme]
+changelog-theme [theme_directory]
 ```
 
-This will generate a file such as `[theme].zip` into `$PWD/dist` by default. You can change to location by specifying `--output`.
+This will generate a file such as `[folder_name].zip` into `$PWD/dist` by default. You can change to location by specifying `--output`.
 
 You'll use this file in the Changelog Setting Theme section to upload your theme.
+
+> WARNING: make sure you check-in your changes to GitHub or otherwise back them up. If you delete or update the theme in the app, will cannot recover your files or changes.
 
 ### Developing with watch
 

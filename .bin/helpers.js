@@ -212,6 +212,20 @@ exports.registerHelpers = ({
     throw new Error("first must be called with an array");
   });
 
+  Handlebars.registerHelper("len", function (arg) {
+    if (Array.isArray(arg)) {
+      return arg.length;
+    }
+    return 0;
+  });
+
+  Handlebars.registerHelper("empty", function (arg) {
+    if (Array.isArray(arg)) {
+      return arg.length === 0;
+    }
+    return true;
+  });
+
   Handlebars.registerHelper("last", function (arg) {
     if (Array.isArray(arg)) {
       return arg[arg.length - 1];
@@ -340,7 +354,10 @@ exports.registerHelpers = ({
   });
 
   Handlebars.registerHelper("iso_date", function (v) {
-    return new Date(v).toISOString();
+    if (v) {
+      return new Date(v).toISOString();
+    }
+    return new Date().toISOString();
   });
 
   Handlebars.registerHelper("cover_image_url", function (changelog) {

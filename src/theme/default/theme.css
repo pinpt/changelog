@@ -20,14 +20,14 @@ body {
   @apply mx-auto pt-5 px-10 max-w-7xl w-full flex-grow flex-shrink-0;
 }
 
-main .ProseMirror {
+main .changelog > section {
   padding-left: 0;
   padding-right: 0;
   padding-bottom: 25px;
   min-height: 300px !important;
 }
 
-main .ProseMirror a[href] {
+main .changelog > section a[href] {
   @apply text-indigo-600 dark:text-indigo-400 underline;
 }
 
@@ -165,7 +165,19 @@ footer {
 }
 
 footer > .container {
-  @apply max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8;
+  @apply max-w-7xl mx-auto py-1 md:py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8 leading-tight;
+}
+
+footer .subscribe {
+  @apply my-2 md:my-8 md:mb-0 md:-mt-8 md:order-2;
+}
+
+footer .social {
+  @apply flex justify-center space-x-6 md:-mt-8 md:order-3;
+}
+
+footer .legal {
+  @apply mt-4 md:mt-0 md:order-1;
 }
 
 .covermedia .youtube {

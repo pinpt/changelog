@@ -13,7 +13,7 @@ const error = (msg) => {
 const verbose = (msg) => (quiet ? null : console.log(`✅   ${msg}`));
 
 const help = () => {
-  console.error("Usage: [options] theme");
+  console.error("Usage: [options] theme_name");
   console.error();
   console.error("Options:");
   console.error();
@@ -43,39 +43,26 @@ if (!theme || args["--help"]) {
   help();
 }
 
-const themeDir = fs.existsSync(theme)
-  ? theme
-  : path.resolve(path.join(__dirname, "../src/theme", theme));
-
-if (!fs.existsSync(themeDir)) {
-  error(`Couldn't find theme at ${themeDir}`);
-}
-
-const themeName = path.basename(themeDir);
+const baseThemeDir = path.resolve(path.join(__dirname, "../src/theme/default"));
+const isSourceDir = fs.existsSync(baseThemeDir);
 
 const outDir = path.resolve(
-  args["--output"] || path.join(process.cwd(), "dist")
+  args["--output"] ||
+    (isSourceDir
+      ? path.joinpath.join(__dirname, "../src/theme", theme)
+      : path.join(process.cwd(), theme))
 );
 
 !fs.existsSync(outDir) && fs.mkdirSync(outDir, { recursive: true });
 
-const outZipFile = path.join(outDir, `${themeName}.zip`);
-
-const tmpDir = fs.mkdtempSync("changelog-gen");
-process.on("exit", () => fs.rmdirSync(tmpDir, { recursive: true }));
-
 // copy the files
-fs.readdirSync(themeDir)
+fs.readdirSync(baseThemeDir)
   .filter((fn) => /\.(html|css)$/.test(path.extname(fn)))
   .forEach((name) => {
-    const fn = path.join(themeDir, name);
-    const dst = path.join(tmpDir, name);
+    const fn = path.join(baseThemeDir, name);
+    const dst = path.join(outDir, name);
     fs.copyFileSync(fn, dst);
     verbose(`Copied ${fn}`);
   });
 
-child_process.execSync(`zip -r ${outZipFile} *`, {
-  cwd: tmpDir,
-});
-
-verbose(`Generated ${outZipFile}`);
+verbose(`Generated theme to ${outDir}`);

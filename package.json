@@ -5,11 +5,13 @@
   "scripts": {
     "build": "node ./.bin/build.js",
     "help": "node ./.bin/build.js --help",
-    "build-theme": "node ./.bin/build-theme.js"
+    "build-theme": "node ./.bin/build-theme.js",
+    "generate-theme": "node ./.bin/gen-theme.js"
   },
   "bin": {
     "changelog-gen": "./.bin/build.js",
-    "changelog-theme": "./.bin/build-theme.js"
+    "changelog-theme": "./.bin/build-theme.js",
+    "changelog-create": "./.bin/gen-theme.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
