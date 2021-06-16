@@ -180,6 +180,10 @@ footer .legal {
   @apply mt-4 md:mt-0 md:order-1;
 }
 
+footer .legal .links a:not(:first-child) {
+  @apply pl-2;
+}
+
 .covermedia .youtube {
   @apply shadow-lg;
 }
