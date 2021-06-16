@@ -49,7 +49,7 @@ const isSourceDir = fs.existsSync(baseThemeDir);
 const outDir = path.resolve(
   args["--output"] ||
     (isSourceDir
-      ? path.joinpath.join(__dirname, "../src/theme", theme)
+      ? path.join(__dirname, "../src/theme", theme)
       : path.join(process.cwd(), theme))
 );
 
