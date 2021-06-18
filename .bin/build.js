@@ -207,6 +207,8 @@ const processPage = (site, changelog) => {
     const dir = path.dirname(basefn);
     !fs.existsSync(dir) && fs.mkdirSync(dir, { recursive: true });
     const fn = path.join(basefn);
+    // fs.writeFileSync(fn, buf);
+    // resolve();
     minifyAndWriteHTML(fn, buf).then(resolve).catch(reject);
   });
 };

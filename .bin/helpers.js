@@ -41,20 +41,43 @@ if (!fs.existsSync(_tailwindCfg)) {
 }
 let tailwindCfg;
 
+const compileCSSAndFixHTML = (staticDistDir, baseSrcDir, srcDir) => {
+  const globalCSS = path.join(baseSrcDir, "global.css");
+  const themeCSS = path.join(srcDir, "theme.css");
+  const baseCSS = path.join(baseSrcDir, "theme", "default", "theme.css");
+  let cssBuf = fs.readFileSync(globalCSS).toString();
+  if (fs.existsSync(themeCSS)) {
+    const themeBuf = fs.readFileSync(themeCSS).toString();
+    cssBuf += "\n" + themeBuf;
+  } else {
+    const themeBuf = fs.readFileSync(baseCSS).toString();
+    cssBuf += "\n" + themeBuf;
+  }
+  cssBuf += "\n" + dom.css();
+  const outfn = path.join(staticDistDir, "global.css");
+  fs.writeFileSync(outfn, cssBuf);
+  const { relpath, sha } = generateFileSSRI(
+    baseSrcDir,
+    path.dirname(staticDistDir),
+    staticDistDir,
+    "global.css",
+    outfn
+  );
+  return {
+    GLOBAL_CSS_HREF: relpath,
+    GLOBAL_CSS_SHA: sha,
+  };
+};
+
 const minifyCSS = (fn) => {
   const tmpfn = path.join(
     os.tmpdir(),
     path.basename(fn) + "-" + String(Date.now()) + ".css"
   );
   try {
-    let res = spawnSync(tailwind, [
-      "build",
-      fn,
-      "-o",
-      tmpfn,
-      "-c",
-      tailwindCfg,
-    ]);
+    const args = ["build", fn, "-o", tmpfn, "-c", tailwindCfg];
+    // console.log("minifyCSS", args);
+    let res = spawnSync(tailwind, args);
     if (res.status !== 0) {
       throw new Error(`error compiling CSS: ${fn}. ${res.stderr}`);
     }
@@ -79,21 +102,15 @@ const minifyJS = (fn) => {
 const sha1 = (buf) => crypto.createHash("sha1").update(buf).digest("hex");
 exports.sha1 = sha1;
 
-const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href) => {
-  let fn = path.join(srcDir, href);
+const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href, fn) => {
+  fn = fn || path.join(srcDir, href);
   if (!fs.existsSync(fn)) {
     fn = path.join(baseSrcDir, href);
     if (!fs.existsSync(fn)) {
       throw new Error(`couldn't find css file at ${fn} (href)`);
     }
   }
-  let buf = fs.readFileSync(fn).toString();
-  if (buf.trim().length === 0) {
-    return {
-      relpath: "",
-      sha: "",
-    };
-  }
+  let buf = fs.readFileSync(fn);
   const _sha = sha1(buf);
   const cachekey = fn + _sha;
   let entry = cache[cachekey];
@@ -167,6 +184,8 @@ exports.registerHelpers = ({
   // write out the generated tailwind
   tailwindCfg = path.join(distDir, "tailwind.generated.config.js");
   fs.writeFileSync(tailwindCfg, jsBuf);
+
+  const globals = compileCSSAndFixHTML(staticDistDir, baseSrcDir, srcDir);
 
   Handlebars.registerHelper("formatNumber", function (arg, arg2) {
     return humanize.formatNumber(arg, arg2);
@@ -251,27 +270,13 @@ exports.registerHelpers = ({
         throw new Error(`couldn't include file ${fn}`);
       }
     }
-    let context = { ...arg.data.root, ...(arg.hash.context || {}) };
+    let context = { ...arg.data.root, ...(arg.hash.context || {}), ...globals };
     const keys = Object.keys(arg.hash).filter(
       (k) => k !== "src" && k !== "context"
     );
     keys.forEach((key) => (context[key] = arg.hash[key]));
     const buf = fs.readFileSync(fn).toString();
     return new Handlebars.SafeString(Handlebars.compile(buf)(context));
-  });
-
-  Handlebars.registerHelper("fontawesome-css", function () {
-    const href = "/icons.css";
-    fs.writeFileSync(path.join(baseSrcDir, href), dom.css());
-    const { relpath, sha } = generateFileSSRI(
-      baseSrcDir,
-      srcDir,
-      staticDistDir,
-      href
-    );
-    return new Handlebars.SafeString(
-      `<link rel="stylesheet" type="text/css" href="${relpath}" integrity="${sha}" crossorigin="anonymous" />`
-    );
   });
 
   Handlebars.registerHelper("fontawesome-icon", function (args) {
@@ -296,21 +301,6 @@ exports.registerHelpers = ({
   Handlebars.registerHelper("analytics-js", function (siteId, changelogId) {
     return new Handlebars.SafeString(
       `<script async defer src="/a.js" data-site-id="${siteId}" data-id="${changelogId}"></script>`
-    );
-  });
-
-  Handlebars.registerHelper("css", function (href) {
-    const { relpath, sha } = generateFileSSRI(
-      baseSrcDir,
-      srcDir,
-      staticDistDir,
-      href
-    );
-    if (relpath === "") {
-      return ""; // ignore if empty
-    }
-    return new Handlebars.SafeString(
-      `<link rel="stylesheet" type="text/css" href="${relpath}" integrity="${sha}" crossorigin="anonymous" />`
     );
   });
 
