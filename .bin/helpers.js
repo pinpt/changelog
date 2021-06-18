@@ -31,9 +31,8 @@ exports.findBin = findBin;
 
 const cache = {};
 
-const uglifycss = findBin("uglifycss");
 const uglifyjs = findBin("uglifyjs");
-const tailwind = findBin("tailwindcss-cli");
+const tailwind = findBin("tailwindcss");
 
 const _tailwindCfg = path.join(__dirname, "../tailwind.config.js");
 if (!fs.existsSync(_tailwindCfg)) {
@@ -61,7 +60,8 @@ const compileCSSAndFixHTML = (staticDistDir, baseSrcDir, srcDir) => {
     path.dirname(staticDistDir),
     staticDistDir,
     "global.css",
-    outfn
+    outfn,
+    srcDir
   );
   return {
     GLOBAL_CSS_HREF: relpath,
@@ -69,23 +69,18 @@ const compileCSSAndFixHTML = (staticDistDir, baseSrcDir, srcDir) => {
   };
 };
 
-const minifyCSS = (fn) => {
+const minifyCSS = (fn, dirs) => {
   const tmpfn = path.join(
     os.tmpdir(),
     path.basename(fn) + "-" + String(Date.now()) + ".css"
   );
   try {
-    const args = ["build", fn, "-o", tmpfn, "-c", tailwindCfg];
-    // console.log("minifyCSS", args);
+    const args = ["-i", fn, "-o", tmpfn, "--jit", "-m", "-c", tailwindCfg];
     let res = spawnSync(tailwind, args);
     if (res.status !== 0) {
       throw new Error(`error compiling CSS: ${fn}. ${res.stderr}`);
     }
-    res = spawnSync(uglifycss, [tmpfn]);
-    if (res.status !== 0) {
-      throw new Error(`error compressing CSS: ${fn}. ${res.stderr}`);
-    }
-    return res.stdout;
+    return fs.readFileSync(tmpfn);
   } finally {
     fs.existsSync(tmpfn) && fs.unlinkSync(tmpfn);
   }
@@ -102,7 +97,7 @@ const minifyJS = (fn) => {
 const sha1 = (buf) => crypto.createHash("sha1").update(buf).digest("hex");
 exports.sha1 = sha1;
 
-const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href, fn) => {
+const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href, fn, dir) => {
   fn = fn || path.join(srcDir, href);
   if (!fs.existsSync(fn)) {
     fn = path.join(baseSrcDir, href);
@@ -119,7 +114,7 @@ const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href, fn) => {
   }
   switch (path.extname(fn)) {
     case ".css": {
-      buf = minifyCSS(fn);
+      buf = minifyCSS(fn, [baseSrcDir, srcDir, dir]);
       break;
     }
     case ".js": {

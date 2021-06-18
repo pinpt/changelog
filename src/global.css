@@ -548,7 +548,7 @@ html.dark button {
   @apply absolute inset-0 transition-opacity bg-gray-300 dark:bg-gray-700 opacity-90;
 }
 .notebook-editor-container .comments-confirm-dialog {
-  @apply relative w-5/6 sm:w-1/2 sm:max-w-2xl h-auto rounded-md overflow-visible shadow-xl transform transition-all bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100;
+  @apply relative w-5/6 sm:w-1/2 sm:max-w-2xl h-auto rounded-md overflow-visible shadow-xl transition-all bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100;
 }
 .notebook-editor-container .comments-confirm-content {
   @apply p-4 sm:p-6 text-sm text-gray-500 dark:text-gray-300;
@@ -1306,14 +1306,14 @@ html.dark button {
  * Blockquote
  **/
 .ProseMirror blockquote {
-  @apply p-4 bg-lightBlue-100 dark:bg-lightBlue-900 text-gray-600 dark:text-gray-300 border-l-4 border-lightBlue-300 dark:border-lightBlue-600 rounded-r;
+  @apply p-4 bg-sky-100 dark:bg-sky-900 text-gray-600 dark:text-gray-300 border-l-4 border-sky-300 dark:border-sky-600 rounded-r;
 }
 .ProseMirror *:not(.metadata-container) + blockquote,
 .ProseMirror * + .blockquote {
   @apply my-4;
 }
 .ProseMirror blockquote .placeholder:before {
-  @apply text-lightBlue-300 dark:text-lightBlue-700;
+  @apply text-sky-300 dark:text-sky-700;
 }
 
 /**
