@@ -787,6 +787,13 @@ html.dark button {
   @apply cursor-pointer text-blue-600 dark:text-blue-500;
 }
 /**
+ * Pass through mark color if set
+ */
+.ProseMirror mark a[href],
+.dark .ProseMirror mark a[href] {
+  color: unset;
+}
+/**
  * Placeholder link should look like text selection while link editor is focussed
  **/
 .ProseMirror a[href=""] {
