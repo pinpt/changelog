@@ -2554,6 +2554,7 @@ body > div.preview_banner > div > div > p {
 
 .ProseMirror {
   padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 div.home main.changelogs-0 {

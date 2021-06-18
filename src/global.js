@@ -159,64 +159,73 @@ function compactInteger(input, decimals = 0) {
   }
 
   // handle high-five clap interaction
-  const highfive = document.querySelector(".highfive");
-  if (highfive) {
+  const highfives = document.querySelectorAll(".highfive");
+  if (highfives && highfives.length) {
     let currentCount = 0;
     let timer = 0;
     let ismaxed = false;
-    const counter = document.querySelector(".highfive .counter");
-    const container = document.querySelector(".highfive .container");
-    const counterAnimation = document.querySelector(
-      ".highfive .counter-animation"
-    );
+    highfives.forEach(function (highfive) {
+      const counter = highfive.querySelector(".counter");
+      const container = highfive.querySelector(".container");
+      const counterAnimation = highfive.querySelector(".counter-animation");
+      highfive.addEventListener("click", function () {
+        if (ismaxed) {
+          return; // stop after ismaxed
+        }
+        clearTimeout(timer);
+        currentCount++;
+        counter.innerHTML = compactInteger(currentCount);
+        container.classList.add("animating");
+        counter.classList.add("animating");
+        counterAnimation.classList.add("animating");
+        counterAnimation.innerHTML = `+${deviceCount}`;
+        fetch(`https://${window.apiURL}/changelog/clap`, {
+          method: "POST",
+          body: JSON.stringify({
+            siteId: window.siteId,
+            changelogId: window.changelogId,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((resp) => resp.json())
+          .then(({ counts }) => {
+            highfives.forEach(function (highfive) {
+              const counter = highfive.querySelector(".counter");
+              const counterAnimation =
+                highfive.querySelector(".counter-animation");
+              counter.innerHTML = compactInteger(counts.count);
+              counterAnimation.innerHTML = `+${counts.sessionCount}`;
+            });
+            deviceCount = counts.sessionCount;
+            currentCount = counts.count;
+            ismaxed = counts.max;
+          })
+          .finally(() => {
+            timer = setTimeout(() => {
+              container.classList.remove("animating");
+              counter.classList.remove("animating");
+              counterAnimation.classList.remove("animating");
+            }, 250);
+          });
+      });
+    });
     const getHighfiveCount = function () {
       const url = `https://${window.apiURL}/changelog/clap/count/${changelogId}?unique=true`;
       fetch(url)
         .then((resp) => resp.json())
         .then((val) => {
           const { count, deviceCount: dc } = val;
-          counter.innerHTML = compactInteger(count);
+          const ci = compactInteger(count);
+          highfives.forEach(function (highfive) {
+            const counter = highfive.querySelector(".counter");
+            counter.innerHTML = ci;
+          });
           deviceCount = dc;
           currentCount = count;
         });
     };
     getHighfiveCount();
-    highfive.addEventListener("click", function () {
-      if (ismaxed) {
-        return; // stop after ismaxed
-      }
-      clearTimeout(timer);
-      currentCount++;
-      counter.innerHTML = compactInteger(currentCount);
-      container.classList.add("animating");
-      counter.classList.add("animating");
-      counterAnimation.classList.add("animating");
-      counterAnimation.innerHTML = `+${deviceCount}`;
-      fetch(`https://${window.apiURL}/changelog/clap`, {
-        method: "POST",
-        body: JSON.stringify({
-          siteId: window.siteId,
-          changelogId: window.changelogId,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((resp) => resp.json())
-        .then(({ counts }) => {
-          counter.innerHTML = compactInteger(counts.count);
-          counterAnimation.innerHTML = `+${counts.sessionCount}`;
-          deviceCount = counts.sessionCount;
-          currentCount = counts.count;
-          ismaxed = counts.max;
-        })
-        .finally(() => {
-          timer = setTimeout(() => {
-            container.classList.remove("animating");
-            counter.classList.remove("animating");
-            counterAnimation.classList.remove("animating");
-          }, 250);
-        });
-    });
   }
 })();

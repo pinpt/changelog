@@ -215,15 +215,13 @@ const field = site.includes(".") ? "hostname.value" : "slug";
 const url = `https://${host}/changelog/list/${site}/${field}?html=true&stats=true`;
 
 const generate = async (changelogs, site) => {
-  await Promise.all([
-    changelogs.map((changelog) => {
-      debugLog(`processing changelog ${changelog.id} ${changelog.title}`);
-      return processPage(site, changelog);
-    }),
-  ]);
   if (!skipIndex) {
-    await processIndex(site, changelogs); // must come after the others
+    await processIndex(site, changelogs); // run index before the others so we get all the styles
   }
+  changelogs.forEach((changelog) => {
+    debugLog(`processing changelog ${changelog.id} ${changelog.title}`);
+    return processPage(site, changelog);
+  });
 };
 
 (async () => {

@@ -20,13 +20,6 @@ body {
   @apply mx-auto pt-5 px-10 max-w-7xl w-full flex-grow flex-shrink-0;
 }
 
-main .changelog > section {
-  padding-left: 0;
-  padding-right: 0;
-  padding-bottom: 25px;
-  min-height: 300px !important;
-}
-
 main .changelog > section a[href] {
   @apply text-indigo-600 dark:text-indigo-400 underline;
 }
@@ -36,23 +29,39 @@ header .title {
 }
 
 header .description {
-  @apply text-gray-500 dark:text-gray-100;
+  @apply text-gray-500 dark:text-gray-100 text-xs sm:text-sm md:text-base pb-10 md:pb-0;
 }
 
 header .subscribe {
-  @apply text-purple-500 dark:text-purple-500;
+  @apply text-purple-500 dark:text-purple-500 hidden md:block;
+}
+
+header .logo {
+  @apply -mt-12 md:mt-0;
 }
 
 main {
   @apply border-gray-200 dark:border-gray-800 mt-5 md:mt-20 pt-5 md:pt-10 border-t;
 }
 
-main aside {
-  @apply mt-2 sm:mt-5 mb-10 sm:mb-0 sm:w-1/4 mr-0 sm:mr-4 flex-shrink-0;
+main aside.left {
+  @apply -mt-4 mb-6 items-start md:mt-2 sm:mt-5 md:mb-0 md:w-1/4 mr-0 sm:mr-4 flex-shrink-0;
 }
 
-main aside section {
-  @apply flex flex-row md:flex-col items-start justify-between w-full md:space-y-4 mt-5 md:mt-0;
+main aside.left .date {
+  @apply font-light;
+}
+
+main aside.left .highfive {
+  @apply hidden lg:flex;
+}
+
+main aside.left section {
+  @apply flex flex-row md:flex-col items-center md:items-start justify-between w-full md:space-y-4 mt-5 md:mt-0;
+}
+
+main aside.bottom {
+  @apply flex lg:hidden flex-row items-center justify-between mb-10;
 }
 
 .home main .latest {
@@ -69,7 +78,7 @@ main aside section {
 }
 
 main > .container {
-  @apply flex flex-col sm:flex-row;
+  @apply flex flex-col md:flex-row;
 }
 
 main .back {
@@ -81,7 +90,7 @@ main .date {
 }
 
 main .author {
-  @apply text-gray-800 dark:text-gray-400;
+  @apply text-gray-500 dark:text-gray-400;
 }
 
 main .highfive {
@@ -149,7 +158,7 @@ main .highfive .counter-animation.animating {
 }
 
 .tile > .container section .pageviews {
-  @apply text-gray-400 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-200;
+  @apply text-gray-400 mr-3 inline-flex items-center ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-200;
 }
 
 .tile > .container section .claps {
@@ -160,8 +169,12 @@ main .highfive .counter-animation.animating {
   @apply text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0;
 }
 
+section.bottom {
+  @apply block md:hidden mb-2 text-center;
+}
+
 footer {
-  @apply bg-gray-900 dark:bg-black flex-shrink-0;
+  @apply bg-gray-900 dark:bg-black flex-shrink-0 pb-10;
 }
 
 footer > .container {
@@ -169,7 +182,7 @@ footer > .container {
 }
 
 footer .subscribe {
-  @apply my-2 md:my-8 md:mb-0 md:-mt-8 md:order-2;
+  @apply my-10 md:my-8 md:mb-0 md:-mt-8 md:order-2;
 }
 
 footer .social {
@@ -202,4 +215,31 @@ footer .legal .links a:not(:first-child) {
 
 .covermedia .image > img {
   @apply object-cover object-center;
+}
+
+article.changelog {
+  min-height: 500px;
+}
+
+/* article.changelog section > h1.heading {
+  @apply mb-12;
+} */
+
+article.changelog p {
+  @apply my-10 leading-loose text-lg;
+}
+
+article.changelog h1,
+article.changelog h2,
+article.changelog h3,
+article.changelog h4 {
+  @apply mb-5;
+}
+
+article.changelog div.iframe_node.small {
+  @apply my-8 p-3 border bg-gray-50 rounded dark:border-black dark:bg-[#0e1421];
+}
+
+article.changelog .hr > div > hr {
+  @apply !border-gray-200 dark:!border-gray-800;
 }
