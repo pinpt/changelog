@@ -1911,7 +1911,7 @@ html.dark button {
   @apply sm:max-w-xs max-h-16 sm:max-h-24 rounded;
 }
 .ProseMirror .iframe .content .preview.small .info {
-  @apply mr-2 flex-grow;
+  @apply mr-2 flex-grow min-w-0;
 }
 .ProseMirror .iframe .content .preview .site {
   @apply mb-1 flex items-center font-semibold leading-4;
@@ -1920,7 +1920,7 @@ html.dark button {
   @apply h-5 w-5 mr-2;
 }
 .ProseMirror .iframe .content .preview .title {
-  @apply font-bold leading-6;
+  @apply font-bold leading-6 truncate;
 }
 .ProseMirror .iframe .content .preview .description {
   @apply text-gray-500 dark:text-gray-400 leading-6;
