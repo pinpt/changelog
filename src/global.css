@@ -816,10 +816,10 @@ html.dark button {
 .ProseMirror > * + .toggle,
 .ProseMirror blockquote > * + *,
 .ProseMirror .toggle > .content > * + * {
-	@apply mt-10;
+  @apply mt-10;
 }
 .ProseMirror .notice > .content > * + * {
-	@apply mt-4;
+  @apply mt-4;
 }
 
 /**

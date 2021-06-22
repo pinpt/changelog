@@ -231,11 +231,11 @@ article.changelog {
 } */
 
 .ProseMirror * {
-	@apply leading-loose;
+  @apply leading-loose;
 }
 .ProseMirror p,
 .ProseMirror li {
-	@apply text-lg;
+  @apply text-lg;
 }
 
 article.changelog div.iframe_node {
