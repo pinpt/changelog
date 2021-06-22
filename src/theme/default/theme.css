@@ -230,15 +230,12 @@ article.changelog {
   @apply mb-12;
 } */
 
-article.changelog p {
-  @apply my-10 leading-loose text-lg;
+.ProseMirror * {
+  @apply leading-loose;
 }
-
-article.changelog h1,
-article.changelog h2,
-article.changelog h3,
-article.changelog h4 {
-  @apply mb-5;
+.ProseMirror p,
+.ProseMirror li {
+  @apply text-lg;
 }
 
 article.changelog div.iframe_node {

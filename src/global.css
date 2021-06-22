@@ -813,10 +813,13 @@ html.dark button {
   @apply relative w-full; /* ensure we can click on anywhere within the block to edit */
 }
 .ProseMirror > * + *,
+.ProseMirror > * + .toggle,
 .ProseMirror blockquote > * + *,
-.ProseMirror .notice > .content > * + *,
 .ProseMirror .toggle > .content > * + * {
-  @apply mt-3;
+  @apply mt-10;
+}
+.ProseMirror .notice > .content > * + * {
+  @apply mt-4;
 }
 
 /**
@@ -1232,6 +1235,7 @@ html.dark button {
 }
 .ProseMirror .notice:not(.node) > .content {
   @apply flex-grow min-w-0;
+  padding-top: 2px;
 }
 .ProseMirror .notice:not(.node) > .content .code_block {
   @apply shadow-none;
@@ -1368,7 +1372,7 @@ html.dark button {
   @apply relative flex items-center text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 leading-3 cursor-pointer;
 }
 .ProseMirror .toggle > .options .icon {
-  @apply absolute w-7 h-8 top-0 -left-8 ml-1 py-2 bg-white dark:bg-gray-900 rounded;
+  @apply absolute w-7 h-8 top-0 -left-8 ml-1 py-0 bg-white dark:bg-gray-900 rounded;
 }
 .ProseMirror .toggle.ProseMirror-selectednode > .options .icon,
 .ProseMirror-selectednode .toggle > .options .icon {
@@ -2578,6 +2582,3 @@ div.home main.changelogs-0 {
   padding: 0;
 }
 
-.ProseMirror div.notice > div:not(.icon) > p {
-  @apply my-0;
-}
