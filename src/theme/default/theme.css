@@ -20,7 +20,7 @@ body {
   @apply mx-auto pt-5 px-10 max-w-7xl w-full flex-grow flex-shrink-0;
 }
 
-main .changelog > section a[href] {
+main .changelog > section p > a[href]:not(.mark-color) {
   @apply text-indigo-600 dark:text-indigo-400 underline;
 }
 
@@ -241,7 +241,7 @@ article.changelog h4 {
   @apply mb-5;
 }
 
-article.changelog div.iframe_node.small {
+article.changelog div.iframe_node {
   @apply my-8 p-3 border bg-gray-50 rounded dark:border-black dark:bg-[#0e1421];
 }
 
