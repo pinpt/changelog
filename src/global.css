@@ -784,7 +784,7 @@ html.dark button {
 
 .ProseMirror a[href],
 .ProseMirror .link {
-  @apply cursor-pointer text-blue-600 dark:text-blue-500;
+  @apply cursor-pointer;
 }
 /**
  * Placeholder link should look like text selection while link editor is focussed
@@ -856,15 +856,23 @@ html.dark button {
  * Highlight
  **/
 .ProseMirror mark,
+.ProseMirror mark a[href],
 .Markup .yellow {
   @apply rounded-sm;
   color: unset;
   background-color: unset;
+  text-decoration: unset;
+}
+.ProseMirror a.mark-color {
+  text-decoration: unset;
+  text-decoration-color: unset;
 }
 .dark .ProseMirror mark,
+.dark .ProseMirror mark a[href],
 .dark .Markup {
   color: unset;
   background-color: unset;
+  text-decoration: unset;
 }
 /* background */
 .ProseMirror mark.bg-gray,
@@ -1887,7 +1895,7 @@ html.dark button {
   @apply ml-2;
 }
 .ProseMirror .iframe .link {
-  @apply cursor-pointer overflow-hidden overflow-ellipsis whitespace-nowrap text-blue-600 dark:text-blue-500;
+  @apply cursor-pointer overflow-hidden overflow-ellipsis whitespace-nowrap;
 }
 .ProseMirror .iframe .toggle {
   @apply cursor-pointer;
@@ -2561,4 +2569,8 @@ div.home main.changelogs-0 {
   border: none;
   margin: 0;
   padding: 0;
+}
+
+.ProseMirror div.notice > div:not(.icon) > p {
+  @apply my-0;
 }
