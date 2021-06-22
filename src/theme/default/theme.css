@@ -24,6 +24,11 @@ main .changelog > section p > a[href]:not(.mark-color) {
   @apply text-indigo-600 dark:text-indigo-400 underline;
 }
 
+.main .changelog > section mark a[href],
+.dark main .changelog > section mark a[href] {
+  color: unset;
+}
+
 header .title {
   @apply text-black dark:text-white;
 }
