@@ -84,6 +84,9 @@ if (args["--version"]) {
   console.log(version);
   process.exit(0);
 }
+if (args["--help"] || !site) {
+  help();
+}
 const host = args["--host"] || "api.changelog.so";
 const quiet = args["--quiet"];
 const distDir = path.resolve(
