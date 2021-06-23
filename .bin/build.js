@@ -14,6 +14,8 @@ const watch = require("node-watch");
 const { registerHelpers, findBin, sha1 } = require("./helpers");
 const version = require("../package.json").version;
 
+const MAX_BUFFER = 5000000; // ~5MB
+
 const error = (msg) => {
   console.error(msg);
   process.exit(1);
@@ -134,7 +136,7 @@ const htmlMinifier = findBin("html-minifier");
 const exec = (fn, args, opts) => {
   return new Promise((resolve, reject) => {
     const cmd = `${fn} ${args.join(" ")}`;
-    _exec(cmd, opts, (err, stdout, stderr) => {
+    _exec(cmd, { ...opts, maxBuffer: MAX_BUFFER }, (err, stdout, stderr) => {
       if (err) {
         return reject(err);
       }
