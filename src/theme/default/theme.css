@@ -57,6 +57,10 @@ main aside.left .date {
   @apply font-light;
 }
 
+main aside.left .tagcontainer {
+  @apply hidden lg:flex;
+}
+
 main aside.left .highfive {
   @apply hidden lg:flex;
 }
@@ -183,23 +187,23 @@ section.bottom {
 }
 
 footer {
-  @apply bg-gray-900 dark:bg-black flex-shrink-0 pb-10;
+  @apply bg-gray-900 dark:bg-black flex-shrink-0;
 }
 
-footer > .container {
-  @apply max-w-7xl mx-auto py-1 md:py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8 leading-tight;
+.page > footer > .container {
+  @apply max-w-7xl mx-auto py-10 md:px-10 md:flex md:justify-between leading-tight;
 }
 
 footer .subscribe {
-  @apply my-10 md:my-8 md:mb-0 md:-mt-8 md:order-2;
+  @apply mb-8 md:my-0 md:order-2;
 }
 
 footer .social {
-  @apply flex justify-center space-x-6 md:-mt-8 md:order-3;
+  @apply flex justify-center space-x-6 md:order-3;
 }
 
 footer .legal {
-  @apply mt-4 md:mt-0 md:order-1;
+  @apply mt-8 md:mt-0 md:order-1;
 }
 
 footer .legal .links a:not(:first-child) {
@@ -227,6 +231,7 @@ footer .legal .links a:not(:first-child) {
 }
 
 article.changelog {
+  @apply md:mt-1 lg:mt-0;
   min-height: 500px;
 }
 
