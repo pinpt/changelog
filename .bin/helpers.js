@@ -14,6 +14,9 @@ const far = require("@fortawesome/free-regular-svg-icons").far;
 const humanize = require("humanize-plus");
 const findNodeModules = require("find-node-modules");
 
+const MAX_BUFFER = 5000000; // ~5MB
+exports.MAX_BUFFER = MAX_BUFFER;
+
 const node_modules = findNodeModules();
 
 const findBin = (name) => {
@@ -76,7 +79,7 @@ const minifyCSS = (fn, dirs) => {
   );
   try {
     const args = ["-i", fn, "-o", tmpfn, "--jit", "-m", "-c", tailwindCfg];
-    let res = spawnSync(tailwind, args);
+    let res = spawnSync(tailwind, args, { maxBuffer: MAX_BUFFER });
     if (res.status !== 0) {
       throw new Error(`error compiling CSS: ${fn}. ${res.stderr}`);
     }
@@ -87,7 +90,7 @@ const minifyCSS = (fn, dirs) => {
 };
 
 const minifyJS = (fn) => {
-  const res = spawnSync(uglifyjs, [fn]);
+  const res = spawnSync(uglifyjs, [fn], { maxBuffer: MAX_BUFFER });
   if (res.status !== 0) {
     throw new Error(`error compressing JS: ${fn}. ${res.stderr}`);
   }

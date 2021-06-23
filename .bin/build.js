@@ -11,10 +11,8 @@ const fetch = require("node-fetch");
 const Handlebars = require("handlebars");
 const arg = require("arg");
 const watch = require("node-watch");
-const { registerHelpers, findBin, sha1 } = require("./helpers");
+const { registerHelpers, findBin, sha1, MAX_BUFFER } = require("./helpers");
 const version = require("../package.json").version;
-
-const MAX_BUFFER = 5000000; // ~5MB
 
 const error = (msg) => {
   console.error(msg);
