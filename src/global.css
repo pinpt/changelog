@@ -814,10 +814,10 @@ html.dark button {
 }
 .ProseMirror > * + *,
 .ProseMirror > * + .toggle,
-.ProseMirror blockquote > * + *,
 .ProseMirror .toggle > .content > * + * {
   @apply mt-10;
 }
+.ProseMirror blockquote > * + *,
 .ProseMirror .notice > .content > * + * {
   @apply mt-4;
 }
@@ -1195,7 +1195,7 @@ html.dark button {
   @apply bg-black;
 }
 .ProseMirror .notice:not(.node) {
-  @apply flex items-center rounded px-4 py-2;
+  @apply flex items-center rounded px-5 py-4;
 }
 .ProseMirror .notice:not(.node).error {
   @apply bg-red-600 dark:bg-red-700 text-white;

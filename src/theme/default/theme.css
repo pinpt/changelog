@@ -239,7 +239,7 @@ article.changelog {
 }
 .ProseMirror p,
 .ProseMirror li {
-  @apply text-lg;
+  @apply text-lg leading-loose;
 }
 
 article.changelog div.iframe_node {
