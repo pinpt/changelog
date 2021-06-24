@@ -35,7 +35,7 @@ main {
 }
 
 .toolbar .home-button {
-  @apply text-gray-400 dark:text-gray-700 block md:hidden;
+  @apply text-gray-400 dark:text-gray-500 block md:hidden;
 }
 
 header {
