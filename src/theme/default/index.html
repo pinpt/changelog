@@ -7,10 +7,10 @@
     <div class="home">
       <div class="container">
         <div>{{include src="../../toolbar.hbs"}}</div>
-        <header>{{include src="../../header.hbs"}}</header>
+        {{include src="../../header.hbs"}}
         <main class="changelogs-{{len changelogs}}">
           {{#if (empty changelogs)}}
-          <div class="comingsoon">
+          <div class="coming-soon">
             {{include src="../../comingsoon.hbs" context=.}}
           </div>
           {{else}}
@@ -25,7 +25,7 @@
           {{/if}}
         </main>
       </div>
-      <footer>{{include src="../../footer.hbs"}}</footer>
+      {{include src="../../footer.hbs"}}
     </div>
   </body>
 </html>

@@ -1,29 +1,28 @@
-<div
-  class="mt-4 mb-4 mx-auto flex items-center justify-center sm:justify-start"
->
-  <div class="m:mb-0 w-0 sm:w-1/4 mr-0 sm:mr-4 flex-shrink-0"></div>
-  {{#if site.logoUrl}}
-    <a href="{{site.theme.logoLink}}" class="logo">
-      <img src="{{site.logoUrl}}" alt="" class="w-12 h-12 rounded-full" />
-    </a>
-  {{/if}}
-</div>
+<header>
+  <aside>
+    <section></section>
+  </aside>
 
-<div class="flex">
-  <div class="sm:mb-0 w-0 sm:w-1/4 mr-0 sm:mr-4 flex-shrink-0"></div>
+  <div class="content">
+    {{#if site.logoUrl}}
+      <a href="{{site.theme.logoLink}}" class="logo">
+        <img src="{{site.logoUrl}}" alt="" />
+      </a>
+    {{/if}}
 
-  <div class="flex-grow text-center sm:text-left">
-    <div class="w-full text-4xl sm:text-5xl font-extrabold title">
+    <a href="/" class="title">
       {{site.theme.title}}
-    </div>
+    </a>
 
     <div
-      class="mt-2 sm:mt-4 ml-1 description text-sm md:text-base"
-    >{{site.theme.description}}</div>
+      class="description"
+    >
+      {{site.theme.description}}
+    </div>
 
-    <div class="mt-2 space-x-4 text-center sm:text-left ml-1 subscribe">
+    <div class="subscribe">
       <a href="{{site.url}}/subscription/subscribe/{{site.id}}">
-        <span class="mr-1">{{fontawesome-icon
+        <span class="icon">{{fontawesome-icon
             prefix="far"
             icon="envelope"
           }}</span>
@@ -31,4 +30,4 @@
       </a>
     </div>
   </div>
-</div>
+</header>

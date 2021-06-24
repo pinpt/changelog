@@ -264,8 +264,14 @@ html.dark button {
 .ProseMirror h1,
 .ProseMirror h2,
 .ProseMirror h3,
-.ProseMirror h4 {
-  @apply text-gray-800 dark:text-gray-200 font-semibold;
+.ProseMirror .heading {
+	@apply text-gray-800 dark:text-gray-200 font-semibold;
+}
+.ProseMirror .heading .anchor {
+	@apply absolute right-full pr-2 hidden opacity-50;
+}
+.ProseMirror .heading:hover .anchor {
+	@apply block;
 }
 
 .ProseMirror h1 {
@@ -1441,16 +1447,8 @@ code {
   @apply py-1 px-2 rounded-full min-w-max text-xs;
 }
 
-h1.heading {
-  @apply flex flex-row items-center;
-}
-
-h1.heading a[id] {
-  @apply float-left -ml-6 pr-1 invisible group-hover:visible;
-}
-
 article.changelog {
-  @apply w-full -mt-2 lg:-mt-14;
+  @apply w-full;
 }
 
 article hr.divider {
