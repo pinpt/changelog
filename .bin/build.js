@@ -249,6 +249,10 @@ const generate = async (changelogs, site) => {
     debugLog(`fetched from ${url}`, { body });
     changelogs = body.changelogs;
     site = body.site;
+    fs.writeFileSync(
+      path.join(distDir, "data.json"),
+      JSON.stringify(body, null, 2)
+    );
   }
   site.url = `https://${
     site.hostname && site.hostname.value
