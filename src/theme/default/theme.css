@@ -338,7 +338,7 @@ section.bottom {
 } */
 
 .covermedia {
-  @apply rounded-xl relative;
+  @apply mb-10 rounded-xl relative;
 }
 
 .covermedia .image {
