@@ -11,6 +11,11 @@ body {
   @apply flex flex-col w-full h-screen;
 }
 
+.page .container,
+.home .container {
+  max-width: unset;
+}
+
 .page > .container,
 .home > .container {
   @apply mx-auto py-5 px-8 md:px-10 max-w-7xl w-full flex-grow flex-shrink-0;
@@ -291,7 +296,7 @@ main .highfive .image {
   @apply w-12 h-12 inline-flex items-center justify-center text-gray-300 transition-all;
 }
 
-main .highfive .container.animating {
+main .highfive .image.animating {
   @apply text-purple-500;
 }
 
