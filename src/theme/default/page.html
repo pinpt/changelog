@@ -6,40 +6,29 @@
   <body>
     <div class="page">
       <div class="container">
-        <div>{{include src="../../toolbar.hbs"}}</div>
-        <header>{{include src="../../header.hbs"}}</header>
+        {{include src="../../toolbar.hbs"}}
+        {{include src="../../header.hbs"}}
 
         <main>
-          <div>{{include src="../../homelink.hbs"}}</div>
+          {{include src="../../homelink.hbs"}}
           <div class="container">
             <aside class="left">
               <section>
-                <div class="date">{{include src="../../date.hbs"}}</div>
-                <div class="authors">{{include src="../../authors.hbs"}}</div>
+                {{include src="../../date.hbs"}}
+                {{include src="../../authors.hbs"}}
               </section>
-              <div class="tagcontainer">
-                {{include src="../../taglist.hbs"}}
-              </div>
-              <div class="highfive">
-                {{include src="../../highfive.hbs"}}
-              </div>
+              {{include src="../../taglist.hbs"}}
+              {{include src="../../highfive.hbs"}}
             </aside>
             <section>{{{changelog.content_html}}}</section>
           </div>
-          <section class="bottom">
-            {{include src="../../subscribe.hbs"}}
-          </section>
           <aside class="bottom">
-            <div class="highfive md:block">
-              {{include src="../../highfive.hbs"}}
-            </div>
-            <div class="tagcontainer md:block">
-              {{include src="../../taglist.hbs"}}
-            </div>
+            {{include src="../../highfive.hbs"}}
+            {{include src="../../taglist.hbs"}}
           </aside>
         </main>
       </div>
-      <footer>{{include src="../../footer.hbs"}}</footer>
+      {{include src="../../footer.hbs"}}
     </div>
   </body>
 </html>

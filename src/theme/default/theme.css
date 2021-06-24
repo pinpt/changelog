@@ -1,5 +1,9 @@
+/**
+ * skeleton
+ */
+
 body {
-  @apply bg-white dark:bg-[#111827];
+  @apply bg-white dark:bg-[#111827] transition-colors duration-300;
 }
 
 .page,
@@ -9,79 +13,248 @@ body {
 
 .page .container,
 .home .container {
-  max-width: 100%;
+  max-width: unset;
 }
 
 .page > .container,
 .home > .container {
-  @apply mx-auto pt-5 md:pt-10 px-10 max-w-7xl w-full flex-grow flex-shrink-0;
-}
-
-main .changelog > section p > a[href]:not(.mark-color) {
-  @apply text-indigo-600 dark:text-indigo-400 underline;
-}
-
-.main .changelog > section mark a[href],
-.dark main .changelog > section mark a[href] {
-  color: unset;
-}
-
-header .title {
-  @apply text-black dark:text-white;
-}
-
-header .description {
-  @apply text-gray-500 dark:text-gray-100 text-xs sm:text-sm md:text-base pb-10 md:pb-0;
-}
-
-header .subscribe {
-  @apply text-purple-500 dark:text-purple-500 hidden md:block;
-}
-
-header .logo {
-  @apply -mt-12 md:mt-0;
+  @apply mx-auto py-5 px-8 md:px-10 max-w-7xl w-full flex-grow flex-shrink-0;
 }
 
 main {
-  @apply border-gray-200 dark:border-gray-800 mt-5 md:mt-20 pt-5 md:pt-10 border-t;
+  @apply border-gray-200 dark:border-gray-800 mt-14 md:mt-20 pt-14 border-t;
 }
 
-main aside.left {
-  @apply -mt-4 mb-6 items-start md:mt-2 sm:mt-5 md:mb-0 md:w-1/4 mr-0 sm:mr-4 flex-shrink-0;
+
+/**
+ * header
+ */
+
+.toolbar {
+  @apply w-full flex flex-row md:flex-row-reverse justify-between items-center;
 }
 
-main aside.left .date {
-  @apply font-light;
+.toolbar .home-button {
+  @apply text-gray-400 dark:text-gray-500 block md:hidden;
 }
 
-main aside.left .tagcontainer {
-  @apply hidden lg:flex;
+header {
+  @apply mt-4 mb-4 mx-auto flex items-center justify-center md:justify-start;
 }
 
-main aside.left .highfive {
-  @apply hidden lg:flex;
+header aside {
+  @apply w-0 md:w-1/4 md:mr-4 flex-shrink-0;
 }
 
-main aside.left section {
-  @apply flex flex-row md:flex-col items-center md:items-start justify-between w-full md:space-y-4 mt-5 md:mt-0;
+header .content {
+  @apply flex-grow flex flex-col items-center md:items-start md:text-left;
 }
 
-main aside.bottom {
-  @apply flex lg:hidden flex-row items-center justify-between mb-10;
+header .logo img {
+  @apply w-12 h-12 rounded-full;
 }
+
+header .title {
+  @apply mt-4 text-4xl md:text-5xl font-extrabold text-black dark:text-white;
+}
+
+header .description {
+  @apply mt-2 md:mt-4 text-base text-gray-500 dark:text-gray-400;
+}
+
+header .subscribe {
+  @apply mt-4 text-center md:text-left text-purple-500 dark:text-purple-500;
+}
+
+header .subscribe a {
+  @apply inline-flex items-center hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-300;
+}
+
+header .subscribe .icon {
+  @apply mr-2 text-lg leading-none;
+}
+
+
+/**
+ * footer
+ */
+
+footer {
+  @apply bg-gray-900 dark:bg-black text-gray-500 flex-shrink-0 text-sm;
+}
+
+footer a {
+  @apply hover:text-purple-100;
+}
+
+.home > footer > .container,
+.page > footer > .container {
+  @apply max-w-7xl mx-auto py-10 md:px-10 flex flex-col md:flex-row md:justify-between items-center md:items-start leading-tight;
+}
+
+footer .subscribe {
+  @apply mb-8 md:my-0 md:order-2;
+}
+
+footer .subscribe a {
+  @apply flex items-center;
+}
+
+footer .subscribe a .icon {
+  @apply mr-2;
+}
+
+footer .social {
+  @apply flex justify-center space-x-6 md:order-3;
+}
+
+footer .social .title {
+  @apply sr-only;
+}
+
+footer .social .icon {
+  @apply h-6 w-6;
+}
+
+footer .legal {
+  @apply flex flex-col items-center md:items-start mt-8 md:mt-0 md:order-1;
+}
+
+footer .legal .links {
+  @apply mb-2 flex justify-center items-center md:justify-start flex-row divide-x divide-gray-700 space-x-2;
+}
+
+footer .legal .copyright {
+  @apply text-gray-500;
+}
+
+footer .legal .links a:not(:first-child) {
+  @apply pl-2;
+}
+
+/* footer .legal .powered-by {
+  @apply ;
+} */
+
+footer .legal .powered-by a {
+  @apply text-sm mt-6 inline-flex items-center text-gray-500 hover:text-purple-100;
+}
+
+
+/**
+ * home page and tiles
+ */
 
 .home main .latest {
-  @apply px-5 mx-auto;
+  @apply mx-auto flex flex-col md:flex-row;
 }
 
 .home main .recent {
-  @apply px-5 mx-auto mt-10 mb-24;
+  @apply mx-auto mt-14 mb-14 flex flex-col md:flex-row;
 }
 
 .home main .latest > h1,
 .home main .recent > h1 {
-  @apply text-2xl xl:text-3xl font-medium text-gray-700 dark:text-white mb-10;
+  @apply flex-shrink-0 mb-10 md:mb-0 w-auto md:w-1/4 mr-0 md:mr-4 text-2xl font-semibold text-gray-700 dark:text-white;
 }
+
+.tiles .grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-4 grid-flow-row;
+}
+
+.tile {
+  @apply h-full border border-gray-200 dark:border-gray-700 border-opacity-60 rounded-lg shadow overflow-hidden flex flex-col dark:bg-[#20293b];
+}
+
+.tile > img {
+  @apply lg:h-48 md:h-36 w-full bg-gray-100 dark:bg-gray-200 object-cover object-center;
+}
+
+.tile .empty {
+  @apply lg:h-48 md:h-36 w-full bg-gradient-to-r from-fuchsia-500 via-red-600 to-orange-400;
+}
+
+.tile > .container {
+  @apply p-6 flex flex-col flex-1;
+}
+
+.tile > .container > h2 {
+  @apply text-lg font-semibold text-gray-900 dark:text-white transition-colors duration-300;
+}
+
+.tile:hover > .container > h2 {
+  @apply text-indigo-500;
+}
+
+.tile > .container > .date {
+  @apply text-xs text-gray-400 mb-2;
+}
+
+.tile > .container > .taglist {
+  @apply mt-1 mb-4;
+}
+
+.tile > .container > .headline {
+  @apply leading-relaxed mb-3 dark:text-gray-300;
+}
+
+.tile > .container section {
+  @apply mt-4 flex items-center flex-wrap;
+}
+
+.tile > .container section svg {
+  @apply h-4 w-4;
+}
+
+.tile > .container section .read svg {
+  @apply ml-2;
+}
+
+.tile > .container section .pageviews {
+  @apply text-gray-400 mr-3 inline-flex items-center ml-auto leading-none text-sm pr-3 py-1;
+}
+
+.tile > .container section .pageviews svg {
+  @apply mr-1;
+}
+
+.tile > .container section .claps {
+  @apply text-gray-400 inline-flex items-center leading-none text-sm;
+}
+
+.tile > .container section .claps svg {
+  @apply h-6 w-6 mr-1;
+}
+
+.tile > .container section .read {
+  @apply text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0;
+}
+
+
+/**
+ * article aside
+ */
+
+main aside.left {
+  @apply mb-6 items-start md:mt-2 md:mb-0 md:w-1/4 sm:mr-4 flex-shrink-0;
+}
+
+main aside.left .taglist {
+  @apply hidden md:flex;
+}
+
+main aside.left .highfive {
+  @apply hidden md:flex;
+}
+
+main aside.left section {
+  @apply flex flex-row md:flex-col justify-between items-center md:items-start w-full md:space-y-10;
+}
+
+main aside.bottom {
+  @apply mb-10 flex md:hidden justify-between items-center;
+}
+
 
 main > .container {
   @apply flex flex-col md:flex-row;
@@ -92,26 +265,38 @@ main > .container > section {
 }
 
 main .back {
-  @apply text-gray-500 dark:text-gray-500;
+  @apply mb-10 hidden md:block text-gray-500 dark:text-gray-500;
 }
 
 main .date {
-  @apply text-gray-500 dark:text-gray-400;
+  @apply text-base font-semibold text-gray-500 dark:text-gray-400;
+}
+
+main .authors {
+  @apply order-1 md:order-2;
 }
 
 main .author {
-  @apply text-gray-500 dark:text-gray-400;
+  @apply flex flex-row items-center text-gray-500 dark:text-gray-400;
+}
+
+main .author .avatar {
+  @apply mr-2;
+}
+
+main .author .name {
+  @apply whitespace-nowrap;
 }
 
 main .highfive {
   @apply relative cursor-pointer flex items-center w-10 mt-8 select-none;
 }
 
-main .highfive .container {
+main .highfive .image {
   @apply w-12 h-12 inline-flex items-center justify-center text-gray-300 transition-all;
 }
 
-main .highfive .container.animating {
+main .highfive .image.animating {
   @apply text-purple-500;
 }
 
@@ -131,82 +316,18 @@ main .highfive .counter-animation.animating {
   @apply opacity-100 left-12;
 }
 
-.page main .taglist {
-  @apply mt-6 sm:mt-10 flex items-start text-xs space-x-2 font-semibold;
-}
-
-.tiles .grid {
-  @apply -m-4 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 grid-flow-row;
-}
-
-.tile {
-  @apply h-full border-2 border-gray-200 dark:border-gray-800 border-opacity-60 rounded-lg overflow-hidden flex flex-col dark:bg-white;
-}
-
-.tile > a > img {
-  @apply lg:h-48 md:h-36 w-full bg-gray-100 dark:bg-gray-200 object-cover object-center border-b border-gray-200 dark:border-gray-400;
-}
-
-.tile .empty {
-  @apply lg:h-48 md:h-36 w-full bg-gradient-to-r from-fuchsia-500 via-red-600 to-orange-400 border-b border-gray-200 dark:border-gray-400;
-}
-
-.tile > .container {
-  @apply p-6 flex flex-col flex-1 dark:bg-white;
-}
-
-.tile > .container > h1 {
-  @apply text-lg font-medium text-gray-900;
-}
-
-.tile > .container > .headline {
-  @apply leading-relaxed mb-3 dark:text-gray-500;
-}
-
-.tile > .container section {
-  @apply mt-auto;
-}
-
-.tile > .container section .pageviews {
-  @apply text-gray-400 mr-3 inline-flex items-center ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-200;
-}
-
-.tile > .container section .claps {
-  @apply text-gray-400 inline-flex items-center leading-none text-sm;
-}
-
-.tile > .container section .read {
-  @apply text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0;
+.taglist {
+  @apply mt-6 sm:mt-10 gap-x-2 gap-y-1 flex justify-start flex-grow-0 flex-wrap text-xs space-x-2 font-semibold;
 }
 
 section.bottom {
   @apply block md:hidden mb-2 text-center;
 }
 
-footer {
-  @apply bg-gray-900 dark:bg-black flex-shrink-0;
-}
 
-.home > footer > .container,
-.page > footer > .container {
-  @apply max-w-7xl mx-auto py-10 md:px-10 md:flex md:justify-between leading-tight;
-}
-
-footer .subscribe {
-  @apply mb-8 md:my-0 md:order-2;
-}
-
-footer .social {
-  @apply flex justify-center space-x-6 md:order-3;
-}
-
-footer .legal {
-  @apply mt-8 md:mt-0 md:order-1;
-}
-
-footer .legal .links a:not(:first-child) {
-  @apply pl-2;
-}
+/**
+ * article
+ */
 
 .covermedia .youtube {
   @apply shadow-lg;
@@ -217,7 +338,7 @@ footer .legal .links a:not(:first-child) {
 } */
 
 .covermedia {
-  @apply rounded-xl relative;
+  @apply mb-10 rounded-xl relative;
 }
 
 .covermedia .image {
@@ -229,7 +350,6 @@ footer .legal .links a:not(:first-child) {
 }
 
 article.changelog {
-  @apply md:mt-1 lg:mt-0;
   min-height: 500px;
 }
 
@@ -251,4 +371,34 @@ article.changelog div.iframe_node {
 
 article.changelog .hr > div > hr {
   @apply !border-gray-200 dark:!border-gray-800;
+}
+
+main .changelog > section p > a[href]:not(.mark-color) {
+  @apply text-indigo-600 dark:text-indigo-400 underline;
+}
+
+.main .changelog > section mark a[href],
+.dark main .changelog > section mark a[href] {
+  color: unset;
+}
+
+
+/**
+ * coming soon
+ */
+
+ .coming-soon main {
+  @apply border-0 flex items-center justify-center md:justify-start;
+}
+
+.coming-soon main aside {
+  @apply w-0 md:w-1/4 mr-0 md:mr-4;
+}
+
+.coming-soon h1 {
+  @apply text-2xl text-center md:text-left text-gray-700 dark:text-purple-200;
+}
+
+.coming-soon .image {
+  @apply my-20 w-full;
 }

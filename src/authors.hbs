@@ -1,15 +1,17 @@
-<div class="authors order-1 md:order-2">
+{{#unless (empty changelog.authors)}}
+<div class="authors">
   {{#each changelog.authors}}
-    <div class="flex flex-row items-center author">
+    <div class="author">
       {{#if avatarUrl}}
         <div class="avatar">
           <img src="{{avatarUrl}}" />
         </div>
       {{/if}}
-      <div class="ml-2 whitespace-nowrap">
+      <div class="name">
         {{firstName}}
         {{lastName}}
       </div>
     </div>
   {{/each}}
 </div>
+{{/unless}}

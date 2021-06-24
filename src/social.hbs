@@ -1,44 +1,42 @@
+<div class="social">
+	{{#if site.theme.social.blog}}
+		<a href="{{site.theme.social.blog}}" class="blog">
+			<span class="title">Blog</span>
+			<span class="icon">{{fontawesome-icon icon="blog"}}</span>
+	{{/if}}
 
-{{#if site.theme.social.blog}}
-	<a href="{{site.theme.social.blog}}" class="text-gray-400 hover:text-purple-100 blog">
-		<span class="sr-only">Blog</span>
-		<span class="h-6 w-6">{{fontawesome-icon icon="blog"}}</span>
-{{/if}}
+	{{#if site.theme.social.facebook}}
+		<a href="{{site.theme.social.facebook}}" class="facebook">
+			<span class="title">Facebook</span>
+			<span class="icon">{{fontawesome-icon prefix="fab" icon="facebook"}}</span>
+	{{/if}}
 
-{{#if site.theme.social.facebook}}
-	<a href="{{site.theme.social.facebook}}" class="text-gray-400 hover:text-purple-100 facebook">
-		<span class="sr-only">Facebook</span>
-		<span class="h-6 w-6">{{fontawesome-icon prefix="fab" icon="facebook"}}</span>
-{{/if}}
+	{{#if site.theme.social.instagram}}
+		<a href="{{site.theme.social.instagram}}" class="instagram">
+			<span class="title">Instagram</span>
+			<span class="icon">{{fontawesome-icon prefix="fab" icon="instagram"}}</span>
+	{{/if}}
 
-{{#if site.theme.social.instagram}}
-	<a href="{{site.theme.social.instagram}}" class="text-gray-400 hover:text-purple-100 instagram">
-		<span class="sr-only">Instagram</span>
-		<span class="h-6 w-6">{{fontawesome-icon prefix="fab" icon="instagram"}}</span>
-{{/if}}
+	{{#if site.theme.social.twitter}}
+		<a href="{{site.theme.social.twitter}}" class="twitter">
+			<span class="title">Twitter</span>
+			<span class="icon">{{fontawesome-icon prefix="fab" icon="twitter"}}</span>
+	{{/if}}
 
-{{#if site.theme.social.twitter}}
-	<a href="{{site.theme.social.twitter}}" class="text-gray-400 hover:text-purple-100 twitter">
-		<span class="sr-only">Twitter</span>
-		<span class="h-6 w-6">{{fontawesome-icon prefix="fab" icon="twitter"}}</span>
-{{/if}}
+	{{#if site.theme.social.github}}
+		<a href="{{site.theme.social.github}}" class="github">
+			<span class="title">GitHub</span>
+			<span class="icon">{{fontawesome-icon prefix="fab" icon="github"}}</span>
+	{{/if}}
 
-{{#if site.theme.social.github}}
-	<a href="{{site.theme.social.github}}" class="text-gray-400 hover:text-purple-100 github">
-		<span class="sr-only">GitHub</span>
-		<span class="h-6 w-6">{{fontawesome-icon prefix="fab" icon="github"}}</span>
-{{/if}}
+	{{#if site.theme.social.linkedin}}
+		<a href="{{site.theme.social.linkedin}}" class="linkedin">
+			<span class="title">LinkedIn</span>
+			<span class="icon">{{fontawesome-icon prefix="fab" icon="linkedin"}}</span>
+	{{/if}}
 
-{{#if site.theme.social.linkedin}}
-	<a href="{{site.theme.social.linkedin}}" class="text-gray-400 hover:text-purple-100 linkedin">
-		<span class="sr-only">LinkedIn</span>
-		<span class="h-6 w-6">{{fontawesome-icon prefix="fab" icon="linkedin"}}</span>
-{{/if}}
-
-	<a
-		href="https://api.changelog.so/rss/{{site.id}}"
-		class="text-gray-400 hover:text-purple-100 rss"
-	>
-		<span class="sr-only">RSS</span>
-		<span class="h-6 w-6">{{fontawesome-icon icon="rss"}}</span>
+	<a href="https://api.changelog.so/rss/{{site.id}}" class="rss">
+		<span class="title">RSS</span>
+		<span class="icon">{{fontawesome-icon icon="rss"}}</span>
 	</a>
+</div>
