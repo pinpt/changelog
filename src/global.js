@@ -110,17 +110,19 @@ function compactInteger(input, decimals = 0) {
 
   // wire up theme switch
   const mode = document.querySelector("button.mode");
-  mode.addEventListener("click", function () {
-    const html = document.documentElement;
-    const dark = html.classList.contains("dark");
-    if (dark) {
-      html.classList.remove("dark");
-      localStorage.theme = "light";
-    } else {
-      html.classList.add("dark");
-      localStorage.theme = "dark";
-    }
-  });
+  if (mode) {
+    mode.addEventListener("click", function () {
+      const html = document.documentElement;
+      const dark = html.classList.contains("dark");
+      if (dark) {
+        html.classList.remove("dark");
+        localStorage.theme = "light";
+      } else {
+        html.classList.add("dark");
+        localStorage.theme = "dark";
+      }
+    });
+  }
 
   // handle youtube player
   const buttons = document.querySelectorAll(".youtube .lty-playbtn");

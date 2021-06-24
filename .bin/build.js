@@ -11,7 +11,7 @@ const fetch = require("node-fetch");
 const Handlebars = require("handlebars");
 const arg = require("arg");
 const watch = require("node-watch");
-const { registerHelpers, findBin, sha1 } = require("./helpers");
+const { registerHelpers, findBin, sha1, MAX_BUFFER } = require("./helpers");
 const version = require("../package.json").version;
 
 const error = (msg) => {
@@ -84,6 +84,9 @@ if (args["--version"]) {
   console.log(version);
   process.exit(0);
 }
+if (args["--help"] || !site) {
+  help();
+}
 const host = args["--host"] || "api.changelog.so";
 const quiet = args["--quiet"];
 const distDir = path.resolve(
@@ -131,7 +134,7 @@ const htmlMinifier = findBin("html-minifier");
 const exec = (fn, args, opts) => {
   return new Promise((resolve, reject) => {
     const cmd = `${fn} ${args.join(" ")}`;
-    _exec(cmd, opts, (err, stdout, stderr) => {
+    _exec(cmd, { ...opts, maxBuffer: MAX_BUFFER }, (err, stdout, stderr) => {
       if (err) {
         return reject(err);
       }
@@ -246,6 +249,10 @@ const generate = async (changelogs, site) => {
     debugLog(`fetched from ${url}`, { body });
     changelogs = body.changelogs;
     site = body.site;
+    fs.writeFileSync(
+      path.join(distDir, "data.json"),
+      JSON.stringify(body, null, 2)
+    );
   }
   site.url = `https://${
     site.hostname && site.hostname.value
