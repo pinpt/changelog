@@ -175,6 +175,10 @@ footer .legal .powered-by a {
   @apply lg:h-48 md:h-36 w-full bg-gradient-to-r from-fuchsia-500 via-red-600 to-orange-400;
 }
 
+div.latest .tile {
+  @apply flex-1;
+}
+
 .tile > .container {
   @apply p-6 flex flex-col flex-1;
 }
