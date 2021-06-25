@@ -25,7 +25,6 @@ main {
   @apply border-gray-200 dark:border-gray-800 mt-14 md:mt-20 pt-14 border-t;
 }
 
-
 /**
  * header
  */
@@ -73,7 +72,6 @@ header .subscribe a {
 header .subscribe .icon {
   @apply mr-2 text-lg leading-none;
 }
-
 
 /**
  * footer
@@ -140,7 +138,6 @@ footer .legal .powered-by a {
   @apply text-sm mt-6 inline-flex items-center text-gray-500 hover:text-purple-100;
 }
 
-
 /**
  * home page and tiles
  */
@@ -195,7 +192,7 @@ footer .legal .powered-by a {
 }
 
 .tile > .container > .headline {
-  @apply leading-relaxed mb-3 dark:text-gray-300;
+  @apply leading-relaxed mb-3 text-gray-900 dark:text-gray-300;
 }
 
 .tile > .container section {
@@ -230,7 +227,6 @@ footer .legal .powered-by a {
   @apply text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0;
 }
 
-
 /**
  * article aside
  */
@@ -254,7 +250,6 @@ main aside.left section {
 main aside.bottom {
   @apply mb-10 flex md:hidden justify-between items-center;
 }
-
 
 main > .container {
   @apply flex flex-col md:flex-row;
@@ -324,7 +319,6 @@ section.bottom {
   @apply block md:hidden mb-2 text-center;
 }
 
-
 /**
  * article
  */
@@ -382,12 +376,11 @@ main .changelog > section p > a[href]:not(.mark-color) {
   color: unset;
 }
 
-
 /**
  * coming soon
  */
 
- .coming-soon main {
+.coming-soon main {
   @apply border-0 flex items-center justify-center md:justify-start;
 }
 

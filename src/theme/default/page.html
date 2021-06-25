@@ -1,34 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {{include src="../../head.hbs"}} {{analytics-js site.id changelog.id}}
+    {{include src="head.hbs"}} {{analytics-js site.id changelog.id}}
   </head>
   <body>
     <div class="page">
       <div class="container">
-        {{include src="../../toolbar.hbs"}}
-        {{include src="../../header.hbs"}}
+        {{include src="toolbar.hbs"}} {{include src="header.hbs"}}
 
         <main>
-          {{include src="../../homelink.hbs"}}
+          {{include src="homelink.hbs"}}
           <div class="container">
             <aside class="left">
               <section>
-                {{include src="../../date.hbs"}}
-                {{include src="../../authors.hbs"}}
+                {{include src="date.hbs"}} {{include src="authors.hbs"}}
               </section>
-              {{include src="../../taglist.hbs"}}
-              {{include src="../../highfive.hbs"}}
+              {{include src="taglist.hbs"}} {{include src="highfive.hbs"}}
             </aside>
             <section>{{{changelog.content_html}}}</section>
           </div>
           <aside class="bottom">
-            {{include src="../../highfive.hbs"}}
-            {{include src="../../taglist.hbs"}}
+            {{include src="highfive.hbs"}} {{include src="taglist.hbs"}}
           </aside>
         </main>
       </div>
-      {{include src="../../footer.hbs"}}
+      {{include src="footer.hbs"}}
     </div>
   </body>
 </html>

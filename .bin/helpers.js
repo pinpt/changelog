@@ -43,10 +43,10 @@ if (!fs.existsSync(_tailwindCfg)) {
 }
 let tailwindCfg;
 
-const compileCSSAndFixHTML = (staticDistDir, baseSrcDir, srcDir) => {
-  const globalCSS = path.join(baseSrcDir, "global.css");
+const compileCSSAndFixHTML = (staticDistDir, webSrcDir, srcDir) => {
+  const globalCSS = path.join(webSrcDir, "global.css");
   const themeCSS = path.join(srcDir, "theme.css");
-  const baseCSS = path.join(baseSrcDir, "theme", "default", "theme.css");
+  const baseCSS = path.join(webSrcDir, "theme", "default", "theme.css");
   let cssBuf = fs.readFileSync(globalCSS).toString();
   if (fs.existsSync(themeCSS)) {
     const themeBuf = fs.readFileSync(themeCSS).toString();
@@ -59,7 +59,7 @@ const compileCSSAndFixHTML = (staticDistDir, baseSrcDir, srcDir) => {
   const outfn = path.join(staticDistDir, "global.css");
   fs.writeFileSync(outfn, cssBuf);
   const { relpath, sha } = generateFileSSRI(
-    baseSrcDir,
+    webSrcDir,
     path.dirname(staticDistDir),
     staticDistDir,
     "global.css",
@@ -147,6 +147,8 @@ const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href, fn, dir) => {
 
 exports.registerHelpers = ({
   baseSrcDir,
+  webSrcDir,
+  emailSrcDir,
   srcDir,
   distDir,
   staticDistDir,
@@ -168,10 +170,10 @@ exports.registerHelpers = ({
     before +
     "purge: " +
     JSON.stringify([
-      baseSrcDir + "/*.html",
-      baseSrcDir + "/*.css",
-      baseSrcDir + "/*.hbs",
-      baseSrcDir + "/*.js",
+      webSrcDir + "/*.html",
+      webSrcDir + "/*.css",
+      webSrcDir + "/*.hbs",
+      webSrcDir + "/*.js",
       srcDir + "/*.css",
       srcDir + "/*.hbs",
       srcDir + "/*.html",
@@ -183,7 +185,7 @@ exports.registerHelpers = ({
   tailwindCfg = path.join(distDir, "tailwind.generated.config.js");
   fs.writeFileSync(tailwindCfg, jsBuf);
 
-  const globals = compileCSSAndFixHTML(staticDistDir, baseSrcDir, srcDir);
+  const globals = compileCSSAndFixHTML(staticDistDir, webSrcDir, srcDir);
 
   Handlebars.registerHelper("formatNumber", function (arg, arg2) {
     return humanize.formatNumber(arg, arg2);
@@ -229,6 +231,34 @@ exports.registerHelpers = ({
     throw new Error("first must be called with an array");
   });
 
+  Handlebars.registerHelper("gt", function (v1, v2, options) {
+    if (v1 > v2) {
+      return options.fn(this);
+    }
+    return options.inverse(this);
+  });
+
+  Handlebars.registerHelper("gte", function (v1, v2, options) {
+    if (v1 >= v2) {
+      return options.fn(this);
+    }
+    return options.inverse(this);
+  });
+
+  Handlebars.registerHelper("lt", function (v1, v2, options) {
+    if (v1 < v2) {
+      return options.fn(this);
+    }
+    return options.inverse(this);
+  });
+
+  Handlebars.registerHelper("lte", function (v1, v2, options) {
+    if (v1 <= v2) {
+      return options.fn(this);
+    }
+    return options.inverse(this);
+  });
+
   Handlebars.registerHelper("len", function (arg) {
     if (Array.isArray(arg)) {
       return arg.length;
@@ -252,23 +282,46 @@ exports.registerHelpers = ({
 
   Handlebars.registerHelper("after", function (arg, index, length) {
     if (Array.isArray(arg)) {
-      return arg.slice(index, typeof length === "number" ? length : undefined);
+      return arg.slice(
+        index,
+        typeof length === "number" ? index + length : undefined
+      );
     }
     throw new Error("after must be called with an array");
   });
 
+  Handlebars.registerHelper("pick", function (arg, index, offset = 0) {
+    if (Array.isArray(arg)) {
+      return arg.slice(offset)[index];
+    }
+    throw new Error("pick must be called with an array");
+  });
+
   Handlebars.registerHelper("include", function (arg) {
-    let fn = path.resolve(srcDir, arg.hash.src);
+    const baseDir =
+      arg.hash.base === "web" || !arg.hash.base ? webSrcDir : emailSrcDir;
+    let fn = path.resolve(baseDir, arg.hash.src);
     if (!fs.existsSync(fn)) {
       // in the case the theme directory is in a different dir tree
       // then we try and resolve included files as if they were in the
       // same source tree
       fn = path.resolve(baseSrcDir, "theme", "default", arg.hash.src);
       if (!fs.existsSync(fn)) {
-        throw new Error(`couldn't include file ${fn}`);
+        // this is for backwards compat before we had
+        // src/web directory
+        if (arg.hash.src.indexOf("../../") === 0) {
+          fn = path.resolve(webSrcDir, arg.hash.src.substring(6));
+          if (!fs.existsSync(fn)) {
+            throw new Error(`couldn't include file ${fn}`);
+          }
+        }
       }
     }
-    let context = { ...arg.data.root, ...(arg.hash.context || {}), ...globals };
+    const context = {
+      ...arg.data.root,
+      ...(arg.hash.context || {}),
+      ...globals,
+    };
     const keys = Object.keys(arg.hash).filter(
       (k) => k !== "src" && k !== "context"
     );
@@ -304,7 +357,7 @@ exports.registerHelpers = ({
 
   Handlebars.registerHelper("script", function (href) {
     const { relpath, sha } = generateFileSSRI(
-      baseSrcDir,
+      webSrcDir,
       srcDir,
       staticDistDir,
       href

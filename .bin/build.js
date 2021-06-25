@@ -10,7 +10,7 @@ const spawnSync = require("child_process").spawnSync;
 const fetch = require("node-fetch");
 const Handlebars = require("handlebars");
 const arg = require("arg");
-const watch = require("node-watch");
+const fswatch = require("node-watch");
 const { registerHelpers, findBin, sha1, MAX_BUFFER } = require("./helpers");
 const version = require("../package.json").version;
 
@@ -93,8 +93,11 @@ const distDir = path.resolve(
   args["--output"] || path.join(process.cwd(), "dist")
 );
 const skipIndex = args["--skip-index"];
+const watch = args["--watch"];
 
 const baseSrcDir = path.join(__dirname, "../src");
+const webSrcDir = path.join(baseSrcDir, "web");
+const emailSrcDir = path.join(baseSrcDir, "email");
 const srcDir = path.resolve(
   args["--theme-dir"] || path.join(baseSrcDir, "theme", theme)
 );
@@ -111,19 +114,28 @@ const staticDistDir = path.join(distDir, "static");
 if (!fs.existsSync(staticDistDir)) {
   fs.mkdirSync(staticDistDir, { recursive: true });
 }
+const emailDistDir = path.join(distDir, "email");
+if (!fs.existsSync(emailDistDir)) {
+  fs.mkdirSync(emailDistDir, { recursive: true });
+}
 
 const shutdown = registerHelpers({
   baseSrcDir,
+  webSrcDir,
+  emailSrcDir,
   srcDir,
   distDir,
   host,
   staticDistDir,
 });
 
-const createTemplate = (name) => {
-  const fn = path.join(srcDir, name);
+const createTemplate = (srcDirs, name) => {
+  let fn = path.join(srcDirs[0], name);
   if (!fs.existsSync(fn)) {
-    error(`Couldn't find template at ${fn}`);
+    fn = path.join(srcDirs[1], name);
+    if (!fs.existsSync(fn)) {
+      error(`Couldn't find template at ${fn}`);
+    }
   }
   const buf = fs.readFileSync(fn);
   return Handlebars.compile(buf.toString());
@@ -162,7 +174,7 @@ const minifyHTML = (fn) => {
   ]);
 };
 
-const indexTemplate = createTemplate("index.html");
+const indexTemplate = createTemplate([srcDir, webSrcDir], "index.html");
 
 const minifyAndWriteHTML = (fn, buf) => {
   return new Promise((resolve, reject) => {
@@ -197,7 +209,8 @@ const processIndex = (site, changelogs) => {
   });
 };
 
-const pageTemplate = createTemplate("page.html");
+const pageTemplate = createTemplate([srcDir, webSrcDir], "page.html");
+const emailTemplate = createTemplate([srcDir, emailSrcDir], "email.html");
 
 const processPage = (site, changelog) => {
   return new Promise((resolve, reject) => {
@@ -210,9 +223,33 @@ const processPage = (site, changelog) => {
     const dir = path.dirname(basefn);
     !fs.existsSync(dir) && fs.mkdirSync(dir, { recursive: true });
     const fn = path.join(basefn);
-    // fs.writeFileSync(fn, buf);
-    // resolve();
     minifyAndWriteHTML(fn, buf).then(resolve).catch(reject);
+  });
+};
+
+const processEmail = (site, changelog, changelogs) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const buf = emailTemplate({
+        site,
+        changelog,
+        changelogs,
+        url: changelog.url,
+        manageSubscriptionLink: "",
+        unsubscribeLink: "",
+        poweredByImage: "https://cdn.changelog.so/images/misc/poweredBy.png",
+        poweredByLink: "https://changelog.so",
+      });
+      const basefn = path.join(emailDistDir, changelog.id + ".html");
+      const dir = path.dirname(basefn);
+      !fs.existsSync(dir) && fs.mkdirSync(dir, { recursive: true });
+      const fn = path.join(basefn);
+      fs.writeFileSync(fn, buf);
+      verbose(`Generated ${fn}`);
+      resolve();
+    } catch (ex) {
+      reject(ex);
+    }
   });
 };
 
@@ -223,9 +260,19 @@ const generate = async (changelogs, site) => {
   if (!skipIndex) {
     await processIndex(site, changelogs); // run index before the others so we get all the styles
   }
-  changelogs.forEach((changelog) => {
+  return await changelogs.map(async (changelog) => {
     debugLog(`processing changelog ${changelog.id} ${changelog.title}`);
-    return processPage(site, changelog);
+    return await Promise.all([
+      processPage(site, changelog),
+      watch ? processEmail(site, changelog, changelogs) : Promise.resolve(),
+    ]);
+  });
+};
+
+const regenerateEmails = async (changelogs, site) => {
+  return await changelogs.map(async (changelog) => {
+    debugLog(`processing changelog ${changelog.id} ${changelog.title}`);
+    return processEmail(site, changelog, changelogs);
   });
 };
 
@@ -263,7 +310,7 @@ const generate = async (changelogs, site) => {
   await generate(changelogs, site, url);
   verbose(`Generated ${changelogs.length} changelogs in ${Date.now() - ts}ms`);
   shutdown();
-  if (args["--watch"]) {
+  if (watch) {
     console.log(`🏁  Watching for changes in ${srcDir}`);
     const app = express();
     app.use(compression());
@@ -276,9 +323,15 @@ const generate = async (changelogs, site) => {
       );
       resp.send(fs.readFileSync(fn));
     });
-    app.get("/a.js", (req, resp) => resp.status(200).end());
+    app.get("/a.js", (_req, resp) => resp.status(200).end());
     app.get("/entry/:id/:title?", (req, resp) => {
       fn = path.join(distDir, "entry", req.params.id + ".html");
+      resp.set("Content-Type", "text/html");
+      resp.set("Cache-Control", "max-age=0, no-cache");
+      resp.send(fs.readFileSync(fn));
+    });
+    app.get("/email/:id", (req, resp) => {
+      fn = path.join(emailDistDir, req.params.id + ".html");
       resp.set("Content-Type", "text/html");
       resp.set("Cache-Control", "max-age=0, no-cache");
       resp.send(fs.readFileSync(fn));
@@ -306,12 +359,16 @@ const generate = async (changelogs, site) => {
     const argv = process.argv
       .slice(1)
       .filter((arg) => arg !== "-w" && arg !== "--watch");
-    watch(baseSrcDir, { recursive: true, delay: 350 }, function (_, fn) {
+    fswatch(baseSrcDir, { recursive: true, delay: 350 }, function (_, fn) {
       if (fn.includes("src/icons.css")) {
         // ignore this since it's generated
         return;
       }
       console.log("🏓  %s changed.", fn);
+      if (fn.includes("email/") || fn.includes("email.html")) {
+        regenerateEmails(changelogs, site);
+        return;
+      }
       spawnSync(process.argv[0], argv, { stdio: "inherit" });
     });
   }
