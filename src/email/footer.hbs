@@ -13,39 +13,32 @@
           align="center"
           style="font-size: 12px;line-height: 17px;font-family: Arial, Helvetica, sans-serif;color: #a5a5a5;padding: 0 0 32px;"
         >
+          {{site.theme.copyright}}
+          <br />
           {{site.mailingAddress}}
           <br />
           <br />
-          <a
-            style="color: #a5a5a5; text-decoration: underline"
-            href="{{manageSubscriptionLink}}"
-          >Manage</a>
-          your email notifications or
-          <a
-            style="color: #a5a5a5; text-decoration: underline"
-            href="{{unsubscribeLink}}"
-          >unsubscribe</a>
-          from
-          {{site.name}}
-          emails.<br />
+          <a style="color: #a5a5a5; text-decoration: underline" href="{{manageSubscriptionLink}}">Manage</a> your email notifications or
+          <a style="color: #a5a5a5; text-decoration: underline" href="{{unsubscribeLink}}">unsubscribe</a> from {{site.name}} emails.
+          <br />
           <br />
         </td>
       </tr>
       <tr>
         <td
           align="center"
-          style="font-size: 12px;line-height: 17px;font-family: Arial, Helvetica, sans-serif;color: #a5a5a5;padding: 0 0 20px;"
+          style="font-size: 12px;line-height: 17px;font-family: Arial, Helvetica, sans-serif;color:#a5a5a5; padding: 0 0 20px;"
         >
-          <a
-            href="{{poweredByLink}}"
-            style="color: #a5a5a5; text-decoration: none"
-          ><img
+          <!-- NOTE: this image does open tracking so if you remove it, it will jack things up -->
+          <a href="{{poweredByLink}}" style="color: #a5a5a5; text-decoration: none">
+            <img
               src="{{poweredByImage}}"
               alt=""
               height="22"
               border="0"
               style="width: auto"
-            /></a>
+            />
+          </a>
         </td>
       </tr>
     </tbody>
