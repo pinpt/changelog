@@ -101,9 +101,8 @@ const watch = args["--watch"];
 const baseSrcDir = path.join(__dirname, "../src");
 const webSrcDir = path.join(baseSrcDir, "web");
 const emailSrcDir = path.join(baseSrcDir, "email");
-const srcDir = path.resolve(
-  args["--theme-dir"] || path.join(baseSrcDir, "theme", theme)
-);
+const baseThemeDir = path.join(baseSrcDir, "theme", theme);
+const srcDir = path.resolve(args["--theme-dir"] || baseThemeDir);
 
 if (!fs.existsSync(srcDir)) {
   error(`cannot find theme at ${srcDir}`);
@@ -133,12 +132,15 @@ const shutdown = registerHelpers({
 });
 
 const createTemplate = (srcDirs, name) => {
-  let fn = path.join(srcDirs[0], name);
+  const fn = srcDirs
+    .map((dir) => path.join(dir, name))
+    .find((fn) => fs.existsSync(fn));
   if (!fs.existsSync(fn)) {
-    fn = path.join(srcDirs[1], name);
-    if (!fs.existsSync(fn)) {
-      error(`Couldn't find template at ${fn}`);
-    }
+    error(
+      `Couldn't find template ${name} in any of the following directories: ${srcDirs.join(
+        ", "
+      )}`
+    );
   }
   const buf = fs.readFileSync(fn);
   return Handlebars.compile(buf.toString());
@@ -179,7 +181,7 @@ const minifyHTML = (fn) => {
 
 const indexTemplate = onlyEmail
   ? undefined
-  : createTemplate([srcDir, webSrcDir], "index.html");
+  : createTemplate([srcDir, webSrcDir, baseThemeDir], "index.html");
 
 const minifyAndWriteHTML = (fn, buf) => {
   return new Promise((resolve, reject) => {
@@ -216,8 +218,11 @@ const processIndex = (site, changelogs) => {
 
 const pageTemplate = onlyEmail
   ? undefined
-  : createTemplate([srcDir, webSrcDir], "page.html");
-const emailTemplate = createTemplate([srcDir, emailSrcDir], "email.html");
+  : createTemplate([srcDir, webSrcDir, baseThemeDir], "page.html");
+const emailTemplate = createTemplate(
+  [srcDir, emailSrcDir, baseThemeDir],
+  "email.html"
+);
 
 const processPage = (site, changelog) => {
   return new Promise((resolve, reject) => {
