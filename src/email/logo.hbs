@@ -1,0 +1,30 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<td
+				class="{{#if site.theme.emailLogo}}wi-100p{{/if}}"
+				align="center"
+				style="padding: 28px 0 24px"
+			>
+				<a href="{{site.url}}" target="_blank">
+					{{#if site.theme.emailLogo}} 
+						<img src="{{site.theme.emailLogo}}" style="max-height: 197px; font-size: 14px; font-family:Arial, Helvetica, sans-serif; color: #000000;vertical-align: top; line-height: 18px;text-align: center; " alt="{{site.name}}" />
+					{{else}} 
+						<img src="{{site.logoUrl}}" style="width: 64px; max-height: 64px; height: 64px; font-size: 14px; font-family: Arial, Helvetica, sans-serif; color: #000000; vertical-align: top; line-height: 18px; text-align: center; " alt="{{site.name}}" />
+					{{/if}}
+				</a>
+			</td>
+		</tr>
+		{{#if site.theme.emailLogo}} {{else}}
+		<tr>
+			<td
+				class="wi-100p"
+				align="center"
+				style="padding: 10px 0 20px;color: #000000;font-size: 20px; line-height: 22px; font-weight: bold; font-family: Arial, Helvetica, sans-serif;"
+			>
+				{{site.theme.description}}
+			</td>
+		</tr>
+		{{/if}}
+	</tbody>
+</table>
