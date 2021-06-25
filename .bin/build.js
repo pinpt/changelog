@@ -49,6 +49,7 @@ const help = () => {
     "-w, --watch        Watch the src directory for changes and regenerate"
   );
   console.error("--skip-index       Skip generating the index page");
+  console.error("--only-email       Only generate email output");
   console.error();
   process.exit(0);
 };
@@ -63,6 +64,7 @@ const args = arg({
   "--port": Number,
   "--theme-dir": String,
   "--skip-index": Boolean,
+  "--only-email": Boolean,
   "--debug": Boolean,
   "--version": Boolean,
   "-q": "--quiet",
@@ -79,6 +81,7 @@ const site = args["_"][0];
 const theme = args["_"][1] || "default";
 const port = args["--port"] || 4444;
 const debug = args["--debug"];
+const onlyEmail = args["--only-email"];
 
 if (args["--version"]) {
   console.log(version);
@@ -174,7 +177,9 @@ const minifyHTML = (fn) => {
   ]);
 };
 
-const indexTemplate = createTemplate([srcDir, webSrcDir], "index.html");
+const indexTemplate = onlyEmail
+  ? undefined
+  : createTemplate([srcDir, webSrcDir], "index.html");
 
 const minifyAndWriteHTML = (fn, buf) => {
   return new Promise((resolve, reject) => {
@@ -209,7 +214,9 @@ const processIndex = (site, changelogs) => {
   });
 };
 
-const pageTemplate = createTemplate([srcDir, webSrcDir], "page.html");
+const pageTemplate = onlyEmail
+  ? undefined
+  : createTemplate([srcDir, webSrcDir], "page.html");
 const emailTemplate = createTemplate([srcDir, emailSrcDir], "email.html");
 
 const processPage = (site, changelog) => {
@@ -227,7 +234,7 @@ const processPage = (site, changelog) => {
   });
 };
 
-const processEmail = (site, changelog, changelogs) => {
+const processEmail = (site, changelog, changelogs, outfn) => {
   return new Promise((resolve, reject) => {
     try {
       const buf = emailTemplate({
@@ -235,12 +242,12 @@ const processEmail = (site, changelog, changelogs) => {
         changelog,
         changelogs,
         url: changelog.url,
-        manageSubscriptionLink: "",
-        unsubscribeLink: "",
+        manageSubscriptionLink: "__MANAGE_SUBSCRIPTION_LINK__",
+        unsubscribeLink: "__UNSUBSCRIBE_LINK__",
         poweredByImage: "https://cdn.changelog.so/images/misc/poweredBy.png",
-        poweredByLink: "https://changelog.so",
+        poweredByLink: "__POWEREDBY_LINK__",
       });
-      const basefn = path.join(emailDistDir, changelog.id + ".html");
+      const basefn = outfn || path.join(emailDistDir, changelog.id + ".html");
       const dir = path.dirname(basefn);
       !fs.existsSync(dir) && fs.mkdirSync(dir, { recursive: true });
       const fn = path.join(basefn);
@@ -307,6 +314,16 @@ const regenerateEmails = async (changelogs, site) => {
       : `${site.slug}.changelog.so`
   }`;
   const ts = Date.now();
+  if (onlyEmail) {
+    await processEmail(
+      site,
+      changelogs[0],
+      changelogs,
+      path.join(distDir, "email.html")
+    );
+    shutdown();
+    return;
+  }
   await generate(changelogs, site, url);
   verbose(`Generated ${changelogs.length} changelogs in ${Date.now() - ts}ms`);
   shutdown();
