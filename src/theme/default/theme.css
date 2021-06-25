@@ -124,6 +124,10 @@ footer .legal .links {
   @apply mb-2 flex justify-center items-center md:justify-start flex-row divide-x divide-gray-700 space-x-2;
 }
 
+footer .legal .links:empty {
+  @apply mb-0;
+}
+
 footer .legal .copyright {
   @apply text-gray-500;
 }
