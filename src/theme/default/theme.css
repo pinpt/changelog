@@ -154,8 +154,13 @@ footer .legal .powered-by a {
   @apply mx-auto mt-14 mb-14 flex flex-col md:flex-row;
 }
 
+.home .filters {
+  @apply mx-auto mt-14 mb-14 flex flex-col md:flex-row items-center;
+}
+
 .home main .latest > h1,
-.home main .recent > h1 {
+.home main .recent > h1,
+.home .filters > h1 {
   @apply flex-shrink-0 mb-10 md:mb-0 w-auto md:w-1/4 mr-0 md:mr-4 text-2xl font-semibold text-gray-700 dark:text-white;
 }
 
@@ -321,6 +326,14 @@ main .highfive .counter-animation.animating {
 
 .taglist {
   @apply mt-6 sm:mt-10 gap-x-2 gap-y-1 flex justify-start flex-grow-0 flex-wrap text-xs space-x-2 font-semibold;
+}
+
+.filters > .taglist {
+  @apply m-0;
+}
+
+.tag.clickable {
+  @apply cursor-pointer;
 }
 
 section.bottom {

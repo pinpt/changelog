@@ -9,6 +9,10 @@
         <div>{{include src="toolbar.hbs"}}</div>
         {{include src="header.hbs"}}
         {{#if search}}
+            <div class="filters">
+              <h1>Filters</h1>
+              <div class="taglist"></div>
+            </div>
             <main class="changelogs">
               <div class="recent">
                 {{include src="tiles.hbs" changelogs=(after changelogs 0 6)}}

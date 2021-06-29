@@ -73,6 +73,51 @@ function getSearchParamByName(name, url = window.location.href) {
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+
+function getFilters() {
+  const _filters = getSearchParamByName("filters");
+  let filters = [];
+  if (_filters && _filters.length > 0) {
+    filters = JSON.parse(atob(decodeURIComponent(_filters)));
+  }
+  return filters;
+}
+
+function exitFiltering() {
+  const path = `${window.location.origin}/`;
+  window.location.href = path;
+}
+
+function navigateToFilters(filtersArray) {
+  const res = btoa(JSON.stringify(filtersArray));
+  const path = `${window.location.origin}/search?filters=${res}`;
+  window.location.href = path;
+}
+
+function hydrateIndexTags() {
+  const tags = document.querySelectorAll(".tag.clickable");
+  if (tags && tags.length) {
+    tags.forEach((tag) => {
+      tag.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const name = tag.getAttribute("data-tag");
+        const color = tag.getAttribute("data-color");
+        const border = tag.getAttribute("data-border");
+        const background = tag.getAttribute("data-background");
+        const filterData = [{
+          t: name,
+          c: color,
+          b: border,
+          bg: background,
+        }];
+        navigateToFilters(filterData);
+        return false;
+      });
+    });
+  }
+}
+
 (function () {
   // wire up tiles
   const tiles = document.querySelectorAll(".tile");
@@ -240,13 +285,13 @@ function getSearchParamByName(name, url = window.location.href) {
     getHighfiveCount();
   }
 
-  function getFilters () {
-    const _filters = getSearchParamByName("filter");
-    let filters = [];
-    if (_filters && _filters.length > 0) {
-      filters = decodeURIComponent(_filters).split(",");
-    }
-    return filters;
+  function createTag (tag, background, color, border, remove) {
+    const element = document.createElement('span');
+    element.classList = `tag clickable ${tag}`;
+    element.style = `background-color:${background};color:${color};border:${border}`;
+    element.innerHTML = `${remove && '×&nbsp;&nbsp;' || ''}${tag}`;
+
+    return element;
   }
 
   if (window.location.pathname.indexOf("/search") === 0) {
@@ -256,16 +301,54 @@ function getSearchParamByName(name, url = window.location.href) {
 
     const container = document.querySelectorAll("[data-changelog-id=__PLACEHOLDER_ID__]");
     const grid = document.querySelectorAll(".grid");
-    if (container.length && grid.length) {
+    const filterList = document.querySelectorAll(".filters > .taglist");
+
+    function removeFilterFromQuery (currentFilter) {
+      const idx = filters.findIndex((f) => f.t === currentFilter.t);
+      if (idx >= 0) {
+        if (filters.length === 1) {
+          exitFiltering();
+        } else {
+          filters.splice(idx, 1);
+          navigateToFilters(filters);
+        }
+      }
+    }
+
+    function addFilterToQuery (currentFilter) {
+      const idx = filters.findIndex((f) => f.t === currentFilter.t);
+      if (idx < 0) {
+        filters.push(currentFilter);
+        navigateToFilters(filters);
+      }
+    }
+  
+    if (container.length && grid.length && filterList.length) {
       const template = container[0].cloneNode(true);
       grid[0].innerHTML = "";
+
+      const filterContainer = filterList[0];
+
+      filters.forEach((filter) => {
+        const element = createTag(filter.t, filter.bg, filter.c, filter.b, true);
+        element.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          removeFilterFromQuery(filter);
+          return false;
+        }
+        filterContainer.appendChild(element);
+      })
 
       function renderTile (changelog) {
         const copy = template.cloneNode(true);
         copy.querySelector(".title").innerHTML = changelog.title;
         copy.querySelector(".headline").innerHTML = changelog.headline;
-        copy.querySelector(".pageviews .count").innerHTML = "0";
-        copy.querySelector(".claps .count").innerHTML = "0";
+        // copy.querySelector(".pageviews .count").innerHTML = "0";
+        // copy.querySelector(".claps .count").innerHTML = "0";
+        copy.querySelector(".pageviews").remove();
+        copy.querySelector(".claps").remove();
+        copy.querySelector(".date").innerHTML = Intl.DateTimeFormat().format(new Date(changelog.createdAt || 0));
         const { pathname } = new URL(changelog.url || "#")
         copy.href = pathname;
         copy.setAttribute("data-changelog-id", changelog.objectID);
@@ -279,6 +362,23 @@ function getSearchParamByName(name, url = window.location.href) {
           placeHolder.innerHTML = "&nbsp;"
           copy.prepend(placeHolder);
         }
+        if (changelog.tagColors) {
+          changelog.tagColors.forEach((tagColor) => {
+            const element = createTag(tagColor.tag, tagColor.backgroundColor, tagColor.color, tagColor.border);
+            element.onclick = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addFilterToQuery({
+                t: tagColor.tag,
+                bg: tagColor.backgroundColor,
+                c: tagColor.color,
+                b: tagColor.border
+              })
+              return false;
+            }
+            copy.querySelector(".taglist").appendChild(element);
+          })
+        }
         grid[0].appendChild(copy);
       }
 
@@ -289,21 +389,10 @@ function getSearchParamByName(name, url = window.location.href) {
       }
 
       if (filters.length) {
-        index.search("", { filters: `site_id:"${window.siteId}" AND tags:"${filters.join(" ")}"` }).then(handleHits);
+        index.search("", { filters: `site_id:"${window.siteId}" AND ${filters.map((f) => `tags:"${f.t}"`).join(" AND ")}` }).then(handleHits);
       }
     }
   } else {
-    const tags = document.querySelectorAll(".tag.clickable");
-    if (tags && tags.length) {
-      tags.forEach((tag) => {
-        tag.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const path = `${window.location.origin}/search?filter=${encodeURIComponent(tag.getAttribute("data-tag"))}`;
-          window.location.href = path;
-          return false;
-        });
-      });
-    }
+    hydrateIndexTags();
   }
 })();
