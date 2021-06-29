@@ -296,7 +296,7 @@ const generate = async (changelogs, site) => {
   if (!skipIndex) {
     await Promise.all([
       processIndex(site, changelogs), // run index before the others so we get all the styles,
-      processSearch(site), // Search is the same as index but doesn't statically generate changelogs
+      processSearch(site),
     ]);
   }
   return await changelogs.map(async (changelog) => {
