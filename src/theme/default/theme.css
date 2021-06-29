@@ -416,3 +416,11 @@ main .changelog > section p > a[href]:not(.mark-color) {
 .coming-soon .image {
   @apply my-20 w-full;
 }
+
+.loader {
+  @apply absolute left-0 top-0 right-0 bottom-0 bg-white dark:bg-[#111827] flex items-center justify-center dark:text-white text-[#111827];
+}
+
+.loader .inner {
+  @apply w-12 h-12 dark:border-white border-[#111827] border-3 rounded-full animate-ping;
+}

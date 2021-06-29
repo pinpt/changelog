@@ -385,6 +385,7 @@ function createTag(tag, background, color, border, remove) {
 
       function handleHits (res) {
         if (res && res.hits && res.hits.length) {
+          document.querySelector('.loader').remove();
           res.hits.forEach((hit) => grid.appendChild(getTileElement(hit, template)));
         }
       }
