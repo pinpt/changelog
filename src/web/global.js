@@ -126,6 +126,27 @@ function createTag(tag, background, color, border, remove) {
   return element;
 }
 
+function createSearchEmptyState() {
+  const element = document.createElement('div');
+  const container = document.createElement('p');
+  const clearFilters = document.createElement('div');
+
+  clearFilters.innerHTML = '×&nbsp;&nbsp;Remove Filters'
+  clearFilters.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    exitFiltering();
+    return false;
+  };
+  clearFilters.classList = 'clear-button';
+  container.innerText = 'No results matched your filters';
+  element.appendChild(container);
+  element.appendChild(clearFilters);
+  element.classList = 'empty-search';
+
+  return element;
+}
+
 (function () {
   // wire up tiles
   const tiles = document.querySelectorAll(".tile");
@@ -382,11 +403,16 @@ function createTag(tag, background, color, border, remove) {
       const template = container.cloneNode(true);
       grid.innerHTML = "";
       filters.forEach(renderRemoveFilterButton);
-
       function handleHits (res) {
-        if (res && res.hits && res.hits.length) {
+        if (res) {
           document.querySelector('.loader').remove();
-          res.hits.forEach((hit) => grid.appendChild(getTileElement(hit, template)));
+          if (res.hits && res.hits.length) {
+            res.hits.forEach((hit) => grid.appendChild(getTileElement(hit, template)));
+          } else {
+            document.querySelector('.tiles').remove();
+            const element = createSearchEmptyState();
+            document.querySelector('.results').appendChild(element);
+          }
         }
       }
 
