@@ -118,6 +118,14 @@ function hydrateIndexTags() {
   }
 }
 
+function createTag(tag, background, color, border, remove) {
+  const element = document.createElement('span');
+  element.classList = `tag clickable ${tag}`;
+  element.style = `background-color:${background};color:${color};border:${border}`;
+  element.innerHTML = `${remove && '×&nbsp;&nbsp;' || ''}${tag}`;
+  return element;
+}
+
 (function () {
   // wire up tiles
   const tiles = document.querySelectorAll(".tile");
@@ -285,23 +293,15 @@ function hydrateIndexTags() {
     getHighfiveCount();
   }
 
-  function createTag (tag, background, color, border, remove) {
-    const element = document.createElement('span');
-    element.classList = `tag clickable ${tag}`;
-    element.style = `background-color:${background};color:${color};border:${border}`;
-    element.innerHTML = `${remove && '×&nbsp;&nbsp;' || ''}${tag}`;
-
-    return element;
-  }
-
+  // Wire up filters
   if (window.location.pathname.indexOf("/search") === 0) {
     const client = algoliasearch("1XS2RO6RZM", "b80a77afd30ab3b1d33b5b4ed3863acd");
     const index = client.initIndex("changelog");
     const filters = getFilters();
 
-    const container = document.querySelectorAll("[data-changelog-id=__PLACEHOLDER_ID__]");
-    const grid = document.querySelectorAll(".grid");
-    const filterList = document.querySelectorAll(".filters > .taglist");
+    const container = document.querySelector("[data-changelog-id=__PLACEHOLDER_ID__]");
+    const grid = document.querySelector(".grid");
+    const filterList = document.querySelector(".filters > .taglist");
 
     function removeFilterFromQuery (currentFilter) {
       const idx = filters.findIndex((f) => f.t === currentFilter.t);
@@ -322,74 +322,76 @@ function hydrateIndexTags() {
         navigateToFilters(filters);
       }
     }
-  
-    if (container.length && grid.length && filterList.length) {
-      const template = container[0].cloneNode(true);
-      grid[0].innerHTML = "";
 
-      const filterContainer = filterList[0];
-
-      filters.forEach((filter) => {
-        const element = createTag(filter.t, filter.bg, filter.c, filter.b, true);
-        element.onclick = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          removeFilterFromQuery(filter);
-          return false;
-        }
-        filterContainer.appendChild(element);
-      })
-
-      function renderTile (changelog) {
-        const copy = template.cloneNode(true);
-        copy.querySelector(".title").innerHTML = changelog.title;
-        copy.querySelector(".headline").innerHTML = changelog.headline;
-        // copy.querySelector(".pageviews .count").innerHTML = "0";
-        // copy.querySelector(".claps .count").innerHTML = "0";
-        copy.querySelector(".pageviews").remove();
-        copy.querySelector(".claps").remove();
-        copy.querySelector(".date").innerHTML = Intl.DateTimeFormat().format(new Date(changelog.createdAt || 0));
-        const { pathname } = new URL(changelog.url || "#")
-        copy.href = pathname;
-        copy.setAttribute("data-changelog-id", changelog.objectID);
-        if (changelog.coverMedia && changelog.coverMedia.type === "image") {
-          const src = changelog.coverMedia.value
-          copy.querySelector("img").src = src;
-        } else {
-          copy.querySelector("img").remove();
-          const placeHolder = document.createElement("div");
-          placeHolder.classList = "empty";
-          placeHolder.innerHTML = "&nbsp;"
-          copy.prepend(placeHolder);
-        }
-        if (changelog.tagColors) {
-          changelog.tagColors.forEach((tagColor) => {
-            const element = createTag(tagColor.tag, tagColor.backgroundColor, tagColor.color, tagColor.border);
-            element.onclick = (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              addFilterToQuery({
-                t: tagColor.tag,
-                bg: tagColor.backgroundColor,
-                c: tagColor.color,
-                b: tagColor.border
-              })
-              return false;
-            }
-            copy.querySelector(".taglist").appendChild(element);
-          })
-        }
-        grid[0].appendChild(copy);
+    function renderRemoveFilterButton (filter) {
+      const element = createTag(filter.t, filter.bg, filter.c, filter.b, true);
+      element.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        removeFilterFromQuery(filter);
+        return false;
       }
+      filterList.appendChild(element);
+    }
+
+    function renderTileTag (tagColor, target) {
+      const element = createTag(tagColor.tag, tagColor.backgroundColor, tagColor.color, tagColor.border);
+      element.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addFilterToQuery({
+          t: tagColor.tag,
+          bg: tagColor.backgroundColor,
+          c: tagColor.color,
+          b: tagColor.border
+        })
+        return false;
+      }
+      target.appendChild(element);
+    }
+
+    function getTileElement (changelog, template) {
+      const copy = template.cloneNode(true);
+      copy.querySelector(".title").innerHTML = changelog.title;
+      copy.querySelector(".headline").innerHTML = changelog.headline;
+      copy.querySelector(".pageviews").remove();
+      copy.querySelector(".claps").remove();
+      copy.querySelector(".date").innerHTML = Intl.DateTimeFormat().format(new Date(changelog.createdAt || 0));
+      const { pathname } = new URL(changelog.url || "#")
+      copy.href = pathname;
+      copy.setAttribute("data-changelog-id", changelog.objectID);
+      if (changelog.coverMedia && changelog.coverMedia.type === "image") {
+        const src = changelog.coverMedia.value
+        copy.querySelector("img").src = src;
+      } else {
+        copy.querySelector("img").remove();
+        const placeHolder = document.createElement("div");
+        placeHolder.classList = "empty";
+        placeHolder.innerHTML = "&nbsp;"
+        copy.prepend(placeHolder);
+      }
+      if (changelog.tagColors) {
+        const tagTarget = copy.querySelector(".taglist");
+        changelog.tagColors.forEach((tagColor) => renderTileTag(tagColor, tagTarget));
+      }
+
+      return copy;
+    }
+  
+    if (container && grid && filterList) {
+      const template = container.cloneNode(true);
+      grid.innerHTML = "";
+      filters.forEach(renderRemoveFilterButton);
 
       function handleHits (res) {
         if (res && res.hits && res.hits.length) {
-          res.hits.forEach((hit) => renderTile(hit));
+          res.hits.forEach((hit) => grid.appendChild(getTileElement(hit, template)));
         }
       }
 
       if (filters.length) {
-        index.search("", { filters: `site_id:"${window.siteId}" AND ${filters.map((f) => `tags:"${f.t}"`).join(" AND ")}` }).then(handleHits);
+        const query = `site_id:"${window.siteId}" AND ${filters.map((f) => `tags:"${f.t}"`).join(" AND ")}`;
+        index.search("", { filters: query }).then(handleHits);
       }
     }
   } else {
