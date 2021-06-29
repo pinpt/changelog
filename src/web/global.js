@@ -64,6 +64,89 @@ function compactInteger(input, decimals = 0) {
   return output;
 }
 
+function getSearchParamByName(name, url = window.location.href) {
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return "";
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+
+function getFilters() {
+  const _filters = getSearchParamByName("filters");
+  let filters = [];
+  if (_filters && _filters.length > 0) {
+    filters = JSON.parse(atob(decodeURIComponent(_filters)));
+  }
+  return filters;
+}
+
+function exitFiltering() {
+  const path = `${window.location.origin}/`;
+  window.location.href = path;
+}
+
+function navigateToFilters(filtersArray) {
+  const res = btoa(JSON.stringify(filtersArray));
+  const path = `${window.location.origin}/search?filters=${res}`;
+  window.location.href = path;
+}
+
+function hydrateIndexTags() {
+  const tags = document.querySelectorAll(".tag.clickable");
+  if (tags && tags.length) {
+    tags.forEach((tag) => {
+      tag.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const name = tag.getAttribute("data-tag");
+        const color = tag.getAttribute("data-color");
+        const border = tag.getAttribute("data-border");
+        const background = tag.getAttribute("data-background");
+        const filterData = [{
+          t: name,
+          c: color,
+          b: border,
+          bg: background,
+        }];
+        navigateToFilters(filterData);
+        return false;
+      });
+    });
+  }
+}
+
+function createTag(tag, background, color, border, remove) {
+  const element = document.createElement('span');
+  element.classList = `tag clickable ${tag}`;
+  element.style = `background-color:${background};color:${color};border:${border}`;
+  element.innerHTML = `${remove && '×&nbsp;&nbsp;' || ''}${tag}`;
+  return element;
+}
+
+function createSearchEmptyState() {
+  const element = document.createElement('div');
+  const container = document.createElement('p');
+  const clearFilters = document.createElement('div');
+
+  clearFilters.innerHTML = '×&nbsp;&nbsp;Remove Filters'
+  clearFilters.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    exitFiltering();
+    return false;
+  };
+  clearFilters.classList = 'clear-button';
+  container.innerText = 'No results matched your filters';
+  element.appendChild(container);
+  element.appendChild(clearFilters);
+  element.classList = 'empty-search';
+
+  return element;
+}
+
 (function () {
   // wire up tiles
   const tiles = document.querySelectorAll(".tile");
@@ -229,5 +312,116 @@ function compactInteger(input, decimals = 0) {
         });
     };
     getHighfiveCount();
+  }
+
+  // Wire up filters
+  if (window.location.pathname.indexOf("/search") === 0) {
+    const client = algoliasearch("1XS2RO6RZM", "b80a77afd30ab3b1d33b5b4ed3863acd");
+    const index = client.initIndex("changelog");
+    const filters = getFilters();
+
+    const container = document.querySelector("[data-changelog-id=__PLACEHOLDER_ID__]");
+    const grid = document.querySelector(".grid");
+    const filterList = document.querySelector(".filters > .taglist");
+
+    function removeFilterFromQuery (currentFilter) {
+      const idx = filters.findIndex((f) => f.t === currentFilter.t);
+      if (idx >= 0) {
+        if (filters.length === 1) {
+          exitFiltering();
+        } else {
+          filters.splice(idx, 1);
+          navigateToFilters(filters);
+        }
+      }
+    }
+
+    function addFilterToQuery (currentFilter) {
+      const idx = filters.findIndex((f) => f.t === currentFilter.t);
+      if (idx < 0) {
+        filters.push(currentFilter);
+        navigateToFilters(filters);
+      }
+    }
+
+    function renderRemoveFilterButton (filter) {
+      const element = createTag(filter.t, filter.bg, filter.c, filter.b, true);
+      element.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        removeFilterFromQuery(filter);
+        return false;
+      }
+      filterList.appendChild(element);
+    }
+
+    function renderTileTag (tagColor, target) {
+      const element = createTag(tagColor.tag, tagColor.backgroundColor, tagColor.color, tagColor.border);
+      element.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addFilterToQuery({
+          t: tagColor.tag,
+          bg: tagColor.backgroundColor,
+          c: tagColor.color,
+          b: tagColor.border
+        })
+        return false;
+      }
+      target.appendChild(element);
+    }
+
+    function getTileElement (changelog, template) {
+      const copy = template.cloneNode(true);
+      copy.querySelector(".title").innerHTML = changelog.title;
+      copy.querySelector(".headline").innerHTML = changelog.headline;
+      copy.querySelector(".pageviews").remove();
+      copy.querySelector(".claps").remove();
+      copy.querySelector(".date").innerHTML = Intl.DateTimeFormat().format(new Date(changelog.createdAt || 0));
+      const { pathname } = new URL(changelog.url || "#")
+      copy.href = pathname;
+      copy.setAttribute("data-changelog-id", changelog.objectID);
+      if (changelog.coverMedia && changelog.coverMedia.type === "image") {
+        const src = changelog.coverMedia.value
+        copy.querySelector("img").src = src;
+      } else {
+        copy.querySelector("img").remove();
+        const placeHolder = document.createElement("div");
+        placeHolder.classList = "empty";
+        placeHolder.innerHTML = "&nbsp;"
+        copy.prepend(placeHolder);
+      }
+      if (changelog.tagColors) {
+        const tagTarget = copy.querySelector(".taglist");
+        changelog.tagColors.forEach((tagColor) => renderTileTag(tagColor, tagTarget));
+      }
+
+      return copy;
+    }
+  
+    if (container && grid && filterList) {
+      const template = container.cloneNode(true);
+      grid.innerHTML = "";
+      filters.forEach(renderRemoveFilterButton);
+      function handleHits (res) {
+        if (res) {
+          document.querySelector('.loader').remove();
+          if (res.hits && res.hits.length) {
+            res.hits.forEach((hit) => grid.appendChild(getTileElement(hit, template)));
+          } else {
+            document.querySelector('.tiles').remove();
+            const element = createSearchEmptyState();
+            document.querySelector('.results').appendChild(element);
+          }
+        }
+      }
+
+      if (filters.length) {
+        const query = `site_id:"${window.siteId}" AND ${filters.map((f) => `tags:"${f.t}"`).join(" AND ")}`;
+        index.search("", { filters: query }).then(handleHits);
+      }
+    }
+  } else {
+    hydrateIndexTags();
   }
 })();

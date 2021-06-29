@@ -154,8 +154,13 @@ footer .legal .powered-by a {
   @apply mx-auto mt-14 mb-14 flex flex-col md:flex-row;
 }
 
+.home .filters {
+  @apply mx-auto mt-14 mb-14 flex flex-col md:flex-row items-center;
+}
+
 .home main .latest > h1,
-.home main .recent > h1 {
+.home main .recent > h1,
+.home .filters > h1 {
   @apply flex-shrink-0 mb-10 md:mb-0 w-auto md:w-1/4 mr-0 md:mr-4 text-2xl font-semibold text-gray-700 dark:text-white;
 }
 
@@ -323,6 +328,14 @@ main .highfive .counter-animation.animating {
   @apply mt-6 sm:mt-10 gap-x-2 gap-y-1 flex justify-start flex-grow-0 flex-wrap text-xs space-x-2 font-semibold;
 }
 
+.filters > .taglist {
+  @apply m-0;
+}
+
+.tag.clickable {
+  @apply cursor-pointer;
+}
+
 section.bottom {
   @apply block md:hidden mb-2 text-center;
 }
@@ -402,4 +415,20 @@ main .changelog > section p > a[href]:not(.mark-color) {
 
 .coming-soon .image {
   @apply my-20 w-full;
+}
+
+.loader {
+  @apply absolute left-0 top-0 right-0 bottom-0 bg-white dark:bg-[#111827] flex items-center justify-center dark:text-white text-[#111827];
+}
+
+.loader .inner {
+  @apply w-12 h-12 dark:border-white border-[#111827] border-3 rounded-full animate-ping;
+}
+
+.empty-search {
+  @apply text-center w-full dark:text-white text-[#111827];
+}
+
+.clear-button {
+  @apply mt-6 text-sm cursor-pointer text-purple-500 dark:text-purple-500 hover:text-purple-700 dark:hover:text-purple-400;
 }
