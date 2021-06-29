@@ -8,22 +8,30 @@
       <div class="container">
         <div>{{include src="toolbar.hbs"}}</div>
         {{include src="header.hbs"}}
-        <main class="changelogs-{{len changelogs}}">
-          {{#if (empty changelogs)}}
-          <div class="coming-soon">
-            {{include src="comingsoon.hbs" context=.}}
-          </div>
-          {{else}}
-          <div class="latest">
-            <h1>Latest</h1>
-            {{include src="tile.hbs" context=(first changelogs)}}
-          </div>
-          <div class="recent">
-            <h1>Recent</h1>
-            {{include src="tiles.hbs" changelogs=(after changelogs 1 6)}}
-          </div>
-          {{/if}}
-        </main>
+        {{#if search}}
+            <main class="changelogs">
+              <div class="recent">
+                {{include src="tiles.hbs" changelogs=(after changelogs 0 6)}}
+              </div>
+            </main>
+        {{else}}
+          <main class="changelogs-{{len changelogs}}">
+            {{#if (empty changelogs)}}
+              <div class="coming-soon">
+                {{include src="comingsoon.hbs" context=.}}
+              </div>
+            {{else}}
+              <div class="latest">
+                <h1>Latest</h1>
+                {{include src="tile.hbs" context=(first changelogs)}}
+              </div>
+              <div class="recent">
+                <h1>Recent</h1>
+                {{include src="tiles.hbs" changelogs=(after changelogs 1 6)}}
+              </div>
+            {{/if}}
+          </main>
+        {{/if}}
       </div>
       {{include src="footer.hbs"}}
     </div>

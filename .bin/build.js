@@ -216,6 +216,26 @@ const processIndex = (site, changelogs) => {
   });
 };
 
+const processSearch = (site) => {
+  return new Promise((resolve, reject) => {
+    const buf = indexTemplate({
+      site,
+      changelogs: [{
+        id: '__PLACEHOLDER_ID__',
+        title: '__PLACEHOLDER_TITLE__',
+        headline: '__PLACEHOLDER_HEADLINE__',
+        dateAt: Date.now(),
+        site_id: site.id,
+        cover_image: 'https://changelog.so',
+      }],
+      search: true,
+      url: site.url,
+    });
+    const fn = path.join(distDir, "search.html");
+    minifyAndWriteHTML(fn, buf).then(resolve).catch(reject);
+  });
+};
+
 const pageTemplate = onlyEmail
   ? undefined
   : createTemplate([srcDir, webSrcDir, baseThemeDir], "page.html");
@@ -270,7 +290,10 @@ const url = `https://${host}/changelog/list/${site}/${field}?html=true&stats=tru
 
 const generate = async (changelogs, site) => {
   if (!skipIndex) {
-    await processIndex(site, changelogs); // run index before the others so we get all the styles
+    await Promise.all([
+      processIndex(site, changelogs), // run index before the others so we get all the styles,
+      processSearch(site), // Search is the same as index but doesn't statically generate changelogs
+    ]);
   }
   return await changelogs.map(async (changelog) => {
     debugLog(`processing changelog ${changelog.id} ${changelog.title}`);
@@ -338,6 +361,15 @@ const regenerateEmails = async (changelogs, site) => {
     app.use(compression());
     app.get("/", (req, resp) => {
       fn = path.join(distDir, "index.html");
+      resp.set("Content-Type", "text/html");
+      resp.set(
+        "Cache-Control",
+        "public, max-age=0, must-revalidate, stale-if-error=0"
+      );
+      resp.send(fs.readFileSync(fn));
+    });
+    app.get("/search", (req, resp) => {
+      fn = path.join(distDir, "search.html");
       resp.set("Content-Type", "text/html");
       resp.set(
         "Cache-Control",

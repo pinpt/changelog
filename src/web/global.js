@@ -64,6 +64,15 @@ function compactInteger(input, decimals = 0) {
   return output;
 }
 
+function getSearchParamByName(name, url = window.location.href) {
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return "";
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 (function () {
   // wire up tiles
   const tiles = document.querySelectorAll(".tile");
@@ -229,5 +238,72 @@ function compactInteger(input, decimals = 0) {
         });
     };
     getHighfiveCount();
+  }
+
+  function getFilters () {
+    const _filters = getSearchParamByName("filter");
+    let filters = [];
+    if (_filters && _filters.length > 0) {
+      filters = decodeURIComponent(_filters).split(",");
+    }
+    return filters;
+  }
+
+  if (window.location.pathname.indexOf("/search") === 0) {
+    const client = algoliasearch("1XS2RO6RZM", "b80a77afd30ab3b1d33b5b4ed3863acd");
+    const index = client.initIndex("changelog");
+    const filters = getFilters();
+
+    const container = document.querySelectorAll("[data-changelog-id=__PLACEHOLDER_ID__]");
+    const grid = document.querySelectorAll(".grid");
+    if (container.length && grid.length) {
+      const template = container[0].cloneNode(true);
+      grid[0].innerHTML = "";
+
+      function renderTile (changelog) {
+        const copy = template.cloneNode(true);
+        copy.querySelector(".title").innerHTML = changelog.title;
+        copy.querySelector(".headline").innerHTML = changelog.headline;
+        copy.querySelector(".pageviews .count").innerHTML = "0";
+        copy.querySelector(".claps .count").innerHTML = "0";
+        const { pathname } = new URL(changelog.url || "#")
+        copy.href = pathname;
+        copy.setAttribute("data-changelog-id", changelog.objectID);
+        if (changelog.coverMedia && changelog.coverMedia.type === "image") {
+          const src = changelog.coverMedia.value
+          copy.querySelector("img").src = src;
+        } else {
+          copy.querySelector("img").remove();
+          const placeHolder = document.createElement("div");
+          placeHolder.classList = "empty";
+          placeHolder.innerHTML = "&nbsp;"
+          copy.prepend(placeHolder);
+        }
+        grid[0].appendChild(copy);
+      }
+
+      function handleHits (res) {
+        if (res && res.hits && res.hits.length) {
+          res.hits.forEach((hit) => renderTile(hit));
+        }
+      }
+
+      if (filters.length) {
+        index.search("", { filters: `site_id:"${window.siteId}" AND tags:"${filters.join(" ")}"` }).then(handleHits);
+      }
+    }
+  } else {
+    const tags = document.querySelectorAll(".tag.clickable");
+    if (tags && tags.length) {
+      tags.forEach((tag) => {
+        tag.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const path = `${window.location.origin}/search?filter=${encodeURIComponent(tag.getAttribute("data-tag"))}`;
+          window.location.href = path;
+          return false;
+        });
+      });
+    }
   }
 })();

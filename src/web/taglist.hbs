@@ -1,8 +1,9 @@
 <div class="taglist">
   {{#each changelog.tagColors}}
     <span
-      class="tag {{tag}}"
+      class="tag clickable {{tag}}"
       style="background-color:{{backgroundColor}};color:{{color}};border:{{border}}"
+	  data-tag="{{tag}}"
     >
       {{tag}}
     </span>
