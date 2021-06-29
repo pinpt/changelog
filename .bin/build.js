@@ -183,6 +183,10 @@ const indexTemplate = onlyEmail
   ? undefined
   : createTemplate([srcDir, webSrcDir, baseThemeDir], "index.html");
 
+const searchTemplate = onlyEmail
+  ? undefined
+  : createTemplate([srcDir, webSrcDir, baseThemeDir], "search.html");
+
 const minifyAndWriteHTML = (fn, buf) => {
   return new Promise((resolve, reject) => {
     fs.writeFile(fn, buf, (err) => {
@@ -218,7 +222,7 @@ const processIndex = (site, changelogs) => {
 
 const processSearch = (site) => {
   return new Promise((resolve, reject) => {
-    const buf = indexTemplate({
+    const buf = searchTemplate({
       site,
       changelogs: [{
         id: '__PLACEHOLDER_ID__',
