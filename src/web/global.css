@@ -87,102 +87,54 @@ html.dark button {
   left: 0;
 }
 
-/* youtube lite styles*/
-
-.embed-responsive {
-  position: relative !important;
-  display: block !important;
-  height: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
+/**
+ * YouTube embed
+ **/
+ .yt {
+	@apply relative bg-cover bg-center cursor-pointer bg-black;
 }
-
-.embed-responsive .embed-responsive-item,
-.embed-responsive iframe,
-.embed-responsive embed,
-.embed-responsive object,
-.embed-responsive video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  height: 100%;
-  width: 100%;
-  border: 0;
+/* gradient */
+.yt::before {
+	@apply block absolute top-0 w-full bg-top bg-repeat-x;
+	content: '';
+	height: 60px;
+	padding-bottom: 50px;
+	transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
 }
-
-.aspect-ratio-16\/9 {
-  padding-bottom: 56.25% !important;
+/* responsive iframe with a 16:9 aspect ratio (https://css-tricks.com/responsive-iframes */
+.yt::after {
+	@apply block;
+	content: '';
+	padding-bottom: calc(100% / (16 / 9));
 }
-
-.ryt-lite {
-  background-color: #000;
-  position: relative;
-  display: block;
-  contain: content;
-  background-position: center center;
-  background-size: cover;
-  cursor: pointer;
+.yt > iframe {
+	@apply absolute top-0 left-0 w-full h-full border-0;
 }
-
-/* responsive iframe with a 16:9 aspect ratio
-    thanks https://css-tricks.com/responsive-iframes/
-*/
-.ryt-lite::after {
-  content: "";
-  display: block;
-  padding-bottom: calc(100% / (16 / 9));
+.yt > .yt-play-button {
+	@apply absolute cursor-pointer top-1/2 left-1/2 border-none ring-0;
+	width: 68px;
+	height: 48px;
+	transform: translate3d(-50%, -50%, 0);
+	z-index: 1;
+	background-color: transparent;
+	/* YT's actual play button svg */
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 68 48"><path fill="%23f00" fill-opacity="0.8" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"></path><path d="M 45,24 27,14 27,34" fill="%23fff"></path></svg>');
+	filter: grayscale(100%);
+	transition: filter 0.1s cubic-bezier(0, 0, 0.2, 1);
 }
-
-.ryt-lite > iframe {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+.yt:hover > .yt-play-button,
+.yt .yt-play-button:focus {
+	@apply ring-0;
+	filter: none;
 }
-
-/* play button */
-.ryt-lite > .lty-playbtn {
-  width: 70px;
-  height: 46px;
-  background-color: #212121;
-  z-index: 1;
-  opacity: 0.8;
-  border-radius: 14%; /* TODO: Consider replacing this with YT's actual svg. Eh. */
-  transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
-}
-
-.ryt-lite:hover > .lty-playbtn {
-  background-color: #f00;
-  opacity: 1;
-}
-
-/* play button triangle */
-.ryt-lite > .lty-playbtn::before {
-  content: "";
-  border-style: solid;
-  border-width: 11px 0 11px 19px;
-  border-color: transparent transparent transparent #fff;
-}
-
-.ryt-lite > .lty-playbtn,
-.ryt-lite > .lty-playbtn::before {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate3d(-50%, -50%, 0);
-}
-
 /* Post-click styles */
-.ryt-lite.lyt-activated {
-  cursor: unset;
+.yt.activated {
+	cursor: unset;
 }
-
-.ryt-lite.lyt-activated::before,
-.ryt-lite.lyt-activated > .lty-playbtn {
-  opacity: 0;
-  pointer-events: none;
+.yt.activated::before,
+.yt.activated > .yt-play-button {
+	opacity: 0;
+	pointer-events: none;
 }
 
 /**  notebook **/
@@ -719,9 +671,6 @@ html.dark button {
   @apply pl-4 border-l-4 border-gray-200 dark:border-gray-800;
   min-height: 1rem;
 }
-.ProseMirror > * + .toggle {
-  @apply my-2;
-}
 /* .ProseMirror .toggle:not(.collapsed).ProseMirror-selectednode {
 	@apply bg-white dark:bg-gray-900 shadow-none;
 } */
@@ -1126,9 +1075,6 @@ html.dark button {
 /**
  * Embed
  **/
-.ProseMirror .iframe {
-  @apply mb-2;
-}
 .notebook-editor:not(.read-only)
   > .ProseMirror
   .iframe.ProseMirror-selectednode {
@@ -1445,6 +1391,10 @@ code {
 
 .taglist .tag {
   @apply py-1 px-2 rounded-full min-w-max text-xs;
+}
+
+main > .container > section {
+  @apply flex-grow;
 }
 
 article.changelog {
