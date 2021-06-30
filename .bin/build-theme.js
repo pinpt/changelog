@@ -66,7 +66,7 @@ process.on("exit", () => fs.rmdirSync(tmpDir, { recursive: true }));
 
 // copy the files
 fs.readdirSync(themeDir)
-  .filter((fn) => /\.(html|css)$/.test(path.extname(fn)))
+  .filter((fn) => /\.(html|css|hbs|json)$/.test(path.extname(fn)))
   .forEach((name) => {
     const fn = path.join(themeDir, name);
     const dst = path.join(tmpDir, name);
