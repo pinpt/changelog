@@ -46,13 +46,13 @@ let tailwindCfg;
 const compileCSSAndFixHTML = (staticDistDir, webSrcDir, srcDir) => {
   const globalCSS = path.join(webSrcDir, "global.css");
   const themeCSS = path.join(srcDir, "theme.css");
-  const baseCSS = path.join(webSrcDir, "theme", "default", "theme.css");
+  const baseCSS = path.join(webSrcDir, "..", "theme", "default", "theme.css");
   let cssBuf = fs.readFileSync(globalCSS).toString();
+  // pull in the base theme to allow a theme to just override specific variables
+  // but inherit the base theme values
+  cssBuf += fs.readFileSync(baseCSS).toString();
   if (fs.existsSync(themeCSS)) {
     const themeBuf = fs.readFileSync(themeCSS).toString();
-    cssBuf += "\n" + themeBuf;
-  } else {
-    const themeBuf = fs.readFileSync(baseCSS).toString();
     cssBuf += "\n" + themeBuf;
   }
   cssBuf += "\n" + dom.css();
@@ -301,6 +301,17 @@ exports.registerHelpers = ({
     const baseDir =
       arg.hash.base === "web" || !arg.hash.base ? webSrcDir : emailSrcDir;
     let fn = path.resolve(baseDir, arg.hash.src);
+    let insideOverride = false;
+    const overrideFn = path.resolve(
+      srcDir,
+      (arg.hash.base || "web") + "_" + arg.hash.src
+    );
+    // attempt to see if we have a template override and if so, just use
+    // that one instead of the default one
+    if (!arg.data.root.insideOverride && fs.existsSync(overrideFn)) {
+      fn = overrideFn;
+      insideOverride = true;
+    }
     if (!fs.existsSync(fn)) {
       // in the case the theme directory is in a different dir tree
       // then we try and resolve included files as if they were in the
@@ -321,6 +332,7 @@ exports.registerHelpers = ({
       ...arg.data.root,
       ...(arg.hash.context || {}),
       ...globals,
+      insideOverride,
     };
     const keys = Object.keys(arg.hash).filter(
       (k) => k !== "src" && k !== "context"
