@@ -83,14 +83,27 @@ function getFilters() {
   return filters;
 }
 
+function getSearchTerm() {
+  const term = getSearchParamByName("term");
+  return term || "";
+}
+
 function exitFiltering() {
   const path = `${window.location.origin}/`;
   window.location.href = path;
 }
 
 function navigateToFilters(filtersArray) {
-  const res = btoa(JSON.stringify(filtersArray));
-  const path = `${window.location.origin}/search?filters=${res}`;
+  let res;
+  if (filtersArray) {
+    res = btoa(JSON.stringify(filtersArray));
+  }
+  const path = `${window.location.origin}/search${res && `?filters=${res}` || ""}`;
+  window.location.href = path;
+}
+
+function navigateToSearchTerm(term) {
+  const path = `${window.location.origin}/search${term && `?term=${term}` || ""}`;
   window.location.href = path;
 }
 
@@ -342,14 +355,41 @@ function createSearchEmptyState() {
   }
 
   // Wire up filters
+  function getSearchClient () {
+    if (typeof algoliasearch !== 'undefined') {
+      const client = algoliasearch("1XS2RO6RZM", "b80a77afd30ab3b1d33b5b4ed3863acd");
+      const index = client.initIndex("changelog");
+      return index;
+    }
+  }
   if (window.location.pathname.indexOf("/search") === 0) {
-    const client = algoliasearch("1XS2RO6RZM", "b80a77afd30ab3b1d33b5b4ed3863acd");
-    const index = client.initIndex("changelog");
+    const index = getSearchClient();
+    if (!index) {
+      console.error('No Search Index');
+    }
     const filters = getFilters();
+    const term = getSearchTerm();
 
+    const input = document.querySelector('.searchInput');
     const container = document.querySelector("[data-changelog-id=__PLACEHOLDER_ID__]");
     const grid = document.querySelector(".grid");
     const filterList = document.querySelector(".filters > .taglist");
+
+    function renderRemoveSearchTermButton (value) {
+      const element = createTag(value, "var(--tag-feature-bgcolor,#D1D5DB)", "var(--tag-fgcolor, #6B7280)", "1px solid var(--tag-bcolor, #9CA3AF)", true);
+      element.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        exitFiltering();
+        return false;
+      }
+      filterList.appendChild(element);
+    }
+
+    if (input && term) {
+      input.value = term;
+      renderRemoveSearchTermButton(term);
+    }
 
     function removeFilterFromQuery (currentFilter) {
       const idx = filters.findIndex((f) => f.t === currentFilter.t);
@@ -443,12 +483,30 @@ function createSearchEmptyState() {
         }
       }
 
-      if (filters.length) {
-        const query = `site_id:"${window.siteId}" AND ${filters.map((f) => `tags:"${f.t}"`).join(" AND ")}`;
-        index.search("", { filters: query }).then(handleHits);
+      if ((filters.length || term) && index) {
+        const query = `site_id:"${window.siteId}" ${(filters && filters.length > 0) && ` AND ${filters.map((f) => `tags:"${f.t}"`).join(" AND ")}` || ""}`;
+        index.search(term, { filters: query }).then(handleHits);
       }
     }
   } else {
     hydrateIndexTags();
+  }
+
+  // Wire up search
+  const form = document.querySelector(".searchForm");
+  if (form) {
+    const input = document.querySelector(".searchInput");
+    if (input) {
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (input.value) {
+          navigateToSearchTerm(input.value);
+        } else {
+          exitFiltering();
+        }
+        return false;
+      }
+    }
   }
 })();

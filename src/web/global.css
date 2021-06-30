@@ -1499,3 +1499,18 @@ div.home main.changelogs-0 {
   padding: 0;
 }
 
+.search {
+  @apply mx-4;
+}
+
+.searchForm {
+  @apply flex items-center text-gray-600 border-gray-400 dark:text-gray-400 border-b;
+}
+
+.searchForm svg {
+  @apply mx-2;
+}
+
+.searchInput {
+  @apply rounded-md px-2 py-1 bg-transparent border-0;
+}
