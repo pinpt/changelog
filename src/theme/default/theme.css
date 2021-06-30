@@ -352,7 +352,7 @@ section.bottom {
   @apply shadow-lg;
 } */
 
-.covermedia {
+.covermedia:not(:empty) {
   @apply mb-10 rounded-xl relative;
 }
 
