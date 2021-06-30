@@ -42,27 +42,20 @@ if (!theme || args["--help"]) {
   console.error();
   help();
 }
-
 const baseThemeDir = path.resolve(path.join(__dirname, "../src/theme/default"));
 const isSourceDir = fs.existsSync(baseThemeDir);
 
 const outDir = path.resolve(
   args["--output"] ||
-    (isSourceDir
-      ? path.join(__dirname, "../src/theme", theme)
-      : path.join(process.cwd(), theme))
+    (isSourceDir ? path.join(__dirname, "../src/theme") : process.cwd()),
+  theme
 );
 
 !fs.existsSync(outDir) && fs.mkdirSync(outDir, { recursive: true });
 
-// copy the files
-fs.readdirSync(baseThemeDir)
-  .filter((fn) => /\.(html|css)$/.test(path.extname(fn)))
-  .forEach((name) => {
-    const fn = path.join(baseThemeDir, name);
-    const dst = path.join(outDir, name);
-    fs.copyFileSync(fn, dst);
-    verbose(`Copied ${fn}`);
-  });
+fs.writeFileSync(
+  path.join(outDir, "theme.css"),
+  "/* any styles here will override the default theme from theme/default.theme.css */\n\n"
+);
 
 verbose(`Generated theme to ${outDir}`);
