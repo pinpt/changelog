@@ -30,7 +30,7 @@ main {
  */
 
 .toolbar {
-  @apply w-full flex flex-row md:flex-row-reverse justify-between items-center;
+  @apply w-full flex flex-row md:flex-row-reverse items-center;
 }
 
 .toolbar .home-button {
