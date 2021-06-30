@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	{{include src="head.hbs"}}
+</head>
+
+<body>
+	<div class="home">
+		<div class="container">
+			<div>{{include src="toolbar.hbs"}}</div>
+			{{include src="header.hbs"}}
+			{{include src="loader.hbs"}}
+			<div class="filters">
+				<h1>Filters</h1>
+				<div class="taglist"></div>
+			</div>
+			<main class="changelogs">
+				<div class="recent results">
+					{{include src="tiles.hbs" changelogs=(after changelogs 0 6)}}
+				</div>
+			</main>
+		</div>
+		{{include src="footer.hbs"}}
+	</div>
+</body>
+
+</html>
