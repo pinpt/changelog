@@ -8,8 +8,8 @@
     "darkMode": true
   },
   "scripts": {
-    "build": "npx changelog build --site SITE",
-    "dev": "npx changelog dev --site SITE",
-    "package": "npx changelog package --site SITE"
+    "build": "npx @pinpt/changelog@VERSION build --site SITE",
+    "dev": "npx @pinpt/changelog@VERSION dev --site SITE",
+    "package": "npx @pinpt/changelog@VERSION package --site SITE"
   }
 }

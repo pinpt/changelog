@@ -53,7 +53,9 @@ export default {
     pkg.changelog.site = flags.site;
     Object.keys(pkg.scripts).forEach((key) => {
       let value = pkg.scripts[key];
-      pkg.scripts[key] = value.replace("SITE", flags.site);
+      pkg.scripts[key] = value
+        .replace("SITE", flags.site)
+        .replace("VERSION", String(major));
     });
     writeJSON(pkgJSON, pkg);
   },
