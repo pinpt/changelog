@@ -22,7 +22,7 @@ export default {
     name: {
       description: "Name of the theme",
       type: "string",
-      isRequired: true,
+      isRequired: (flags) => !flags.site || flags.site.includes("."),
     },
     output: {
       description: "The output directory to create your theme",
@@ -33,7 +33,7 @@ export default {
   },
   run: async (_args, flags) => {
     const templateDir = path.join(__dirname, "../template");
-    const outDir = path.join(flags.output, flags.name);
+    const outDir = path.join(flags.output, flags.name || flags.site);
     ensureDir(outDir);
     fs.readdirSync(templateDir).forEach((name) => {
       const fn = path.join(templateDir, name);
@@ -47,19 +47,17 @@ export default {
       cwd: dirname(fileURLToPath(import.meta.url)),
       normalize: false,
     });
-    const major = foundPackage.packageJson.version.split(".")[0];
-    pkg.name = flags.name;
-    pkg.changelog.version = String(major);
+    pkg.name = flags.name || flags.site;
+    const version = `^${foundPackage.packageJson.version}`;
+    pkg.changelog.version = version;
     pkg.changelog.site = flags.site;
     Object.keys(pkg.scripts).forEach((key) => {
       let value = pkg.scripts[key];
       pkg.scripts[key] = value
         .replace("SITE", flags.site)
-        .replace("VERSION", String(major));
+        .replace("VERSION", String(foundPackage.packageJson.version));
     });
-    pkg.dependencies[
-      "@pinpt/changelog"
-    ] = `^${foundPackage.packageJson.version}`;
+    pkg.dependencies["@pinpt/changelog"] = version;
     writeJSON(pkgJSON, pkg);
   },
 };

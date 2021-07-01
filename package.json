@@ -31,6 +31,7 @@
     "node-fetch": "^2.6.1",
     "node-watch": "^0.7.1",
     "read-pkg-up": "^8.0.0",
+    "semver": "^7.3.5",
     "ssri": "^8.0.1",
     "tailwindcss": "^2.2.0",
     "uglify-js": "^3.13.9"
