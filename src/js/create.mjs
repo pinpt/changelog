@@ -57,6 +57,9 @@ export default {
         .replace("SITE", flags.site)
         .replace("VERSION", String(major));
     });
+    pkg.dependencies[
+      "@pinpt/changelog"
+    ] = `^${foundPackage.packageJson.version}`;
     writeJSON(pkgJSON, pkg);
   },
 };
