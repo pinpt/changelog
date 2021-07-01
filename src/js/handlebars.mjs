@@ -392,8 +392,11 @@ export const registerHelpers = ({
   });
 
   Handlebars.registerHelper("iso_date", function (v) {
-    if (v) {
+    if (typeof v === "number") {
       return new Date(v).toISOString();
+    }
+    if (typeof v === "object" && v instanceof Date) {
+      return v.toISOString();
     }
     return new Date().toISOString();
   });

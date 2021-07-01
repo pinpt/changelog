@@ -8,6 +8,14 @@ import findNodeModules from "find-node-modules";
 export const MAX_BUFFER = 5000000; // ~5MB
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+export const getBuilderVersion = () => {
+  const fn = path.join(__dirname, "../../package.json");
+  if (fs.existsSync(fn)) {
+    const pkg = JSON.parse(fs.readFileSync(fn));
+    return pkg.version;
+  }
+};
+
 export const error = (msg) => {
   console.error(msg);
   process.exit(1);

@@ -10,6 +10,7 @@ import {
   verbose,
   debugLog,
   error,
+  getBuilderVersion,
   __dirname,
 } from "./util.mjs";
 import { registerHelpers } from "./handlebars.mjs";
@@ -95,7 +96,9 @@ export default {
     const pkgJSON = JSON.parse(
       ensureExists(path.join(flags.theme, "package.json"), true)
     );
-    const config = pkgJSON.changelog;
+    const builderVersion = getBuilderVersion();
+    const { changelog, ...rest } = pkgJSON;
+    const config = { ...changelog, package: rest, builderVersion };
     let data;
     if (flags.file) {
       data = JSON.parse(ensureExists(flags.file, true));
