@@ -55,13 +55,13 @@ export default {
     });
     app.get("/a.js", (_req, resp) => resp.status(200).end());
     app.get("/entry/:id/:title?", (req, resp) => {
-      fn = path.join(distDir, "entry", req.params.id + ".html");
+      const fn = path.join(distDir, "entry", req.params.id + ".html");
       resp.set("Content-Type", "text/html");
       resp.set("Cache-Control", "max-age=0, no-cache");
       resp.send(fs.readFileSync(fn));
     });
     app.get("/email/:id", (req, resp) => {
-      fn = path.join(emailDistDir, req.params.id + ".html");
+      const fn = path.join(emailDistDir, req.params.id + ".html");
       resp.set("Content-Type", "text/html");
       resp.set("Cache-Control", "max-age=0, no-cache");
       resp.send(fs.readFileSync(fn));

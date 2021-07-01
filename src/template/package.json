@@ -5,11 +5,21 @@
   "license": "MIT",
   "changelog": {
     "version": "2",
-    "darkMode": true
+    "features": {
+      "themeSwitcher": true,
+      "search": true,
+      "tags": true,
+      "tagFilter": true,
+      "authors": true,
+      "claps": true,
+      "pageviews": true,
+      "highfive": true,
+      "social": true
+    }
   },
   "scripts": {
-    "build": "npx @pinpt/changelog build --site SITE",
-    "dev": "npx @pinpt/changelog dev --site SITE",
+    "build": "npx @pinpt/changelog build --site SITE --theme .",
+    "dev": "npx @pinpt/changelog dev --site SITE  --theme .",
     "package": "npx @pinpt/changelog package --site SITE"
   },
   "dependencies": {

@@ -2,8 +2,10 @@
   <div class="home-button">
     <a href="/">{{fontawesome-icon icon="home"}}</a>
   </div>
+  {{#if config.features.themeSwitcher}}
   <div class="theme-switch">
     <button class="mode"></button>
   </div>
+  {{/if}}
   {{include src="search.hbs"}}
 </div>

@@ -27,6 +27,8 @@
             <path d="M12 5l7 7-7 7"></path>
           </svg>
         </span>
+		  <div class="stats">
+		  {{#if config.features.pageviews}}
         <span class="pageviews">
           <svg
             stroke="currentColor"
@@ -41,6 +43,8 @@
           </svg>
 			 <span class="count">{{compactInteger stats.pageviews}}</span>
         </span>
+		  {{/if}}
+		  {{#if config.features.claps}}
         <span class="claps">
           <svg viewBox="0 0 985 997" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path
@@ -102,6 +106,8 @@
 			</svg>
           <span class="count">{{compactInteger stats.claps}}</span>
         </span>
+		  {{/if}}
+		  </div>
     </section>
   </div>
 </a>

@@ -92,6 +92,10 @@ export default {
   run: async (_args, flags) => {
     ensureDir(flags.theme);
     ensureDir(flags.output);
+    const pkgJSON = JSON.parse(
+      ensureExists(path.join(flags.theme, "package.json"), true)
+    );
+    const config = pkgJSON.changelog;
     let data;
     if (flags.file) {
       data = JSON.parse(ensureExists(flags.file, true));
@@ -116,7 +120,7 @@ export default {
     const baseSrcDir = path.join(__dirname, "..");
     const webSrcDir = path.join(baseSrcDir, "web");
     const emailSrcDir = path.join(baseSrcDir, "email");
-    const baseThemeDir = path.join(baseSrcDir, "theme", "base");
+    const baseThemeDir = path.join(baseSrcDir, "theme", "default");
     const srcDir = path.resolve(flags.theme || baseThemeDir);
     const staticDistDir = path.join(distDir, "static");
     const emailDistDir = path.join(distDir, "email");
@@ -151,13 +155,19 @@ export default {
       ? undefined
       : createTemplate([srcDir, webSrcDir, baseThemeDir], "search.html");
 
-    await generate(changelogs, site, flags, {
-      emailTemplate,
-      indexTemplate,
-      pageTemplate,
-      searchTemplate,
-      emailDistDir,
-    });
+    await generate(
+      changelogs,
+      site,
+      flags,
+      {
+        emailTemplate,
+        indexTemplate,
+        pageTemplate,
+        searchTemplate,
+        emailDistDir,
+      },
+      config
+    );
 
     shutdown();
   },
@@ -184,19 +194,20 @@ const minifyAndWriteHTML = (fn, buf, quiet) => {
   });
 };
 
-const processIndex = (site, changelogs, flags, indexTemplate) => {
+const processIndex = (site, changelogs, flags, indexTemplate, config) => {
   return new Promise((resolve, reject) => {
     const buf = indexTemplate({
       site,
       changelogs,
       url: site.url,
+      config,
     });
     const fn = path.join(flags.output, "index.html");
     minifyAndWriteHTML(fn, buf, flags.quiet).then(resolve).catch(reject);
   });
 };
 
-const processSearch = (site, flags, searchTemplate) => {
+const processSearch = (site, flags, searchTemplate, config) => {
   return new Promise((resolve, reject) => {
     const buf = searchTemplate({
       site,
@@ -212,13 +223,14 @@ const processSearch = (site, flags, searchTemplate) => {
       ],
       search: true,
       url: site.url,
+      config,
     });
     const fn = path.join(flags.output, "search.html");
     minifyAndWriteHTML(fn, buf, flags.quiet).then(resolve).catch(reject);
   });
 };
 
-const processPage = (site, changelog, flags, pageTemplate) => {
+const processPage = (site, changelog, flags, pageTemplate, config) => {
   if (!pageTemplate) {
     return Promise.resolve();
   }
@@ -227,6 +239,7 @@ const processPage = (site, changelog, flags, pageTemplate) => {
       site,
       changelog,
       url: changelog.url,
+      config,
     });
     const basefn = path.join(flags.output, "entry", changelog.id + ".html");
     const dir = path.dirname(basefn);
@@ -243,7 +256,8 @@ const processEmail = (
   outfn,
   flags,
   emailTemplate,
-  emailDistDir
+  emailDistDir,
+  config
 ) => {
   return new Promise((resolve, reject) => {
     try {
@@ -256,6 +270,7 @@ const processEmail = (
         unsubscribeLink: "__UNSUBSCRIBE_LINK__",
         poweredByImage: "https://cdn.changelog.so/images/misc/poweredBy.png",
         poweredByLink: "__POWEREDBY_LINK__",
+        config,
       });
       const basefn = outfn || path.join(emailDistDir, changelog.id + ".html");
       const dir = path.dirname(basefn);
@@ -270,11 +285,11 @@ const processEmail = (
   });
 };
 
-const generate = async (changelogs, site, flags, templates) => {
+const generate = async (changelogs, site, flags, templates, config) => {
   if (flags.index) {
     await Promise.all([
-      processIndex(site, changelogs, flags, templates.indexTemplate), // run index before the others so we get all the styles,
-      processSearch(site, flags, templates.searchTemplate),
+      processIndex(site, changelogs, flags, templates.indexTemplate, config), // run index before the others so we get all the styles,
+      processSearch(site, flags, templates.searchTemplate, config),
     ]);
   }
   return await changelogs.map(async (changelog) => {
@@ -283,7 +298,7 @@ const generate = async (changelogs, site, flags, templates) => {
       `processing changelog ${changelog.id} ${changelog.title}`
     );
     return await Promise.all([
-      await processPage(site, changelog, flags, templates.pageTemplate),
+      await processPage(site, changelog, flags, templates.pageTemplate, config),
       flags.email
         ? await processEmail(
             site,
@@ -292,7 +307,8 @@ const generate = async (changelogs, site, flags, templates) => {
             "",
             flags,
             templates.emailTemplate,
-            templates.emailDistDir
+            templates.emailDistDir,
+            config
           )
         : Promise.resolve(),
     ]);

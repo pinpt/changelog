@@ -1,7 +1,8 @@
+{{#if config.features.tags}}
 <div class="taglist">
   {{#each changelog.tagColors}}
     <span
-      class="tag clickable {{tag}}"
+      class="tag {{#if config.features.tagFilter}}clickable{{/if}} {{tag}}"
       style="background-color:{{backgroundColor}};color:{{color}};border:{{border}}"
 	    data-tag="{{tag}}"
       data-color="{{color}}"
@@ -12,3 +13,4 @@
     </span>
   {{/each}}
 </div>
+{{/if}}
