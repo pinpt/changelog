@@ -1,0 +1,15 @@
+{
+  "name": "theme",
+  "description": "My Theme",
+  "version": "1.0.0",
+  "license": "MIT",
+  "changelog": {
+    "version": "2",
+    "darkMode": true
+  },
+  "scripts": {
+    "build": "npx changelog build --site SITE",
+    "dev": "npx changelog dev --site SITE",
+    "package": "npx changelog package --site SITE"
+  }
+}

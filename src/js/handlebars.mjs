@@ -1,43 +1,23 @@
-const ssri = require("ssri");
-const fs = require("fs");
-const os = require("os");
-const path = require("path");
-const crypto = require("crypto");
-const spawnSync = require("child_process").spawnSync;
-const Handlebars = require("handlebars");
-const library = require("@fortawesome/fontawesome-svg-core").library;
-const dom = require("@fortawesome/fontawesome-svg-core").dom;
-const icon = require("@fortawesome/fontawesome-svg-core").icon;
-const fas = require("@fortawesome/free-solid-svg-icons").fas;
-const fab = require("@fortawesome/free-brands-svg-icons").fab;
-const far = require("@fortawesome/free-regular-svg-icons").far;
-const humanize = require("humanize-plus");
-const findNodeModules = require("find-node-modules");
-
-const MAX_BUFFER = 5000000; // ~5MB
-exports.MAX_BUFFER = MAX_BUFFER;
-
-const node_modules = findNodeModules();
-
-const findBin = (name) => {
-  for (let c = 0; c < node_modules.length; c++) {
-    const fn = path.join(node_modules[c], ".bin", name);
-    if (fs.existsSync(fn)) {
-      return fn;
-    }
-  }
-  throw new Error(
-    `couldn't find binary ${bin} in any of ${node_modules.join(", ")}`
-  );
-};
-exports.findBin = findBin;
+import path from "node:path";
+import fs from "node:fs";
+import os from "node:os";
+import ssri from "ssri";
+import crypto from "node:crypto";
+import { spawnSync } from "node:child_process";
+import Handlebars from "handlebars";
+import { library, dom, icon } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import humanize from "humanize-plus";
+import { findBin, __dirname, MAX_BUFFER } from "./util.mjs";
 
 const cache = {};
 
 const uglifyjs = findBin("uglifyjs");
 const tailwind = findBin("tailwindcss");
 
-const _tailwindCfg = path.join(__dirname, "../tailwind.config.js");
+const _tailwindCfg = path.join(__dirname, "../../tailwind.config.js");
 if (!fs.existsSync(_tailwindCfg)) {
   throw new Error(`couldn't find required file at ${_tailwindCfg}`);
 }
@@ -79,11 +59,16 @@ const minifyCSS = (fn, dirs) => {
   );
   try {
     const args = ["-i", fn, "-o", tmpfn, "--jit", "-m", "-c", tailwindCfg];
+    // console.log(tailwind, args);
     let res = spawnSync(tailwind, args, { maxBuffer: MAX_BUFFER });
+    // console.log(res);
     if (res.status !== 0) {
       throw new Error(`error compiling CSS: ${fn}. ${res.stderr}`);
     }
-    return fs.readFileSync(tmpfn);
+    if (fs.existsSync(tmpfn)) {
+      return fs.readFileSync(tmpfn);
+    }
+    throw new Error(`error compiling CSS: ${fn}. ${res.stderr}`);
   } finally {
     fs.existsSync(tmpfn) && fs.unlinkSync(tmpfn);
   }
@@ -97,8 +82,8 @@ const minifyJS = (fn) => {
   return res.stdout;
 };
 
-const sha1 = (buf) => crypto.createHash("sha1").update(buf).digest("hex");
-exports.sha1 = sha1;
+export const sha1 = (buf) =>
+  crypto.createHash("sha1").update(buf).digest("hex");
 
 const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href, fn, dir) => {
   fn = fn || path.join(srcDir, href);
@@ -145,7 +130,7 @@ const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href, fn, dir) => {
   return entry;
 };
 
-exports.registerHelpers = ({
+export const registerHelpers = ({
   baseSrcDir,
   webSrcDir,
   emailSrcDir,
