@@ -1,166 +1,171 @@
 /* global stuff here */
 
-// borrowed from https://github.com/HubSpot/humanize
-function compactInteger(input, decimals = 0) {
-  decimals = Math.max(decimals, 0);
-  const number = parseInt(input, 10);
-  const signString = number < 0 ? "-" : "";
-  const unsignedNumber = Math.abs(number);
-  const unsignedNumberString = String(unsignedNumber);
-  const numberLength = unsignedNumberString.length;
-  const numberLengths = [13, 10, 7, 4];
-  const bigNumPrefixes = ["T", "B", "M", "k"];
+(function () {
+  // borrowed from https://github.com/HubSpot/humanize
+  function compactInteger(input, decimals = 0) {
+    decimals = Math.max(decimals, 0);
+    const number = parseInt(input, 10);
+    const signString = number < 0 ? "-" : "";
+    const unsignedNumber = Math.abs(number);
+    const unsignedNumberString = String(unsignedNumber);
+    const numberLength = unsignedNumberString.length;
+    const numberLengths = [13, 10, 7, 4];
+    const bigNumPrefixes = ["T", "B", "M", "k"];
 
-  // small numbers
-  if (unsignedNumber < 1000) {
-    return `${signString}${unsignedNumberString}`;
+    // small numbers
+    if (unsignedNumber < 1000) {
+      return `${signString}${unsignedNumberString}`;
+    }
+
+    // really big numbers
+    if (numberLength > numberLengths[0] + 3) {
+      return number.toExponential(decimals).replace("e+", "x10^");
+    }
+
+    // 999 < unsignedNumber < 999,999,999,999,999
+    let length;
+    for (let i = 0; i < numberLengths.length; i++) {
+      const _length = numberLengths[i];
+      if (numberLength >= _length) {
+        length = _length;
+        break;
+      }
+    }
+
+    const decimalIndex = numberLength - length + 1;
+    const unsignedNumberCharacterArray = unsignedNumberString.split("");
+
+    const wholePartArray = unsignedNumberCharacterArray.slice(0, decimalIndex);
+    const decimalPartArray = unsignedNumberCharacterArray.slice(
+      decimalIndex,
+      decimalIndex + decimals + 1
+    );
+
+    const wholePart = wholePartArray.join("");
+
+    // pad decimalPart if necessary
+    let decimalPart = decimalPartArray.join("");
+    if (decimalPart.length < decimals) {
+      decimalPart += `${Array(decimals - decimalPart.length + 1).join("0")}`;
+    }
+
+    let output;
+    if (decimals === 0) {
+      output = `${signString}${wholePart}${
+        bigNumPrefixes[numberLengths.indexOf(length)]
+      }`;
+    } else {
+      const outputNumber = Number(`${wholePart}.${decimalPart}`).toFixed(
+        decimals
+      );
+      output = `${signString}${outputNumber}${
+        bigNumPrefixes[numberLengths.indexOf(length)]
+      }`;
+    }
+    return output;
   }
 
-  // really big numbers
-  if (numberLength > numberLengths[0] + 3) {
-    return number.toExponential(decimals).replace("e+", "x10^");
+  function getSearchParamByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return "";
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
   }
 
-  // 999 < unsignedNumber < 999,999,999,999,999
-  let length;
-  for (let i = 0; i < numberLengths.length; i++) {
-    const _length = numberLengths[i];
-    if (numberLength >= _length) {
-      length = _length;
-      break;
+  function getFilters() {
+    const _filters = getSearchParamByName("filters");
+    let filters = [];
+    if (_filters && _filters.length > 0) {
+      filters = JSON.parse(atob(decodeURIComponent(_filters)));
+    }
+    return filters;
+  }
+
+  function getSearchTerm() {
+    const term = getSearchParamByName("term");
+    return term || "";
+  }
+
+  function exitFiltering() {
+    const path = `${window.location.origin}/`;
+    window.location.href = path;
+  }
+
+  function navigateToFilters(filtersArray) {
+    let res;
+    if (filtersArray) {
+      res = btoa(JSON.stringify(filtersArray));
+    }
+    const path = `${window.location.origin}/search${
+      (res && `?filters=${res}`) || ""
+    }`;
+    window.location.href = path;
+  }
+
+  function navigateToSearchTerm(term) {
+    const path = `${window.location.origin}/search${
+      (term && `?term=${term}`) || ""
+    }`;
+    window.location.href = path;
+  }
+
+  function hydrateIndexTags() {
+    const tags = document.querySelectorAll(".tag.clickable");
+    if (tags && tags.length) {
+      tags.forEach((tag) => {
+        tag.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const name = tag.getAttribute("data-tag");
+          const color = tag.getAttribute("data-color");
+          const border = tag.getAttribute("data-border");
+          const background = tag.getAttribute("data-background");
+          const filterData = [
+            {
+              t: name,
+              c: color,
+              b: border,
+              bg: background,
+            },
+          ];
+          navigateToFilters(filterData);
+          return false;
+        });
+      });
     }
   }
 
-  const decimalIndex = numberLength - length + 1;
-  const unsignedNumberCharacterArray = unsignedNumberString.split("");
-
-  const wholePartArray = unsignedNumberCharacterArray.slice(0, decimalIndex);
-  const decimalPartArray = unsignedNumberCharacterArray.slice(
-    decimalIndex,
-    decimalIndex + decimals + 1
-  );
-
-  const wholePart = wholePartArray.join("");
-
-  // pad decimalPart if necessary
-  let decimalPart = decimalPartArray.join("");
-  if (decimalPart.length < decimals) {
-    decimalPart += `${Array(decimals - decimalPart.length + 1).join("0")}`;
+  function createTag(tag, background, color, border, remove) {
+    const element = document.createElement("span");
+    element.classList = `tag clickable ${tag}`;
+    element.style = `background-color:${background};color:${color};border:${border}`;
+    element.innerHTML = `${(remove && "×&nbsp;&nbsp;") || ""}${tag}`;
+    return element;
   }
 
-  let output;
-  if (decimals === 0) {
-    output = `${signString}${wholePart}${
-      bigNumPrefixes[numberLengths.indexOf(length)]
-    }`;
-  } else {
-    const outputNumber = Number(`${wholePart}.${decimalPart}`).toFixed(
-      decimals
-    );
-    output = `${signString}${outputNumber}${
-      bigNumPrefixes[numberLengths.indexOf(length)]
-    }`;
+  function createSearchEmptyState() {
+    const element = document.createElement("div");
+    const container = document.createElement("p");
+    const clearFilters = document.createElement("div");
+
+    clearFilters.innerHTML = "×&nbsp;&nbsp;Remove Filters";
+    clearFilters.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      exitFiltering();
+      return false;
+    };
+    clearFilters.classList.add("clear-button");
+    container.innerText = "No results matched your filters";
+    element.appendChild(container);
+    element.appendChild(clearFilters);
+    element.classList.add("empty-search");
+
+    return element;
   }
-  return output;
-}
 
-function getSearchParamByName(name, url = window.location.href) {
-  name = name.replace(/[\[\]]/g, "\\$&");
-  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-    results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return "";
-  return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
-
-
-function getFilters() {
-  const _filters = getSearchParamByName("filters");
-  let filters = [];
-  if (_filters && _filters.length > 0) {
-    filters = JSON.parse(atob(decodeURIComponent(_filters)));
-  }
-  return filters;
-}
-
-function getSearchTerm() {
-  const term = getSearchParamByName("term");
-  return term || "";
-}
-
-function exitFiltering() {
-  const path = `${window.location.origin}/`;
-  window.location.href = path;
-}
-
-function navigateToFilters(filtersArray) {
-  let res;
-  if (filtersArray) {
-    res = btoa(JSON.stringify(filtersArray));
-  }
-  const path = `${window.location.origin}/search${res && `?filters=${res}` || ""}`;
-  window.location.href = path;
-}
-
-function navigateToSearchTerm(term) {
-  const path = `${window.location.origin}/search${term && `?term=${term}` || ""}`;
-  window.location.href = path;
-}
-
-function hydrateIndexTags() {
-  const tags = document.querySelectorAll(".tag.clickable");
-  if (tags && tags.length) {
-    tags.forEach((tag) => {
-      tag.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const name = tag.getAttribute("data-tag");
-        const color = tag.getAttribute("data-color");
-        const border = tag.getAttribute("data-border");
-        const background = tag.getAttribute("data-background");
-        const filterData = [{
-          t: name,
-          c: color,
-          b: border,
-          bg: background,
-        }];
-        navigateToFilters(filterData);
-        return false;
-      });
-    });
-  }
-}
-
-function createTag(tag, background, color, border, remove) {
-  const element = document.createElement('span');
-  element.classList = `tag clickable ${tag}`;
-  element.style = `background-color:${background};color:${color};border:${border}`;
-  element.innerHTML = `${remove && '×&nbsp;&nbsp;' || ''}${tag}`;
-  return element;
-}
-
-function createSearchEmptyState() {
-  const element = document.createElement('div');
-  const container = document.createElement('p');
-  const clearFilters = document.createElement('div');
-
-  clearFilters.innerHTML = '×&nbsp;&nbsp;Remove Filters'
-  clearFilters.onclick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    exitFiltering();
-    return false;
-  };
-  clearFilters.classList = 'clear-button';
-  container.innerText = 'No results matched your filters';
-  element.appendChild(container);
-  element.appendChild(clearFilters);
-  element.classList = 'empty-search';
-
-  return element;
-}
-
-(function () {
   // wire up tiles
   const tiles = document.querySelectorAll(".tile");
   if (tiles.length) {
@@ -234,14 +239,14 @@ function createSearchEmptyState() {
         icon.style.transform = "rotate(0deg)";
         title.style.display = "none";
         content.style.display = "block";
-      }
+      };
       const collapse = function () {
         options.removeEventListener("click", collapse);
         options.addEventListener("click", expand);
         icon.style.transform = "rotate(270deg)";
         title.style.display = "block";
         content.style.display = "none";
-      }
+      };
       options.addEventListener("click", collapse);
     });
   }
@@ -258,7 +263,8 @@ function createSearchEmptyState() {
         iframe.className = "embed-reponsive-item";
         iframe.width = "560";
         iframe.height = "315";
-        iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+        iframe.allow =
+          "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
         iframe.src = ytPlayer.getAttribute("data-url");
         iframe.allowFullscreen = true;
         ytPlayer.appendChild(iframe);
@@ -355,9 +361,12 @@ function createSearchEmptyState() {
   }
 
   // Wire up filters
-  function getSearchClient () {
-    if (typeof algoliasearch !== 'undefined') {
-      const client = algoliasearch("1XS2RO6RZM", "b80a77afd30ab3b1d33b5b4ed3863acd");
+  function getSearchClient() {
+    if (typeof algoliasearch !== "undefined") {
+      const client = algoliasearch(
+        "1XS2RO6RZM",
+        "b80a77afd30ab3b1d33b5b4ed3863acd"
+      );
       const index = client.initIndex("changelog");
       return index;
     }
@@ -365,24 +374,33 @@ function createSearchEmptyState() {
   if (window.location.pathname.indexOf("/search") === 0) {
     const index = getSearchClient();
     if (!index) {
-      console.error('No Search Index');
+      console.error("No Search Index");
+      return;
     }
     const filters = getFilters();
     const term = getSearchTerm();
 
-    const input = document.querySelector('.searchInput');
-    const container = document.querySelector("[data-changelog-id=__PLACEHOLDER_ID__]");
+    const input = document.querySelector(".searchInput");
+    const container = document.querySelector(
+      "[data-changelog-id=__PLACEHOLDER_ID__]"
+    );
     const grid = document.querySelector(".grid");
     const filterList = document.querySelector(".filters > .taglist");
 
-    function renderRemoveSearchTermButton (value) {
-      const element = createTag(value, "var(--tag-feature-bgcolor,#D1D5DB)", "var(--tag-fgcolor, #6B7280)", "1px solid var(--tag-bcolor, #9CA3AF)", true);
+    function renderRemoveSearchTermButton(value) {
+      const element = createTag(
+        value,
+        "var(--tag-feature-bgcolor,#D1D5DB)",
+        "var(--tag-fgcolor, #6B7280)",
+        "1px solid var(--tag-bcolor, #9CA3AF)",
+        true
+      );
       element.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
         exitFiltering();
         return false;
-      }
+      };
       filterList.appendChild(element);
     }
 
@@ -391,7 +409,7 @@ function createSearchEmptyState() {
       renderRemoveSearchTermButton(term);
     }
 
-    function removeFilterFromQuery (currentFilter) {
+    function removeFilterFromQuery(currentFilter) {
       const idx = filters.findIndex((f) => f.t === currentFilter.t);
       if (idx >= 0) {
         if (filters.length === 1) {
@@ -403,7 +421,7 @@ function createSearchEmptyState() {
       }
     }
 
-    function addFilterToQuery (currentFilter) {
+    function addFilterToQuery(currentFilter) {
       const idx = filters.findIndex((f) => f.t === currentFilter.t);
       if (idx < 0) {
         filters.push(currentFilter);
@@ -411,19 +429,24 @@ function createSearchEmptyState() {
       }
     }
 
-    function renderRemoveFilterButton (filter) {
+    function renderRemoveFilterButton(filter) {
       const element = createTag(filter.t, filter.bg, filter.c, filter.b, true);
       element.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
         removeFilterFromQuery(filter);
         return false;
-      }
+      };
       filterList.appendChild(element);
     }
 
-    function renderTileTag (tagColor, target) {
-      const element = createTag(tagColor.tag, tagColor.backgroundColor, tagColor.color, tagColor.border);
+    function renderTileTag(tagColor, target) {
+      const element = createTag(
+        tagColor.tag,
+        tagColor.backgroundColor,
+        tagColor.color,
+        tagColor.border
+      );
       element.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -431,60 +454,71 @@ function createSearchEmptyState() {
           t: tagColor.tag,
           bg: tagColor.backgroundColor,
           c: tagColor.color,
-          b: tagColor.border
-        })
+          b: tagColor.border,
+        });
         return false;
-      }
+      };
       target.appendChild(element);
     }
 
-    function getTileElement (changelog, template) {
+    function getTileElement(changelog, template) {
       const copy = template.cloneNode(true);
       copy.querySelector(".title").innerHTML = changelog.title;
       copy.querySelector(".headline").innerHTML = changelog.headline;
       copy.querySelector(".pageviews").remove();
       copy.querySelector(".claps").remove();
-      copy.querySelector(".date").innerHTML = Intl.DateTimeFormat().format(new Date(changelog.createdAt || 0));
-      const { pathname } = new URL(changelog.url || "#")
+      copy.querySelector(".date").innerHTML = Intl.DateTimeFormat().format(
+        new Date(changelog.createdAt || 0)
+      );
+      const { pathname } = new URL(changelog.url || "#");
       copy.href = pathname;
       copy.setAttribute("data-changelog-id", changelog.objectID);
       if (changelog.coverMedia && changelog.coverMedia.type === "image") {
-        const src = changelog.coverMedia.value
+        const src = changelog.coverMedia.value;
         copy.querySelector("img").src = src;
       } else {
         copy.querySelector("img").remove();
         const placeHolder = document.createElement("div");
-        placeHolder.classList = "empty";
-        placeHolder.innerHTML = "&nbsp;"
+        placeHolder.classList.add("empty");
+        placeHolder.innerHTML = "&nbsp;";
         copy.prepend(placeHolder);
       }
       if (changelog.tagColors) {
         const tagTarget = copy.querySelector(".taglist");
-        changelog.tagColors.forEach((tagColor) => renderTileTag(tagColor, tagTarget));
+        changelog.tagColors.forEach((tagColor) =>
+          renderTileTag(tagColor, tagTarget)
+        );
       }
 
       return copy;
     }
-  
+
     if (container && grid && filterList) {
       const template = container.cloneNode(true);
       grid.innerHTML = "";
       filters.forEach(renderRemoveFilterButton);
-      function handleHits (res) {
+      function handleHits(res) {
         if (res) {
-          document.querySelector('.loader').remove();
+          document.querySelector(".loader").remove();
           if (res.hits && res.hits.length) {
-            res.hits.forEach((hit) => grid.appendChild(getTileElement(hit, template)));
+            res.hits.forEach((hit) =>
+              grid.appendChild(getTileElement(hit, template))
+            );
           } else {
-            document.querySelector('.tiles').remove();
+            document.querySelector(".tiles").remove();
             const element = createSearchEmptyState();
-            document.querySelector('.results').appendChild(element);
+            document.querySelector(".results").appendChild(element);
           }
         }
       }
 
       if ((filters.length || term) && index) {
-        const query = `site_id:"${window.siteId}" ${(filters && filters.length > 0) && ` AND ${filters.map((f) => `tags:"${f.t}"`).join(" AND ")}` || ""}`;
+        const query = `site_id:"${window.siteId}" ${
+          (filters &&
+            filters.length > 0 &&
+            ` AND ${filters.map((f) => `tags:"${f.t}"`).join(" AND ")}`) ||
+          ""
+        }`;
         index.search(term, { filters: query }).then(handleHits);
       }
     }
@@ -506,7 +540,7 @@ function createSearchEmptyState() {
           exitFiltering();
         }
         return false;
-      }
+      };
     }
   }
 })();

@@ -20,10 +20,13 @@ export default {
     const outZipFile = path.join(flags.output, "theme.zip");
     const packageJSON = path.join(flags.theme, "package.json");
     const pkg = JSON.parse(ensureExists(packageJSON, true));
-    if (!pkg.changelog?.version) {
+    if (!pkg.changelog || !pkg.changelog.version) {
       error("missing changelog.version in package.json");
     }
-    if (!semver.valid(semver.coerce(pkg.changelog.version))) {
+    if (
+      pkg.changelog.version !== "latest" &&
+      !semver.valid(semver.coerce(pkg.changelog.version))
+    ) {
       error(
         `invalid semver version spec (${pkg.changelog.version}) specified in your package.json. see https://semver.org/ for help`
       );

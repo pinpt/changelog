@@ -110,7 +110,7 @@ To develop a new theme, you need to first generate a template project.
    ```sh
    npx @pinpt/changelog create --site SLUG --name THEME
    ```
-   Replace SLUG with either your site slug or the hostname. Replace THEME with the name of your theme. For more options, use `--help`.
+   Replace SLUG with either your site slug or the hostname. Replace THEME with the name of your theme. The THEME is optional and if not provided defaults to the same name as your site. For more options, use `--help`.
 2. Change into the theme directory
 3. Install NPM packages
    ```sh
@@ -183,6 +183,24 @@ We support the following additional helper functions in handlebars:
 - `cover_image_url` - return the url to the cover image or empty string if not provided
 - `author` - return a formatted list of authors
 - `twitter_handle` - return the twitter handle from a twitter url
+
+### Configuration
+
+You can disable certain features from the base template by modifying the `changelog.features` fields in `package.json`. The following are the current flags:
+
+- `themeSwitcher`: if you want to enable dark/light mode theme switching
+- `search`: if you want to enable site search
+- `tags`: if you want to enable displaying tags on a post
+- `tagFilter`: if you want to enable filtering by tags
+- `authors`: if you want to enable showing the author(s) on the post
+- `claps`: if you want to display the clap count for a post
+- `pageviews`: if you want to display the page view count for a post
+- `highfive`: if you want to enable "highfive" (which results in claps) for posts
+- `social`: if you want enable the social buttons in the footer (must be configured in `Settings/Theme` in the app)
+
+### Versioning
+
+You can control the version of your site and tie it to a specific version by changing the `changelog.version` field in `package.json`. This must be either `latest` or a valid [semantic version](https://semver.org) rule. If you use `latest`, we will build your site with the latest verion of the builder (this repo) as they are published. If you set the value to `^2.0.0`, for example, it will only support the 2.x version of the builder. We strongly recommend using `latest` unless you have made significant changes to your project which could be broken as we upgrade the base theme.
 
 <!-- ROADMAP -->
 

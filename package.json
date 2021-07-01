@@ -1,6 +1,6 @@
 {
   "name": "@pinpt/changelog",
-  "version": "2.0.0-prerelease1",
+  "version": "2.0.0-prerelease2",
   "engines": {
     "node": ">=12.17"
   },
@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/pinpt/changelog"
   },
-  "description": "Changelog is the tool for automatically generating static sites and emails published by changelog.so",
+  "description": "🚀 Changelog is the tool for automatically generating static sites and emails published by changelog.so",
   "scripts": {},
   "bin": {
     "changelog": "./.bin/cli.mjs"
@@ -33,7 +33,7 @@
     "read-pkg-up": "^8.0.0",
     "semver": "^7.3.5",
     "ssri": "^8.0.1",
-    "tailwindcss": "^2.2.0",
+    "tailwindcss": "^2.2.4",
     "uglify-js": "^3.13.9"
   }
 }
