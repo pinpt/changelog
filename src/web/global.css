@@ -1497,3 +1497,7 @@ div.home main.changelogs-0 {
 }
 
 
+.preload,
+.preload * {
+	@apply !transition-none;
+}

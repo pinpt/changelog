@@ -1,7 +1,13 @@
 <div class="taglist">
 	{{#each changelog.tagColors}}
-		<span class="tag clickable {{tag}}" style="background-color:{{backgroundColor}};color:{{color}};border:{{border}}"
-			data-tag="{{tag}}" data-color="{{color}}" data-background="{{backgroundColor}}" data-border="{{border}}">
+		<span
+			class="tag clickable tag-{{tag}}"
+			style="background-color:{{backgroundColor}};color:{{color}};"
+			data-tag="{{tag}}"
+			data-color="{{color}}"
+			data-background="{{backgroundColor}}"
+			data-border="{{border}}"
+		>
 			{{tag}}
 		</span>
 	{{/each}}
