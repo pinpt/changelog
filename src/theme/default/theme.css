@@ -365,7 +365,7 @@ section.bottom {
 } */
 
 .covermedia:not(:empty) {
-  @apply mb-10 rounded-xl relative border border-gray-200 dark:border-gray-900;
+  @apply mb-10 rounded-xl relative;
 }
 
 .covermedia .image {
