@@ -5,6 +5,7 @@
     "node": ">=12.17"
   },
   "license": "MIT",
+  "keywords": ["changelog", "releasenotes", "release notes", "product updates"],
   "repository": {
     "type": "git",
     "url": "https://github.com/pinpt/changelog"
