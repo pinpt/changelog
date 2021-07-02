@@ -45,7 +45,7 @@ export default {
       resp.send(fs.readFileSync(fn));
     });
     app.get("/search", (_req, resp) => {
-      fn = path.join(distDir, "search.html");
+      const fn = path.join(distDir, "search.html");
       resp.set("Content-Type", "text/html");
       resp.set(
         "Cache-Control",
