@@ -408,7 +408,7 @@ export const registerHelpers = ({
         ? args.data.root.changelogs.map((ch) => ch.id)
         : [args.data.root.changelog.id];
       let preamble = "";
-      if (config.features.themeSwitcher) {
+      if (config.web.features.themeSwitcher) {
         preamble = `if (
             localStorage.theme === "dark" ||
             (!("theme" in localStorage) &&

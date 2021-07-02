@@ -5,16 +5,21 @@
   "license": "MIT",
   "changelog": {
     "version": "latest",
-    "features": {
-      "themeSwitcher": true,
-      "search": true,
-      "tags": true,
-      "tagFilter": true,
-      "authors": true,
-      "claps": true,
-      "pageviews": true,
-      "highfive": true,
-      "social": true
+    "email": {
+      "features": {}
+    },
+    "web": {
+      "features": {
+        "themeSwitcher": true,
+        "search": true,
+        "tags": true,
+        "tagFilter": true,
+        "authors": true,
+        "claps": true,
+        "pageviews": true,
+        "highfive": true,
+        "social": true
+      }
     }
   },
   "scripts": {

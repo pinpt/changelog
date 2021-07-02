@@ -1,8 +1,8 @@
-{{#if config.features.tags}}
+{{#if config.web.features.tags}}
 <div class="taglist">
   {{#each changelog.tagColors}}
     <span
-      class="tag {{#if config.features.tagFilter}}clickable{{/if}} {{tag}}"
+      class="tag {{#if config.web.features.tagFilter}}clickable{{/if}} {{tag}}"
       style="background-color:{{backgroundColor}};color:{{color}};border:{{border}}"
 	    data-tag="{{tag}}"
       data-color="{{color}}"

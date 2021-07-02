@@ -186,7 +186,9 @@ We support the following additional helper functions in handlebars:
 
 ### Configuration
 
-You can disable certain features from the base template by modifying the `changelog.features` fields in `package.json`. The following are the current flags:
+You can disable certain features from the base template by modifying the `changelog.[SCOPE].features` fields in `package.json`. The following are the current flags:
+
+For the `web` scope:
 
 - `themeSwitcher`: if you want to enable dark/light mode theme switching
 - `search`: if you want to enable site search
