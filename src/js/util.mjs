@@ -78,7 +78,7 @@ export const findBin = (name) => {
     }
   }
   throw new Error(
-    `couldn't find binary ${bin} in any of ${node_modules.join(", ")}`
+    `couldn't find binary ${name} in any of ${node_modules.join(", ")}`
   );
 };
 
