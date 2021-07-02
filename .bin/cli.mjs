@@ -78,6 +78,7 @@ switch (cli.input[0]) {
 
 const makeOptions = (command) => {
   return Object.keys(command.flags)
+    .filter((key) => !command.flags[key].hidden)
     .map((key) => {
       const flag = command.flags[key];
       const def = `${flag.default ? `[default=${flag.default}]` : ""}`;

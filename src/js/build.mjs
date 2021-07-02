@@ -89,6 +89,13 @@ export default {
       default: true,
       isRequired: false,
     },
+    emailOnly: {
+      description: "Only process the email.html file",
+      type: "boolean",
+      default: true,
+      isRequired: false,
+      hidden: true,
+    },
   },
   run: async (_args, flags) => {
     ensureDir(flags.theme);
@@ -131,7 +138,7 @@ export default {
         : `${site.slug}.changelog.so`
     }`;
 
-    const onlyEmail = flags.email && !flags.index;
+    const onlyEmail = flags.emailOnly;
     const distDir = flags.output;
 
     const baseSrcDir = path.join(__dirname, "..");
@@ -185,6 +192,7 @@ export default {
         searchTemplate,
         emailDistDir,
         staticDistDir,
+        distDir,
       },
       config
     );
@@ -317,6 +325,19 @@ const processEmail = (
 };
 
 const generate = async (changelogs, site, flags, templates, config) => {
+  if (flags.emailOnly) {
+    await processEmail(
+      site,
+      changelogs[0],
+      changelogs.slice(0, 1),
+      path.join(templates.distDir, "email.html"),
+      flags,
+      templates.emailTemplate,
+      templates.emailDistDir,
+      config
+    );
+    return;
+  }
   if (flags.index) {
     await Promise.all([
       processIndex(site, changelogs, flags, templates.indexTemplate, config), // run index before the others so we get all the styles,
