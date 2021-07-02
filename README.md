@@ -202,6 +202,24 @@ You can disable certain features from the base template by modifying the `change
 
 You can control the version of your site and tie it to a specific version by changing the `changelog.version` field in `package.json`. This must be either `latest` or a valid [semantic version](https://semver.org) rule. If you use `latest`, we will build your site with the latest verion of the builder (this repo) as they are published. If you set the value to `^2.0.0`, for example, it will only support the 2.x version of the builder. We strongly recommend using `latest` unless you have made significant changes to your project which could be broken as we upgrade the base theme.
 
+### Assets
+
+You can add the following assets to your theme and they will automatically be copied to the `/static` folder and you can reference them such as `/static/NAME` where `NAME` is the asset name in your template.
+
+The following file extensions are allowed:
+
+- gif
+- png
+- jpg or jpeg
+- webp
+- mov
+- mp3
+- mp4
+- webm
+- svg
+
+Assets in this folder must be **immutable** so make sure you change the name or add a version to the filename if you change them. Assets in this folder will be served with a long-term `Cache-Control` HTTP header.
+
 <!-- ROADMAP -->
 
 ## Roadmap
