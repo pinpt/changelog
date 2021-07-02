@@ -81,10 +81,10 @@ const makeOptions = (command) => {
     .map((key) => {
       const flag = command.flags[key];
       const def = `${flag.default ? `[default=${flag.default}]` : ""}`;
-      if (flag.type === "boolean") {
-        return `  --[no-]${key.padEnd(20)} ${flag.description} ${def}`;
-      }
-      return `  --${key.padEnd(25)} ${flag.description} ${def}`;
+      const prefix = flag.alias ? `-${flag.alias}, ` : "";
+      const fullflag = flag.type === "boolean" ? `--[no-]${key}` : `--${key}`;
+      const _flag = prefix + fullflag;
+      return `  ${_flag.padEnd(25)} ${flag.description} ${def}`;
     })
     .join("\n");
 };

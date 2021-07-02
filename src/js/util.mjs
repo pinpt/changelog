@@ -68,17 +68,25 @@ export const debugLog = (debug, msg, o) =>
 export const verbose = (quiet, msg) =>
   quiet ? null : console.log(`✅   ${msg}`);
 
-const node_modules = findNodeModules();
+const node_modules = [
+  path.join(__dirname, "../../../node_modules"),
+  path.join(__dirname, "../../node_modules"),
+  ...findNodeModules(),
+]
+  .filter(Boolean)
+  .filter(fs.existsSync)
+  .map((fn) => path.resolve(fn));
 
 export const findBin = (name) => {
-  const _nm = [path.join(__dirname, "../node_modules"), ...node_modules];
-  for (let c = 0; c < _nm.length; c++) {
-    const fn = path.join(_nm[c], ".bin", name);
+  for (let c = 0; c < node_modules.length; c++) {
+    const fn = path.join(node_modules[c], ".bin", name);
     if (fs.existsSync(fn)) {
       return fn;
     }
   }
-  throw new Error(`couldn't find binary ${name} in any of ${_nm.join(", ")}`);
+  throw new Error(
+    `couldn't find binary ${name} in any of ${node_modules.join(", ")}`
+  );
 };
 
 const exec = (fn, args, opts) => {
