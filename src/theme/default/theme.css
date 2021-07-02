@@ -98,7 +98,7 @@ header .description {
 }
 
 header .subscribe {
-  @apply mt-4 text-center inline-flex items-center text-sm text-purple-500 dark:text-purple-500 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-300;
+  @apply mt-4 text-center inline-flex items-center text-sm text-indigo-500 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-600 transition-colors duration-300;
 }
 
 header .subscribe .icon {
@@ -123,7 +123,7 @@ footer p {
 }
 
 footer a {
-  @apply hover:text-purple-100 transition-all duration-300;
+  @apply hover:text-indigo-100 transition-all duration-300;
 }
 
 footer > .content > .right {
@@ -175,7 +175,7 @@ footer .powered-by {
 }
 
 footer .powered-by a {
-  @apply text-sm inline-flex items-center text-gray-500 hover:text-purple-400;
+  @apply text-sm inline-flex items-center text-gray-500 hover:text-indigo-500;
 }
 
 
@@ -344,7 +344,7 @@ main aside .highfive .image {
 }
 
 main aside .highfive .image.animating {
-  @apply text-purple-500;
+  @apply text-indigo-500;
 }
 
 main aside .highfive .counter {
@@ -395,8 +395,15 @@ section.bottom {
 /**
  * search results
  **/
+.loader {
+  @apply absolute left-0 top-0 right-0 bottom-0 bg-white dark:bg-[#111827] flex items-center justify-center dark:text-white text-[#111827];
+}
 
- .search-results > main {
+.loader .inner {
+  @apply w-12 h-12 dark:border-white border-[#111827] border-3 rounded-full animate-ping;
+}
+
+.search-results > main {
    @apply py-14 bg-gray-50 dark:bg-[#141D2E] transition-colors duration-300;
  }
 
@@ -475,34 +482,19 @@ main .changelog > section p > a[href]:not(.mark-color) {
  * coming soon
  */
 
-.coming-soon main {
-  @apply border-0 flex items-center justify-center md:justify-start;
+.home > main .coming-soon > .content {
+  @apply flex-col items-center;
 }
 
-.coming-soon main aside {
-  @apply w-0 md:w-1/4 mr-0 md:mr-4;
+.coming-soon {
+  @apply my-10;
 }
 
 .coming-soon h1 {
-  @apply text-2xl text-center md:text-left text-gray-700 dark:text-purple-200;
+  @apply text-2xl font-semibold text-center;
 }
 
 .coming-soon .image {
-  @apply my-20 w-full;
+  @apply my-20 w-5/6;
 }
 
-.loader {
-  @apply absolute left-0 top-0 right-0 bottom-0 bg-white dark:bg-[#111827] flex items-center justify-center dark:text-white text-[#111827];
-}
-
-.loader .inner {
-  @apply w-12 h-12 dark:border-white border-[#111827] border-3 rounded-full animate-ping;
-}
-
-.empty-search {
-  @apply text-center w-full dark:text-white text-[#111827];
-}
-
-.clear-button {
-  @apply mt-6 text-sm cursor-pointer text-purple-500 dark:text-purple-500 hover:text-purple-700 dark:hover:text-purple-400;
-}
