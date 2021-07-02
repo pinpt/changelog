@@ -92,7 +92,7 @@ export default {
     emailOnly: {
       description: "Only process the email.html file",
       type: "boolean",
-      default: true,
+      default: false,
       isRequired: false,
       hidden: true,
     },
