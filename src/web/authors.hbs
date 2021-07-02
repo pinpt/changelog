@@ -1,17 +1,17 @@
 {{#unless (empty changelog.authors)}}
 <div class="authors">
-  {{#each changelog.authors}}
-    <div class="author">
-      {{#if avatarUrl}}
-        <div class="avatar">
-          <img src="{{avatarUrl}}" />
-        </div>
-      {{/if}}
-      <div class="name">
-        {{firstName}}
-        {{lastName}}
-      </div>
-    </div>
-  {{/each}}
+	{{#each changelog.authors}}
+	<div class="author">
+		{{#if avatarUrl}}
+		<div class="avatar">
+			<img src="{{avatarUrl}}" />
+		</div>
+		{{/if}}
+		<div class="name">
+			{{firstName}}
+			{{lastName}}
+		</div>
+	</div>
+	{{/each}}
 </div>
 {{/unless}}

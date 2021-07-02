@@ -139,26 +139,26 @@ function createTag(tag, background, color, border, remove) {
   return element;
 }
 
-function createSearchEmptyState() {
-  const element = document.createElement('div');
-  const container = document.createElement('p');
-  const clearFilters = document.createElement('div');
+// function createSearchEmptyState() {
+//   const element = document.createElement('div');
+//   const container = document.createElement('p');
+//   const clearFilters = document.createElement('div');
 
-  clearFilters.innerHTML = '×&nbsp;&nbsp;Remove Filters'
-  clearFilters.onclick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    exitFiltering();
-    return false;
-  };
-  clearFilters.classList = 'clear-button';
-  container.innerText = 'No results matched your filters';
-  element.appendChild(container);
-  element.appendChild(clearFilters);
-  element.classList = 'empty-search';
+//   clearFilters.innerHTML = '×&nbsp;&nbsp;Remove Filters'
+//   clearFilters.onclick = (e) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     exitFiltering();
+//     return false;
+//   };
+//   clearFilters.classList = 'clear-button';
+//   container.innerText = 'No results matched your filters';
+//   element.appendChild(container);
+//   element.appendChild(clearFilters);
+//   element.classList = 'no-results';
 
-  return element;
-}
+//   return element;
+// }
 
 (function () {
   // wire up tiles
@@ -370,10 +370,10 @@ function createSearchEmptyState() {
     const filters = getFilters();
     const term = getSearchTerm();
 
-    const input = document.querySelector('.searchInput');
+    const input = document.querySelector('#search-input');
     const container = document.querySelector("[data-changelog-id=__PLACEHOLDER_ID__]");
-    const grid = document.querySelector(".grid");
-    const filterList = document.querySelector(".filters > .taglist");
+    const grid = document.querySelector(".tiles");
+    const filterList = document.querySelector("#filter-taglist");
 
     function renderRemoveSearchTermButton (value) {
       const element = createTag(value, "var(--tag-feature-bgcolor,#D1D5DB)", "var(--tag-fgcolor, #6B7280)", "1px solid var(--tag-bcolor, #9CA3AF)", true);
@@ -475,10 +475,10 @@ function createSearchEmptyState() {
           document.querySelector('.loader').remove();
           if (res.hits && res.hits.length) {
             res.hits.forEach((hit) => grid.appendChild(getTileElement(hit, template)));
+            document.querySelector('#no-search-results').remove();
           } else {
-            document.querySelector('.tiles').remove();
-            const element = createSearchEmptyState();
-            document.querySelector('.results').appendChild(element);
+            // const element = createSearchEmptyState();
+            // document.querySelector('#search-results-content').appendChild(element);
           }
         }
       }
@@ -493,9 +493,9 @@ function createSearchEmptyState() {
   }
 
   // Wire up search
-  const form = document.querySelector(".searchForm");
+  const form = document.querySelector(".search-form");
   if (form) {
-    const input = document.querySelector(".searchInput");
+    const input = document.querySelector(".search-input");
     if (input) {
       form.onsubmit = (e) => {
         e.preventDefault();
@@ -510,3 +510,8 @@ function createSearchEmptyState() {
     }
   }
 })();
+
+// remove preload class from body on load
+window.onload = function() {
+  document.querySelector('body').classList.remove('preload');
+};

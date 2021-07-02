@@ -1,7 +1,14 @@
 <footer>
-  <div class="container">
-    {{include src="subscribe.hbs"}}
-    {{include src="social.hbs"}}
-    {{include src="legal.hbs"}}
-  </div>
+	<div class="content">
+		<div class="left">
+			{{include src="legal.hbs"}}
+		</div>
+		<div class="right">
+			{{include src="subscribe.hbs"}}
+			{{include src="social.hbs"}}
+		</div>
+	</div>
+	<div class="content">
+		{{include src="poweredby.hbs"}}
+	</div>
 </footer>

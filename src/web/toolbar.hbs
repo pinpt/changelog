@@ -1,9 +1,20 @@
 <div class="toolbar">
-  <div class="home-button">
-    <a href="/">{{fontawesome-icon icon="home"}}</a>
-  </div>
-  <div class="theme-switch">
-    <button class="mode"></button>
-  </div>
-  {{include src="search.hbs"}}
+
+	<div class="content">
+	
+		<div class="left">
+			{{#if site.logoUrl}}
+				<a href="{{site.theme.logoLink}}" class="logo">
+					<img src="{{site.logoUrl}}" alt="Back to website" />
+				</a>
+			{{/if}}
+		</div>
+	
+		<div class="right">
+			{{include src="search.hbs"}}
+			<div class="theme-switch">
+				<button class="mode"></button>
+			</div>
+		</div>
+	</div>
 </div>

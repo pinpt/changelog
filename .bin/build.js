@@ -417,7 +417,7 @@ const regenerateEmails = async (changelogs, site) => {
     const argv = process.argv
       .slice(1)
       .filter((arg) => arg !== "-w" && arg !== "--watch");
-    fswatch(baseSrcDir, { recursive: true, delay: 350 }, function (_, fn) {
+    fswatch(srcDir, { recursive: true, delay: 350 }, function (_, fn) {
       if (fn.includes("src/icons.css")) {
         // ignore this since it's generated
         return;
