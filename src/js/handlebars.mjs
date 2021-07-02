@@ -10,7 +10,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import humanize from "humanize-plus";
-import { findBin, __dirname, MAX_BUFFER } from "./util.mjs";
+import { findBin, __dirname, MAX_BUFFER, debugLog } from "./util.mjs";
 
 const cache = {};
 
@@ -23,7 +23,7 @@ if (!fs.existsSync(_tailwindCfg)) {
 }
 let tailwindCfg;
 
-const compileCSSAndFixHTML = (staticDistDir, webSrcDir, srcDir) => {
+const compileCSSAndFixHTML = (distDir, staticDistDir, webSrcDir, srcDir) => {
   const globalCSS = path.join(webSrcDir, "global.css");
   const themeCSS = path.join(srcDir, "theme.css");
   const baseCSS = path.join(webSrcDir, "..", "theme", "default", "theme.css");
@@ -39,6 +39,7 @@ const compileCSSAndFixHTML = (staticDistDir, webSrcDir, srcDir) => {
   const outfn = path.join(staticDistDir, "global.css");
   fs.writeFileSync(outfn, cssBuf);
   const { relpath, sha } = generateFileSSRI(
+    distDir,
     webSrcDir,
     path.dirname(staticDistDir),
     staticDistDir,
@@ -52,7 +53,7 @@ const compileCSSAndFixHTML = (staticDistDir, webSrcDir, srcDir) => {
   };
 };
 
-const minifyCSS = (fn, dirs) => {
+const minifyCSS = (fn, distDir) => {
   const tmpfn = path.join(
     os.tmpdir(),
     path.basename(fn) + "-" + String(Date.now()) + ".css"
@@ -60,7 +61,10 @@ const minifyCSS = (fn, dirs) => {
   try {
     const args = ["-i", fn, "-o", tmpfn, "--jit", "-m", "-c", tailwindCfg];
     // console.log(tailwind, args);
-    let res = spawnSync(tailwind, args, { maxBuffer: MAX_BUFFER });
+    let res = spawnSync(tailwind, args, {
+      maxBuffer: MAX_BUFFER,
+      cwd: distDir,
+    });
     // console.log(res);
     if (res.status !== 0) {
       throw new Error(`error compiling CSS: ${fn}. ${res.stderr}`);
@@ -74,8 +78,11 @@ const minifyCSS = (fn, dirs) => {
   }
 };
 
-const minifyJS = (fn) => {
-  const res = spawnSync(uglifyjs, [fn], { maxBuffer: MAX_BUFFER });
+const minifyJS = (fn, distDir) => {
+  const res = spawnSync(uglifyjs, [fn], {
+    maxBuffer: MAX_BUFFER,
+    cwd: distDir,
+  });
   if (res.status !== 0) {
     throw new Error(`error compressing JS: ${fn}. ${res.stderr}`);
   }
@@ -85,7 +92,14 @@ const minifyJS = (fn) => {
 export const sha1 = (buf) =>
   crypto.createHash("sha1").update(buf).digest("hex");
 
-const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href, fn, dir) => {
+const generateFileSSRI = (
+  distDir,
+  baseSrcDir,
+  srcDir,
+  staticDistDir,
+  href,
+  fn
+) => {
   fn = fn || path.join(srcDir, href);
   if (!fs.existsSync(fn)) {
     fn = path.join(baseSrcDir, href);
@@ -102,11 +116,11 @@ const generateFileSSRI = (baseSrcDir, srcDir, staticDistDir, href, fn, dir) => {
   }
   switch (path.extname(fn)) {
     case ".css": {
-      buf = minifyCSS(fn, [baseSrcDir, srcDir, dir]);
+      buf = minifyCSS(fn, distDir);
       break;
     }
     case ".js": {
-      buf = minifyJS(fn);
+      buf = minifyJS(fn, distDir);
       break;
     }
   }
@@ -138,6 +152,7 @@ export const registerHelpers = ({
   distDir,
   staticDistDir,
   host,
+  flags,
 }) => {
   // Adds all the icons from the Solid style into our library for easy lookup
   library.add(fas, fab, far);
@@ -151,231 +166,247 @@ export const registerHelpers = ({
   const before = tailwindCfgJS.substring(0, startIndex);
   const after = tailwindCfgJS.substring(endIndex + 2);
 
-  const jsBuf =
-    before +
-    "purge: " +
-    JSON.stringify([
-      webSrcDir + "/*.html",
-      webSrcDir + "/*.css",
-      webSrcDir + "/*.hbs",
-      webSrcDir + "/*.js",
-      srcDir + "/*.css",
-      srcDir + "/*.hbs",
-      srcDir + "/*.html",
-    ]) +
-    "," +
-    after;
+  debugLog(flags.debug, "base src directory: " + srcDir);
+  debugLog(flags.debug, "web src directory: " + webSrcDir);
+
+  const purge = JSON.stringify([
+    webSrcDir + "/*.html",
+    webSrcDir + "/*.css",
+    webSrcDir + "/*.hbs",
+    webSrcDir + "/*.js",
+    srcDir + "/*.css",
+    srcDir + "/*.hbs",
+    srcDir + "/*.html",
+  ]);
+  debugLog(flags.debug, "purge folders: " + purge);
+
+  const jsBuf = before + "purge: " + purge + "," + after;
+
+  // the JS file must be relative to the node_modules folder so we need to symlink
+  const distNodeModulesDir = path.resolve(path.join(distDir, "node_modules"));
+  fs.symlinkSync(
+    path.resolve(path.join(__dirname, "../../node_modules/")),
+    distNodeModulesDir
+  );
 
   // write out the generated tailwind
   tailwindCfg = path.join(distDir, "tailwind.generated.config.js");
   fs.writeFileSync(tailwindCfg, jsBuf);
+  debugLog(flags.debug, "wrote tailwind to: " + tailwindCfg);
 
-  const globals = compileCSSAndFixHTML(staticDistDir, webSrcDir, srcDir);
-
-  Handlebars.registerHelper("formatNumber", function (arg, arg2) {
-    return humanize.formatNumber(arg, arg2);
-  });
-
-  Handlebars.registerHelper("compactInteger", function (arg, arg2) {
-    return humanize.compactInteger(arg, arg2);
-  });
-
-  Handlebars.registerHelper("boundedNumber", function (arg, arg2) {
-    return humanize.boundedNumber(arg, arg2);
-  });
-
-  Handlebars.registerHelper("fileSize", function (arg, arg2) {
-    return humanize.fileSize(arg, arg2);
-  });
-
-  Handlebars.registerHelper("truncate", function (arg, arg2, arg3) {
-    return humanize.truncate(arg, arg2, arg3);
-  });
-
-  Handlebars.registerHelper("truncateWords", function (arg, arg2) {
-    return humanize.truncateWords(arg, arg2);
-  });
-
-  Handlebars.registerHelper("capitalize", function (arg, arg2) {
-    return humanize.capitalize(arg, arg2);
-  });
-
-  Handlebars.registerHelper("titleCase", function (arg) {
-    return humanize.titleCase(arg);
-  });
-
-  Handlebars.registerHelper("pathname", function (arg) {
-    const { pathname } = new URL(arg);
-    return pathname;
-  });
-
-  Handlebars.registerHelper("first", function (arg) {
-    if (Array.isArray(arg)) {
-      return arg[0];
-    }
-    throw new Error("first must be called with an array");
-  });
-
-  Handlebars.registerHelper("gt", function (v1, v2, options) {
-    if (v1 > v2) {
-      return options.fn(this);
-    }
-    return options.inverse(this);
-  });
-
-  Handlebars.registerHelper("gte", function (v1, v2, options) {
-    if (v1 >= v2) {
-      return options.fn(this);
-    }
-    return options.inverse(this);
-  });
-
-  Handlebars.registerHelper("lt", function (v1, v2, options) {
-    if (v1 < v2) {
-      return options.fn(this);
-    }
-    return options.inverse(this);
-  });
-
-  Handlebars.registerHelper("lte", function (v1, v2, options) {
-    if (v1 <= v2) {
-      return options.fn(this);
-    }
-    return options.inverse(this);
-  });
-
-  Handlebars.registerHelper("len", function (arg) {
-    if (Array.isArray(arg)) {
-      return arg.length;
-    }
-    return 0;
-  });
-
-  Handlebars.registerHelper("empty", function (arg) {
-    if (Array.isArray(arg)) {
-      return arg.length === 0;
-    }
-    return true;
-  });
-
-  Handlebars.registerHelper("last", function (arg) {
-    if (Array.isArray(arg)) {
-      return arg[arg.length - 1];
-    }
-    throw new Error("last must be called with an array");
-  });
-
-  Handlebars.registerHelper("after", function (arg, index, length) {
-    if (Array.isArray(arg)) {
-      return arg.slice(
-        index,
-        typeof length === "number" ? index + length : undefined
-      );
-    }
-    throw new Error("after must be called with an array");
-  });
-
-  Handlebars.registerHelper("pick", function (arg, index, offset = 0) {
-    if (Array.isArray(arg)) {
-      return arg.slice(offset)[index];
-    }
-    throw new Error("pick must be called with an array");
-  });
-
-  Handlebars.registerHelper("include", function (arg) {
-    const baseDir =
-      arg.hash.base === "web" || !arg.hash.base ? webSrcDir : emailSrcDir;
-    let fn = path.resolve(baseDir, arg.hash.src);
-    let insideOverride = false;
-    const overrideFn = path.resolve(
-      srcDir,
-      (arg.hash.base || "web") + "_" + arg.hash.src
+  try {
+    const globals = compileCSSAndFixHTML(
+      distDir,
+      staticDistDir,
+      webSrcDir,
+      srcDir
     );
-    // attempt to see if we have a template override and if so, just use
-    // that one instead of the default one
-    if (!arg.data.root.insideOverride && fs.existsSync(overrideFn)) {
-      fn = overrideFn;
-      insideOverride = true;
-    }
-    if (!fs.existsSync(fn)) {
-      // in the case the theme directory is in a different dir tree
-      // then we try and resolve included files as if they were in the
-      // same source tree
-      fn = path.resolve(baseSrcDir, "theme", "default", arg.hash.src);
+
+    Handlebars.registerHelper("formatNumber", function (arg, arg2) {
+      return humanize.formatNumber(arg, arg2);
+    });
+
+    Handlebars.registerHelper("compactInteger", function (arg, arg2) {
+      return humanize.compactInteger(arg, arg2);
+    });
+
+    Handlebars.registerHelper("boundedNumber", function (arg, arg2) {
+      return humanize.boundedNumber(arg, arg2);
+    });
+
+    Handlebars.registerHelper("fileSize", function (arg, arg2) {
+      return humanize.fileSize(arg, arg2);
+    });
+
+    Handlebars.registerHelper("truncate", function (arg, arg2, arg3) {
+      return humanize.truncate(arg, arg2, arg3);
+    });
+
+    Handlebars.registerHelper("truncateWords", function (arg, arg2) {
+      return humanize.truncateWords(arg, arg2);
+    });
+
+    Handlebars.registerHelper("capitalize", function (arg, arg2) {
+      return humanize.capitalize(arg, arg2);
+    });
+
+    Handlebars.registerHelper("titleCase", function (arg) {
+      return humanize.titleCase(arg);
+    });
+
+    Handlebars.registerHelper("pathname", function (arg) {
+      const { pathname } = new URL(arg);
+      return pathname;
+    });
+
+    Handlebars.registerHelper("first", function (arg) {
+      if (Array.isArray(arg)) {
+        return arg[0];
+      }
+      throw new Error("first must be called with an array");
+    });
+
+    Handlebars.registerHelper("gt", function (v1, v2, options) {
+      if (v1 > v2) {
+        return options.fn(this);
+      }
+      return options.inverse(this);
+    });
+
+    Handlebars.registerHelper("gte", function (v1, v2, options) {
+      if (v1 >= v2) {
+        return options.fn(this);
+      }
+      return options.inverse(this);
+    });
+
+    Handlebars.registerHelper("lt", function (v1, v2, options) {
+      if (v1 < v2) {
+        return options.fn(this);
+      }
+      return options.inverse(this);
+    });
+
+    Handlebars.registerHelper("lte", function (v1, v2, options) {
+      if (v1 <= v2) {
+        return options.fn(this);
+      }
+      return options.inverse(this);
+    });
+
+    Handlebars.registerHelper("len", function (arg) {
+      if (Array.isArray(arg)) {
+        return arg.length;
+      }
+      return 0;
+    });
+
+    Handlebars.registerHelper("empty", function (arg) {
+      if (Array.isArray(arg)) {
+        return arg.length === 0;
+      }
+      return true;
+    });
+
+    Handlebars.registerHelper("last", function (arg) {
+      if (Array.isArray(arg)) {
+        return arg[arg.length - 1];
+      }
+      throw new Error("last must be called with an array");
+    });
+
+    Handlebars.registerHelper("after", function (arg, index, length) {
+      if (Array.isArray(arg)) {
+        return arg.slice(
+          index,
+          typeof length === "number" ? index + length : undefined
+        );
+      }
+      throw new Error("after must be called with an array");
+    });
+
+    Handlebars.registerHelper("pick", function (arg, index, offset = 0) {
+      if (Array.isArray(arg)) {
+        return arg.slice(offset)[index];
+      }
+      throw new Error("pick must be called with an array");
+    });
+
+    Handlebars.registerHelper("include", function (arg) {
+      const baseDir =
+        arg.hash.base === "web" || !arg.hash.base ? webSrcDir : emailSrcDir;
+      let fn = path.resolve(baseDir, arg.hash.src);
+      let insideOverride = false;
+      const overrideFn = path.resolve(
+        srcDir,
+        (arg.hash.base || "web") + "_" + arg.hash.src
+      );
+      // attempt to see if we have a template override and if so, just use
+      // that one instead of the default one
+      if (!arg.data.root.insideOverride && fs.existsSync(overrideFn)) {
+        fn = overrideFn;
+        insideOverride = true;
+      }
       if (!fs.existsSync(fn)) {
-        // this is for backwards compat before we had
-        // src/web directory
-        if (arg.hash.src.indexOf("../../") === 0) {
-          fn = path.resolve(webSrcDir, arg.hash.src.substring(6));
-          if (!fs.existsSync(fn)) {
-            throw new Error(`couldn't include file ${fn}`);
+        // in the case the theme directory is in a different dir tree
+        // then we try and resolve included files as if they were in the
+        // same source tree
+        fn = path.resolve(baseSrcDir, "theme", "default", arg.hash.src);
+        if (!fs.existsSync(fn)) {
+          // this is for backwards compat before we had
+          // src/web directory
+          if (arg.hash.src.indexOf("../../") === 0) {
+            fn = path.resolve(webSrcDir, arg.hash.src.substring(6));
+            if (!fs.existsSync(fn)) {
+              throw new Error(`couldn't include file ${fn}`);
+            }
           }
         }
       }
-    }
-    const context = {
-      ...arg.data.root,
-      ...(arg.hash.context || {}),
-      ...globals,
-      insideOverride,
-    };
-    const keys = Object.keys(arg.hash).filter(
-      (k) => k !== "src" && k !== "context"
-    );
-    keys.forEach((key) => (context[key] = arg.hash[key]));
-    const buf = fs.readFileSync(fn).toString();
-    return new Handlebars.SafeString(Handlebars.compile(buf)(context));
-  });
-
-  Handlebars.registerHelper("fontawesome-icon", function (args) {
-    const fa = icon({
-      prefix: args.hash.prefix || "fas",
-      iconName: args.hash.icon,
-    });
-    if (!fa) {
-      throw new Error(
-        `Couldn't find fontawesome icon: ${args.hash.icon} in ${args.hash.prefix}`
+      const context = {
+        ...arg.data.root,
+        ...(arg.hash.context || {}),
+        ...globals,
+        insideOverride,
+      };
+      const keys = Object.keys(arg.hash).filter(
+        (k) => k !== "src" && k !== "context"
       );
-    }
-    return new Handlebars.SafeString(fa.html);
-  });
+      keys.forEach((key) => (context[key] = arg.hash[key]));
+      const buf = fs.readFileSync(fn).toString();
+      return new Handlebars.SafeString(Handlebars.compile(buf)(context));
+    });
 
-  Handlebars.registerHelper("friendly-date", function (args) {
-    return new Handlebars.SafeString(
-      new Intl.DateTimeFormat().format(new Date(args))
-    );
-  });
+    Handlebars.registerHelper("fontawesome-icon", function (args) {
+      const fa = icon({
+        prefix: args.hash.prefix || "fas",
+        iconName: args.hash.icon,
+      });
+      if (!fa) {
+        throw new Error(
+          `Couldn't find fontawesome icon: ${args.hash.icon} in ${args.hash.prefix}`
+        );
+      }
+      return new Handlebars.SafeString(fa.html);
+    });
 
-  Handlebars.registerHelper("analytics-js", function (siteId, changelogId) {
-    return new Handlebars.SafeString(
-      `<script async defer src="/a.js" data-site-id="${siteId}" data-id="${changelogId}"></script>`
-    );
-  });
+    Handlebars.registerHelper("friendly-date", function (args) {
+      return new Handlebars.SafeString(
+        new Intl.DateTimeFormat().format(new Date(args))
+      );
+    });
 
-  Handlebars.registerHelper("script", function (href) {
-    const { relpath, sha } = generateFileSSRI(
-      webSrcDir,
-      srcDir,
-      staticDistDir,
-      href
-    );
-    if (relpath === "") {
-      return ""; // ignore if empty
-    }
-    return new Handlebars.SafeString(
-      `<script src="${relpath}" integrity="${sha}" async defer crossorigin="anonymous"></script>`
-    );
-  });
+    Handlebars.registerHelper("analytics-js", function (siteId, changelogId) {
+      return new Handlebars.SafeString(
+        `<script async defer src="/a.js" data-site-id="${siteId}" data-id="${changelogId}"></script>`
+      );
+    });
 
-  Handlebars.registerHelper("global-js", function (args) {
-    const siteId = args.data.root.site.id;
-    const changelogId = args.data.root.changelog
-      ? args.data.root.changelog.id
-      : "";
-    const changelogIds = args.data.root.changelogs
-      ? args.data.root.changelogs.map((ch) => ch.id)
-      : [args.data.root.changelog.id];
-    return new Handlebars.SafeString(`<script>if (
+    Handlebars.registerHelper("script", function (href) {
+      const { relpath, sha } = generateFileSSRI(
+        distDir,
+        webSrcDir,
+        srcDir,
+        staticDistDir,
+        href
+      );
+      if (relpath === "") {
+        return ""; // ignore if empty
+      }
+      return new Handlebars.SafeString(
+        `<script src="${relpath}" integrity="${sha}" async defer crossorigin="anonymous"></script>`
+      );
+    });
+
+    Handlebars.registerHelper("global-js", function (args) {
+      const siteId = args.data.root.site.id;
+      const changelogId = args.data.root.changelog
+        ? args.data.root.changelog.id
+        : "";
+      const changelogIds = args.data.root.changelogs
+        ? args.data.root.changelogs.map((ch) => ch.id)
+        : [args.data.root.changelog.id];
+      return new Handlebars.SafeString(`<script>if (
     localStorage.theme === "dark" ||
     (!("theme" in localStorage) &&
       window.matchMedia("(prefers-color-scheme: dark)").matches)
@@ -389,50 +420,50 @@ export const registerHelpers = ({
     window.changelogId = "${changelogId}";
     window.changelogIds = ${JSON.stringify(changelogIds)};
   </script>`);
-  });
+    });
 
-  Handlebars.registerHelper("iso_date", function (v) {
-    if (typeof v === "number") {
-      return new Date(v).toISOString();
-    }
-    if (typeof v === "object" && v instanceof Date) {
-      return v.toISOString();
-    }
-    return new Date().toISOString();
-  });
+    Handlebars.registerHelper("iso_date", function (v) {
+      if (typeof v === "number") {
+        return new Date(v).toISOString();
+      }
+      if (typeof v === "object" && v instanceof Date) {
+        return v.toISOString();
+      }
+      return new Date().toISOString();
+    });
 
-  Handlebars.registerHelper("cover_image_url", function (changelog) {
-    if (changelog.cover_image) {
-      return changelog.cover_image;
-    }
-    return "";
-  });
+    Handlebars.registerHelper("cover_image_url", function (changelog) {
+      if (changelog.cover_image) {
+        return changelog.cover_image;
+      }
+      return "";
+    });
 
-  Handlebars.registerHelper("author", function (changelog) {
-    if (changelog.authors) {
-      return changelog.authors
-        .map((author) => `${author.firstName} ${author.lastName}`)
-        .join(" and ");
-    }
-    return "";
-  });
+    Handlebars.registerHelper("author", function (changelog) {
+      if (changelog.authors) {
+        return changelog.authors
+          .map((author) => `${author.firstName} ${author.lastName}`)
+          .join(" and ");
+      }
+      return "";
+    });
 
-  Handlebars.registerHelper("twitter_handle", function (url) {
-    if (url.startsWith("@")) {
+    Handlebars.registerHelper("twitter_handle", function (url) {
+      if (url.startsWith("@")) {
+        return url;
+      } else if (url.includes("twitter.com/")) {
+        const u = new URL(url);
+        const tok = u.pathname.substring(1).split("/");
+        return `@${tok[0]}`;
+      }
       return url;
-    } else if (url.includes("twitter.com/")) {
-      const u = new URL(url);
-      const tok = u.pathname.substring(1).split("/");
-      return `@${tok[0]}`;
-    }
-    return url;
-  });
+    });
 
-  Handlebars.registerHelper("logo", function (args) {
-    const { width = "44", height = "42" } = args.hash;
-    const id = Date.now();
+    Handlebars.registerHelper("logo", function (args) {
+      const { width = "44", height = "42" } = args.hash;
+      const id = Date.now();
 
-    return new Handlebars.SafeString(`<svg
+      return new Handlebars.SafeString(`<svg
   width="${width}"
   height="${height}"
   viewBox="0 0 236 224"
@@ -458,7 +489,11 @@ export const registerHelpers = ({
     </linearGradient>
   </defs>
 </svg>`);
-  });
+    });
 
-  return () => fs.existsSync(tailwindCfg) && fs.unlinkSync(tailwindCfg);
+    return () => fs.existsSync(tailwindCfg) && fs.unlinkSync(tailwindCfg);
+  } finally {
+    // remove the symlink
+    fs.unlinkSync(distNodeModulesDir);
+  }
 };

@@ -93,12 +93,26 @@ export default {
   run: async (_args, flags) => {
     ensureDir(flags.theme);
     ensureDir(flags.output);
-    const pkgJSON = JSON.parse(
-      ensureExists(path.join(flags.theme, "package.json"), true)
-    );
+    debugLog(flags.debug, "Using theme: " + flags.theme);
+    debugLog(flags.debug, "Using output: " + flags.output);
     const builderVersion = getBuilderVersion();
-    const { changelog, ...rest } = pkgJSON;
-    const config = { ...changelog, package: rest, builderVersion };
+    let config = { builderVersion };
+    const pkgFn = path.join(flags.theme, "package.json");
+    if (fs.existsSync(pkgFn)) {
+      const pkgJSON = JSON.parse(
+        ensureExists(path.join(flags.theme, "package.json"), true)
+      );
+      const { changelog, ...rest } = pkgJSON;
+      config = { ...config, ...changelog, package: rest };
+    } else {
+      // get the default features if we're building using the default theme
+      // or an older legacy theme with no package.json
+      const templatePackage = path.join(__dirname, "../template/package.json");
+      const pkgJSON = JSON.parse(ensureExists(templatePackage, true));
+      config = {
+        changelog: pkgJSON.changelog,
+      };
+    }
     let data;
     if (flags.file) {
       data = JSON.parse(ensureExists(flags.file, true));
@@ -139,6 +153,7 @@ export default {
       distDir,
       host: flags.host,
       staticDistDir,
+      flags,
     });
 
     const indexTemplate = onlyEmail
