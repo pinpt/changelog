@@ -329,7 +329,7 @@ const generate = async (changelogs, site, flags, templates, config) => {
     await processEmail(
       site,
       changelogs[0],
-      changelogs.slice(0, 1),
+      changelogs,
       path.join(templates.distDir, "email.html"),
       flags,
       templates.emailTemplate,
