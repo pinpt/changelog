@@ -30,11 +30,19 @@ main {
  */
 
 .toolbar {
-  @apply w-full flex flex-row md:flex-row-reverse items-center;
+  @apply w-full flex items-center flex-row-reverse;
+}
+
+.toolbar .search {
+  @apply mr-auto;
 }
 
 .toolbar .home-button {
-  @apply text-gray-400 dark:text-gray-500 block md:hidden;
+  @apply text-gray-400 dark:text-gray-500 block md:hidden mr-4;
+}
+
+.home .toolbar .home-button {
+  @apply hidden;
 }
 
 header {
@@ -220,8 +228,12 @@ div.latest .tile {
   @apply ml-2;
 }
 
+.tile > .container section .stats {
+  @apply flex items-center ml-auto;
+}
+
 .tile > .container section .pageviews {
-  @apply text-gray-400 mr-3 inline-flex items-center ml-auto leading-none text-sm pr-3 py-1;
+  @apply text-gray-400 mr-3 inline-flex items-center leading-none text-sm pr-3 py-1;
 }
 
 .tile > .container section .pageviews svg {
@@ -353,7 +365,7 @@ section.bottom {
 } */
 
 .covermedia:not(:empty) {
-  @apply mb-10 rounded-xl relative;
+  @apply mb-10 rounded-xl relative border border-gray-200 dark:border-gray-900;
 }
 
 .covermedia .image {

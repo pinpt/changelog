@@ -1,4 +1,5 @@
 <div class="social">
+{{#if config.web.features.social}}
 	{{#if site.theme.social.blog}}
 		<a href="{{site.theme.social.blog}}" class="blog">
 			<span class="title">Blog</span>
@@ -39,4 +40,5 @@
 		<span class="title">RSS</span>
 		<span class="icon">{{fontawesome-icon icon="rss"}}</span>
 	</a>
+{{/if}}
 </div>
