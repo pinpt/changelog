@@ -1,6 +1,6 @@
 {
   "name": "@pinpt/changelog",
-  "version": "2.0.0-preview19",
+  "version": "2.0.0",
   "engines": {
     "node": ">=12.17"
   },
