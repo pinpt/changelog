@@ -71,15 +71,14 @@ export const verbose = (quiet, msg) =>
 const node_modules = findNodeModules();
 
 export const findBin = (name) => {
-  for (let c = 0; c < node_modules.length; c++) {
-    const fn = path.join(node_modules[c], ".bin", name);
+  const _nm = [path.join(__dirname, "../node_modules"), ...node_modules];
+  for (let c = 0; c < _nm.length; c++) {
+    const fn = path.join(_nm[c], ".bin", name);
     if (fs.existsSync(fn)) {
       return fn;
     }
   }
-  throw new Error(
-    `couldn't find binary ${name} in any of ${node_modules.join(", ")}`
-  );
+  throw new Error(`couldn't find binary ${name} in any of ${_nm.join(", ")}`);
 };
 
 const exec = (fn, args, opts) => {
