@@ -183,6 +183,7 @@ export default {
         pageTemplate,
         searchTemplate,
         emailDistDir,
+        staticDistDir,
       },
       config
     );
@@ -267,6 +268,17 @@ const processPage = (site, changelog, flags, pageTemplate, config) => {
   });
 };
 
+const processAssets = (flags, staticDistDir) => {
+  fs.readdirSync(flags.theme)
+    .filter((fn) => /\.(gif|png|jpg|jpeg|webp|mov|mp3|mp4|webm|svg)$/.test(fn))
+    .map((fn) => {
+      const f = path.join(flags.theme, fn);
+      const outfn = path.join(staticDistDir, path.basename(fn));
+      fs.copyFileSync(f, outfn);
+      verbose(flags.quiet, `Copied asset ${path.basename(fn)} to ${outfn}`);
+    });
+};
+
 const processEmail = (
   site,
   changelog,
@@ -308,6 +320,7 @@ const generate = async (changelogs, site, flags, templates, config) => {
     await Promise.all([
       processIndex(site, changelogs, flags, templates.indexTemplate, config), // run index before the others so we get all the styles,
       processSearch(site, flags, templates.searchTemplate, config),
+      processAssets(flags, templates.staticDistDir),
     ]);
   }
   return await changelogs.map(async (changelog) => {

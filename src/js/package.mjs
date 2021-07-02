@@ -32,7 +32,11 @@ export default {
       );
     }
     fs.readdirSync(flags.theme)
-      .filter((fn) => /\.(html|css|hbs|json)$/.test(path.extname(fn)))
+      .filter((fn) =>
+        /\.(html|css|hbs|json|gif|png|jpg|jpeg|webp|mov|mp3|mp4|webm|svg)$/.test(
+          path.extname(fn)
+        )
+      )
       .forEach((name) => {
         const fn = path.join(flags.theme, name);
         const dst = path.join(tmpDir, name);
