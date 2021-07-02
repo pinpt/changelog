@@ -154,6 +154,7 @@ export default {
       host: flags.host,
       staticDistDir,
       flags,
+      config,
     });
 
     const indexTemplate = onlyEmail

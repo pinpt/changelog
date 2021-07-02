@@ -153,6 +153,7 @@ export const registerHelpers = ({
   staticDistDir,
   host,
   flags,
+  config,
 }) => {
   // Adds all the icons from the Solid style into our library for easy lookup
   library.add(fas, fab, far);
@@ -406,15 +407,20 @@ export const registerHelpers = ({
       const changelogIds = args.data.root.changelogs
         ? args.data.root.changelogs.map((ch) => ch.id)
         : [args.data.root.changelog.id];
-      return new Handlebars.SafeString(`<script>if (
-    localStorage.theme === "dark" ||
-    (!("theme" in localStorage) &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
-  ) {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
+      let preamble = "";
+      if (config.features.themeSwitcher) {
+        preamble = `if (
+            localStorage.theme === "dark" ||
+            (!("theme" in localStorage) &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches)
+          ) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }`;
+      }
+      return new Handlebars.SafeString(`<script>
+    ${preamble}
     window.apiURL = "${host}";
     window.siteId = "${siteId}";
     window.changelogId = "${changelogId}";

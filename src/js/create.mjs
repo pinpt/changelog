@@ -49,7 +49,7 @@ export default {
     });
     pkg.name = flags.name || flags.site;
     const version = `^${foundPackage.packageJson.version}`;
-    pkg.changelog.version = version;
+    pkg.changelog.version = "latest";
     pkg.changelog.site = flags.site;
     Object.keys(pkg.scripts).forEach((key) => {
       let value = pkg.scripts[key];
