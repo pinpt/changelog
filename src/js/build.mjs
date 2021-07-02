@@ -109,10 +109,10 @@ export default {
       // or an older legacy theme with no package.json
       const templatePackage = path.join(__dirname, "../template/package.json");
       const pkgJSON = JSON.parse(ensureExists(templatePackage, true));
-      config = {
-        changelog: pkgJSON.changelog,
-      };
+      const { changelog, ...rest } = pkgJSON;
+      config = { ...config, ...changelog, package: rest };
     }
+    debugLog(flags.debug, "Using config: " + JSON.stringify(config));
     let data;
     if (flags.file) {
       data = JSON.parse(ensureExists(flags.file, true));
