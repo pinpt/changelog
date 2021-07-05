@@ -20,13 +20,13 @@
 		
 			<main>
 				<section class="latest">
-					<div class="content">
+					<div class="content-wrapper">
 						<h1>Latest</h1>
 						{{include src="tile.hbs" context=(first changelogs)}}
 					</div>
 				</section>
 				<section class="recent">
-					<div class="content">
+					<div class="content-wrapper">
 						<h1>Recent</h1>
 						{{include src="tiles.hbs" changelogs=(after changelogs 1 6)}}
 					</div>

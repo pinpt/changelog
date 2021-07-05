@@ -18,18 +18,27 @@
 
   /* content */
   --section-bg-color: #FAFAFA; /* gray-50 */
+  --section-border-color: #E4E4E7; /* gray-200 */
+
   --tile-bg-color: white;
   --tile-title-color: var(--page-text-color);
   --tile-date-color: var(--page-secondary-text-color);
   --tile-summary-color: #71717A; /* gray-500 */
   --tile-info-color: var(--page-secondary-text-color);
   --tile-link-color: var(--page-tertiary-text-color);
+  
+  --article-bg-color: var(--page-bg-color);
+  --article-info-color: #71717A; /* gray-500 */
+  --article-link-color: var(--page-tertiary-text-color);
+  --article-border-color: var(--section-border-color);
+  --article-block-bg-color: var(--section-bg-color);
 
   /* footer */
   --footer-bg-color: #18181B; /* gray-900 */
+  --footer-text-color: #71717A; /* gray-500 */
 }
 
-/* dark theme */
+/* dark theme override */
 .dark:root {
   /* page */
   --page-bg-color: #111827;
@@ -37,16 +46,14 @@
   --page-secondary-text-color: #A1A1AA; /* gray-400 */
   --page-tertiary-text-color: #818CF8; /* indigo-400 */
 
-
-  /* header */
-  /* --header-bg-color: var(--page-bg-color); */
-  /* --header-title-color: var(--page-text-color); */
-  /* --header-title-color: var(--page-secondary-text-color); */
-
   /* content */
   --section-bg-color: #141D2E;
+  --section-border-color: #3F3F46; /* gray-700 */
+
   --tile-bg-color: #20293b;
   --tile-summary-color: #D4D4D8; /* gray-300 */
+
+  --article-info-color: #D4D4D8; /* gray-300 */
 
   /* footer */
   --footer-bg-color: black;
@@ -58,12 +65,13 @@
  */
 
 body {
-  @apply transition-colors duration-300;
+  @apply transition-colors duration-200;
   background-color: var(--page-bg-color);
   color: var( --page-text-color);
 }
 
 h1, h2, h3, h4 {
+  @apply font-semibold;
   color: var( --page-text-color);
 }
 
@@ -74,10 +82,9 @@ h1, h2, h3, h4 {
 }
 
 /* content wraps inside sections to allow center alignment */
-.content {
+.content-wrapper{
   @apply mx-auto px-8 md:px-10 max-w-7xl w-full flex-shrink-0;
 }
-
 
 
 /**
@@ -85,10 +92,11 @@ h1, h2, h3, h4 {
  */
 
 .toolbar {
-  @apply py-5;
+  @apply py-5 transition-colors duration-200;
+  background-color: var(--header-bg-color);
 }
 
-.toolbar > .content {
+.toolbar > .content-wrapper {
   @apply w-full flex justify-between items-center;
 }
 
@@ -125,16 +133,23 @@ h1, h2, h3, h4 {
  */
 
 header {
-  @apply py-8 w-full mx-auto flex items-center justify-center;
+  @apply py-8 w-full mx-auto flex items-center justify-center transition-colors duration-200;
+  background-color: var(--header-bg-color);
 }
 
-header .content {
+header .content-wrapper {
   @apply flex-grow flex flex-col items-center;
 }
 
 header .title {
   @apply text-4xl md:text-5xl font-extrabold;
   color: var(--header-title-color);
+}
+header .title:hover {
+  filter: brightness(1.3);
+}
+.dark header .title:hover {
+  filter: brightness(0.7);
 }
 
 header .description {
@@ -143,7 +158,7 @@ header .description {
 }
 
 header .subscribe {
-  @apply mt-4 text-center inline-flex items-center text-sm transition-all duration-300;
+  @apply mt-4 text-center inline-flex items-center text-sm transition-all duration-200;
   color: var(--header-subscribe-color);
 }
 header .subscribe:hover {
@@ -168,7 +183,7 @@ footer {
   background-color: var(--footer-bg-color);
 }
 
-footer > .content {
+footer > .content-wrapper {
   @apply w-full flex flex-col md:flex-row justify-start md:justify-between;
 }
 
@@ -177,10 +192,13 @@ footer p {
 }
 
 footer a {
-  @apply hover:text-indigo-100 transition-all duration-300;
+  @apply transition-all duration-200;
+}
+footer a:hover {
+  filter: brightness(1.5);
 }
 
-footer > .content > .right {
+footer > .content-wrapper > .right {
   @apply flex flex-col items-center md:items-end mt-8 md:mt-12;
 }
 
@@ -193,7 +211,7 @@ footer .subscribe {
 }
 
 footer .subscribe .icon {
-  @apply mr-2;
+  @apply mt-px mr-2;
 }
 
 footer .social {
@@ -231,6 +249,9 @@ footer .powered-by {
 footer .powered-by a {
   @apply text-sm inline-flex items-center text-gray-500 hover:text-indigo-500;
 }
+footer .powered-by a:hover {
+  filter: none;
+}
 
 
 /**
@@ -246,12 +267,12 @@ main {
  * home page and tiles
  */
 
-.home > main .content {
+.home > main .content-wrapper {
   @apply mx-auto flex flex-col md:flex-row items-start;
 }
 
 .home main .latest {
-  @apply py-14 transition-colors duration-300;
+  @apply py-14 transition-colors duration-200;
   background-color: var(--section-bg-color);
 }
 
@@ -269,7 +290,7 @@ main {
 }
 
 .tile {
-  @apply h-full rounded-lg shadow-md hover:shadow-lg overflow-hidden flex flex-col transition-shadow duration-300;
+  @apply h-full rounded-lg shadow-md hover:shadow-lg overflow-hidden flex flex-col transition-shadow duration-200;
   background-color: var(--tile-bg-color);
 }
 
@@ -290,7 +311,7 @@ div.latest .tile {
 }
 
 .tile > .container > h2 {
-  @apply text-lg font-semibold transition-colors duration-300;
+  @apply text-lg font-semibold transition-colors duration-200;
 }
 
 .tile:hover > .container > h2 {
@@ -348,86 +369,87 @@ div.latest .tile {
 
 
 /**
- * article aside
+ * article container and aside
  */
 
-.page > main > .content > section {
-  @apply pt-14 md:py-20 flex flex-col md:flex-row border-t border-gray-200 dark:border-gray-700;
+.page > main > .content-wrapper > section {
+  @apply pt-14 md:py-20 flex flex-col md:flex-row border-t;
+  border-color: var(--section-border-color);
 }
 
 .page main aside {
-  @apply text-gray-600 dark:text-gray-300;
+  color: var(--article-info-color);
 }
 
-main aside.left {
+.page main aside.left {
   @apply mb-10 flex md:flex-col justify-between md:justify-start items-center md:items-start md:mb-0 md:w-1/4 md:mr-4 flex-shrink-0;
 }
 
-main aside .back {
+.page main aside .back {
   @apply mb-10 hidden md:block;
 }
 
-main aside .date {
+.page main aside .date {
   @apply text-base font-semibold;
 }
 
-main aside .authors {
+.page main aside .authors {
   @apply md:mt-6;
 }
 
-main aside .author {
+.page main aside .author {
   @apply flex flex-row items-center;
 }
 
-main aside .author .avatar {
+.page main aside .author .avatar {
   @apply mr-2;
 }
 
-main aside .author .name {
+.page main aside .author .name {
   @apply whitespace-nowrap;
 }
 
-main aside.left .taglist {
+.page main aside.left .taglist {
   @apply hidden md:flex mt-6 sm:mt-10;
 }
 
-main aside .highfive {
-  @apply relative cursor-pointer flex items-center w-10 select-none text-gray-400 dark:text-gray-400;
+.page main aside .highfive {
+  @apply relative cursor-pointer flex items-center w-10 select-none;
 }
 
-main aside.left .highfive {
+.page main aside.left .highfive {
   @apply hidden md:flex mt-8;
 }
 
-main aside .highfive .image {
+.page main aside .highfive .image {
   @apply w-12 h-12 inline-flex items-center justify-center transition-all;
 }
 
-main aside .highfive .image.animating {
-  @apply text-indigo-500;
+.page main aside .highfive .image.animating {
+  color: var(--page-tertiary-color);
 }
 
-main aside .highfive .counter {
+.page main aside .highfive .counter {
   @apply ml-2 opacity-100 transition-all select-none;
 }
 
-main aside .highfive .counter.animating {
+.page main aside .highfive .counter.animating {
   @apply opacity-0;
 }
 
-main aside .highfive .counter-animation {
+.page main aside .highfive .counter-animation {
   @apply opacity-0 -left-10 transition-all absolute bg-gray-700 rounded-full px-3 top-2 text-white text-sm py-1 select-none;
 }
 
-main aside .highfive .counter-animation.animating {
+.page main aside .highfive .counter-animation.animating {
   @apply opacity-100 left-12;
 }
 
-main aside.bottom {
+.page main aside.bottom {
   @apply mb-10 flex md:hidden justify-between items-center;
 }
 
-main > .content > article {
+.page article {
   @apply min-w-0;
 }
 
@@ -449,48 +471,6 @@ main > .content > article {
 
 section.bottom {
   @apply block md:hidden mb-2 text-center;
-}
-
-
-/**
- * search results
- **/
-.loader {
-  @apply absolute left-0 top-0 right-0 bottom-0 flex items-center justify-center dark:text-white text-[#111827];
-  background-color: var(--page-bg-color);
-}
-
-.loader .inner {
-  @apply w-12 h-12 dark:border-white border-[#111827] border-3 rounded-full animate-ping;
-}
-
-.search-results > main {
-   @apply py-14 transition-colors duration-300;
-   background-color: var(--section-bg-color);
- }
-
- .search-results > main .content h1 {
-  @apply mb-8 text-2xl font-semibold text-gray-700 dark:text-white;
-}
-
-.search-results .filters {
-  @apply mb-14;
-}
-
-.no-results {
-  @apply mt-20 md:mt-28 flex flex-col items-center;
-}
-
-.no-results h2 {
-  @apply mb-10 text-4xl font-semibold text-gray-700 dark:text-white;
-}
-
-.no-results a {
-  @apply flex items-center text-gray-500 dark:text-gray-400;
-}
-
-.no-results a .icon {
-  @apply mr-2;
 }
 
 
@@ -523,15 +503,22 @@ article.changelog {
 }
 
 article.changelog div.iframe_node {
-  @apply my-8 p-3 border bg-gray-50 rounded dark:border-black dark:bg-[#0e1421];
+  @apply my-8 p-3 border rounded;
+  background-color: var(--article-block-bg-color);
+  border-color: var(--article-border-color);
 }
 
 article.changelog .ProseMirror .hr > div > hr {
-  @apply border-gray-200 dark:border-gray-700;
+  border-color: var(--article-border-color);
+}
+
+article.changelog .ProseMirror .toggle > .options > .icon {
+  background-color: var(--article-bg-color);
 }
 
 main .changelog > section p > a[href]:not(.mark-color) {
-  @apply text-indigo-600 dark:text-indigo-400 underline;
+  @apply underline;
+  color: var(--article-link-color);
 }
 
 .main .changelog > section mark a[href],
@@ -541,10 +528,55 @@ main .changelog > section p > a[href]:not(.mark-color) {
 
 
 /**
+ * search results
+ **/
+ .loader {
+  @apply absolute left-0 top-0 right-0 bottom-0 flex items-center justify-center;
+  background-color: var(--page-bg-color);
+  color: var(--page-text-color);
+}
+
+.loader .inner {
+  @apply w-12 h-12 border-3 rounded-full animate-ping;
+  border-color: var(--page-text-color);
+}
+
+.search-results > main {
+   @apply py-14 transition-colors duration-200;
+   background-color: var(--section-bg-color);
+ }
+
+ .search-results > main .content-wrapper h1 {
+  @apply mb-8 text-2xl;
+}
+
+.search-results .filters {
+  @apply mb-14;
+}
+
+.no-results {
+  @apply mt-20 md:mt-28 flex flex-col items-center;
+}
+
+.no-results h2 {
+  @apply mb-10 text-4xl;
+}
+
+.no-results a {
+  @apply flex items-center;
+  color: var(--page-secondary-text-color);
+}
+
+.no-results a .icon {
+  @apply mr-2;
+}
+
+
+/**
  * coming soon
  */
 
-.home > main .coming-soon > .content {
+.home > main .coming-soon > .content-wrapper {
   @apply flex-col items-center;
 }
 
