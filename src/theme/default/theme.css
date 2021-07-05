@@ -158,7 +158,7 @@ header .description {
 }
 
 header .subscribe {
-  @apply mt-4 text-center inline-flex items-center text-sm transition-all duration-200;
+  @apply mt-4 text-center inline-flex items-center text-sm transition-colors duration-200;
   color: var(--header-subscribe-color);
 }
 header .subscribe:hover {
@@ -192,7 +192,7 @@ footer p {
 }
 
 footer a {
-  @apply transition-all duration-200;
+  @apply transition-colors duration-200;
 }
 footer a:hover {
   filter: brightness(1.5);
@@ -282,7 +282,7 @@ main {
 
 .home main .latest h1,
 .home main .recent h1 {
-  @apply flex-shrink-0 mb-10 md:mb-0 w-auto md:w-1/4 mr-0 md:mr-4 text-2xl font-semibold;
+  @apply flex-shrink-0 mb-10 md:mb-0 w-auto md:w-1/4 mr-0 md:mr-4 text-2xl;
 }
 
 .tiles {
@@ -311,7 +311,7 @@ div.latest .tile {
 }
 
 .tile > .container > h2 {
-  @apply text-lg font-semibold transition-colors duration-200;
+  @apply text-lg transition-colors duration-200;
 }
 
 .tile:hover > .container > h2 {
@@ -585,7 +585,7 @@ main .changelog > section p > a[href]:not(.mark-color) {
 }
 
 .coming-soon h1 {
-  @apply text-2xl font-semibold text-center;
+  @apply text-2xl text-center;
 }
 
 .coming-soon .image {
