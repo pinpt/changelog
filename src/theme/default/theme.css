@@ -321,6 +321,7 @@ div.latest .tile {
 
 .tile > .container > h2 {
   @apply text-lg transition-colors duration-200;
+  color: var(--tile-title-color);
 }
 
 .tile:hover > .container > h2 {
