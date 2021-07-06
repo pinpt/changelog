@@ -1,28 +1,27 @@
 <div class="legal">
-  <p class="links">
-    {{#if site.theme.privacyLink}}
-      <a href="{{site.theme.privacyLink}}">
-        Privacy Policy
-      </a>
-    {{/if}}
-    {{#if site.theme.eulaLink}}
-      <a href="{{site.theme.eulaLink}}">
-        EULA
-      </a>
-    {{/if}}
-    {{#if site.theme.tosLink}}
-      <a href="{{site.theme.tosLink}}">
-        Terms of Service
-      </a>
-    {{/if}}
-  </p>
-  <p class="copyright">
-    {{site.theme.copyright}}
-  </p>
-  <p class="powered-by">
-    <a href="https://changelog.so/?utm_source=referral&utm_campaign={{site.id}}">
-      {{logo width="22" height="21"}}
-      <span class="ml-2">Powered by Changelog</span>
-    </a>
-  </p>
+	{{#if site.logoUrl}}
+		<a href="{{site.theme.logoLink}}" class="logo">
+			<img src="{{site.logoUrl}}" alt="Back to website" />
+		</a>
+	{{/if}}
+	<p class="copyright">
+		{{site.theme.copyright}}
+	</p>
+	<p class="links">
+		{{#if site.theme.privacyLink}}
+		<a href="{{site.theme.privacyLink}}">
+			Privacy Policy
+		</a>
+		{{/if}}
+		{{#if site.theme.eulaLink}}
+		<a href="{{site.theme.eulaLink}}">
+			EULA
+		</a>
+		{{/if}}
+		{{#if site.theme.tosLink}}
+		<a href="{{site.theme.tosLink}}">
+			Terms of Service
+		</a>
+		{{/if}}
+	</p>
 </div>

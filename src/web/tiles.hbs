@@ -1,9 +1,5 @@
-<section class="tiles">
-  <div class="container">
-    <div class="grid">
-      {{#each changelogs}}
-        {{include src="tile.hbs" context=.}}
-      {{/each}}
-    </div>
-  </div>
-</section>
+<div class="tiles">
+	{{#each changelogs}}
+		{{include src="tile.hbs" context=.}}
+	{{/each}}
+</div>

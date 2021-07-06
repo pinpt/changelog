@@ -1,11 +1,24 @@
 <div class="toolbar">
-  {{#if config.web.features.themeSwitcher}}
-  <div class="theme-switch">
-    <button class="mode"></button>
-  </div>
-  {{/if}}
-  {{include src="search.hbs"}}
-  <div class="home-button">
-    <a href="/">{{fontawesome-icon icon="home"}}</a>
-  </div>
+
+	<div class="content-wrapper">
+	
+		<div class="left">
+			{{#if site.logoUrl}}
+				<a href="{{site.theme.logoLink}}" class="logo">
+					<img src="{{site.logoUrl}}" alt="Back to website" />
+				</a>
+			{{/if}}
+		</div>
+	
+		<div class="right">
+			{{include src="search.hbs"}}
+			{{#if config.web.features.themeSwitcher}}
+				<div class="theme-switch">
+					<button class="mode"></button>
+				</div>
+			{{/if}}
+		</div>
+
+	</div>
+	
 </div>

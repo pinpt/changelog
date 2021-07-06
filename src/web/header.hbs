@@ -1,33 +1,19 @@
 <header>
-  <aside>
-    <section></section>
-  </aside>
 
-  <div class="content">
-    {{#if site.logoUrl}}
-      <a href="{{site.theme.logoLink}}" class="logo">
-        <img src="{{site.logoUrl}}" alt="" />
-      </a>
-    {{/if}}
+	<div class="content-wrapper">
 
-    <a href="/" class="title">
-      {{site.theme.title}}
-    </a>
+		<a href="/" class="title">
+			<h1>{{site.theme.title}}</h1>
+		</a>
 
-    <div
-      class="description"
-    >
-      {{site.theme.description}}
-    </div>
+		{{#if site.theme.description}}
+			<div class="description">
+				{{site.theme.description}}
+			</div>
+		{{/if}}
 
-    <div class="subscribe">
-      <a href="{{site.url}}/subscription/subscribe/{{site.id}}">
-        <span class="icon">{{fontawesome-icon
-            prefix="far"
-            icon="envelope"
-          }}</span>
-        Subscribe to updates
-      </a>
-    </div>
-  </div>
+		{{include src="subscribe.hbs"}}
+
+	</div>
+
 </header>

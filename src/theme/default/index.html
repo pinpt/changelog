@@ -1,31 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    {{include src="head.hbs"}}
-  </head>
-  <body>
-    <div class="home">
-      <div class="container">
-        <div>{{include src="toolbar.hbs"}}</div>
-        {{include src="header.hbs"}}
-        <main class="changelogs-{{len changelogs}}">
-          {{#if (empty changelogs)}}
-            <div class="coming-soon">
-              {{include src="comingsoon.hbs" context=.}}
-            </div>
-          {{else}}
-            <div class="latest">
-              <h1>Latest</h1>
-              {{include src="tile.hbs" context=(first changelogs)}}
-            </div>
-            <div class="recent">
-              <h1>Recent</h1>
-              {{include src="tiles.hbs" changelogs=(after changelogs 1 6)}}
-            </div>
-          {{/if}}
-        </main>
-      </div>
-      {{include src="footer.hbs"}}
-    </div>
-  </body>
+
+<head>
+	{{include src="head.hbs"}}
+</head>
+
+<body class="preload">
+
+	<div class="home">
+
+		{{include src="toolbar.hbs"}}
+		{{include src="header.hbs"}}
+
+		{{#if (empty changelogs)}}
+		
+			{{include src="comingsoon.hbs" context=.}}
+		
+		{{else}}
+		
+			<main>
+				<section class="latest">
+					<div class="content-wrapper">
+						<h1>Latest</h1>
+						{{include src="tile.hbs" context=(first changelogs)}}
+					</div>
+				</section>
+				<section class="recent">
+					<div class="content-wrapper">
+						<h1>Recent</h1>
+						{{include src="tiles.hbs" changelogs=(after changelogs 1 6)}}
+					</div>
+				</section>
+				
+			</main>
+
+		{{/if}}
+
+		{{include src="footer.hbs"}}
+
+	</div>
+
+</body>
+
 </html>
