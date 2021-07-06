@@ -1,0 +1,33 @@
+{
+  "name": "theme",
+  "description": "My Theme",
+  "version": "1.0.0",
+  "license": "MIT",
+  "changelog": {
+    "version": "latest",
+    "email": {
+      "features": {}
+    },
+    "web": {
+      "features": {
+        "themeSwitcher": true,
+        "search": true,
+        "tags": true,
+        "tagFilter": true,
+        "authors": true,
+        "claps": true,
+        "pageviews": true,
+        "highfive": true,
+        "social": true
+      }
+    }
+  },
+  "scripts": {
+    "build": "npx @pinpt/changelog build --site SITE --theme .",
+    "dev": "npx @pinpt/changelog dev --site SITE  --theme .",
+    "package": "npx @pinpt/changelog package --site SITE"
+  },
+  "dependencies": {
+    "@pinpt/changelog": "^2.0.0"
+  }
+}

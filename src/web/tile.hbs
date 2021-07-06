@@ -27,18 +27,22 @@
 					<path d="M12 5l7 7-7 7"></path>
 				</svg>
 			</span>
-			<span class="pageviews">
-				<svg stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
-					viewBox="0 0 24 24">
-					<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-					<circle cx="12" cy="12" r="3"></circle>
-				</svg>
-				<span class="count">{{compactInteger stats.pageviews}}</span>
-			</span>
-			<span class="claps">
-				{{include src="clap.hbs"}}
-				<span class="count">{{compactInteger stats.claps}}</span>
-			</span>
+			{{#if config.web.features.pageviews}}
+				<span class="pageviews">
+					<svg stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
+						viewBox="0 0 24 24">
+						<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+						<circle cx="12" cy="12" r="3"></circle>
+					</svg>
+					<span class="count">{{compactInteger stats.pageviews}}</span>
+				</span>
+			{{/if}}
+			{{#if config.web.features.claps}}
+				<span class="claps">
+					{{include src="clap.hbs"}}
+					<span class="count">{{compactInteger stats.claps}}</span>
+				</span>
+			{{/if}}
 		</section>
 	</div>
 </a>

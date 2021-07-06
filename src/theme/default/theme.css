@@ -359,6 +359,10 @@ div.latest .tile {
   @apply ml-2;
 }
 
+.tile > .container section .stats {
+  @apply flex items-center ml-auto;
+}
+
 .tile > .container section .pageviews {
   @apply mr-3 pr-3 py-1 inline-flex items-center ml-auto leading-none text-sm;
 }

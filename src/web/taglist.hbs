@@ -1,14 +1,16 @@
+{{#if config.web.features.tags}}
 <div class="taglist">
 	{{#each changelog.tagColors}}
-		<span
-			class="tag clickable tag-{{tag}}"
-			style="background-color:{{backgroundColor}};color:{{color}};"
-			data-tag="{{tag}}"
-			data-color="{{color}}"
-			data-background="{{backgroundColor}}"
-			data-border="{{border}}"
-		>
-			{{tag}}
-		</span>
+	<span
+		class="tag {{#if ../config.web.features.tagFilter}}clickable{{/if}} tag-{{tag}}"
+		style="background-color:{{backgroundColor}};color:{{color}}"
+		data-tag="{{tag}}"
+		data-color="{{color}}"
+		data-background="{{backgroundColor}}"
+		data-border="{{border}}"
+	>
+		{{tag}}
+	</span>
 	{{/each}}
 </div>
+{{/if}}

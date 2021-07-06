@@ -90,51 +90,51 @@ html.dark button {
 /**
  * YouTube embed
  **/
- .yt {
-	@apply relative bg-cover bg-center cursor-pointer bg-black;
+.yt {
+  @apply relative bg-cover bg-center cursor-pointer bg-black;
 }
 /* gradient */
 .yt::before {
-	@apply block absolute top-0 w-full bg-top bg-repeat-x;
-	content: '';
-	height: 60px;
-	padding-bottom: 50px;
-	transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
+  @apply block absolute top-0 w-full bg-top bg-repeat-x;
+  content: "";
+  height: 60px;
+  padding-bottom: 50px;
+  transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
 }
 /* responsive iframe with a 16:9 aspect ratio (https://css-tricks.com/responsive-iframes */
 .yt::after {
-	@apply block;
-	content: '';
-	padding-bottom: calc(100% / (16 / 9));
+  @apply block;
+  content: "";
+  padding-bottom: calc(100% / (16 / 9));
 }
 .yt > iframe {
-	@apply absolute top-0 left-0 w-full h-full border-0;
+  @apply absolute top-0 left-0 w-full h-full border-0;
 }
 .yt > .yt-play-button {
-	@apply absolute cursor-pointer top-1/2 left-1/2 border-none ring-0;
-	width: 68px;
-	height: 48px;
-	transform: translate3d(-50%, -50%, 0);
-	z-index: 1;
-	background-color: transparent;
-	/* YT's actual play button svg */
-	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 68 48"><path fill="%23f00" fill-opacity="0.8" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"></path><path d="M 45,24 27,14 27,34" fill="%23fff"></path></svg>');
-	filter: grayscale(100%);
-	transition: filter 0.1s cubic-bezier(0, 0, 0.2, 1);
+  @apply absolute cursor-pointer top-1/2 left-1/2 border-none ring-0;
+  width: 68px;
+  height: 48px;
+  transform: translate3d(-50%, -50%, 0);
+  z-index: 1;
+  background-color: transparent;
+  /* YT's actual play button svg */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 68 48"><path fill="%23f00" fill-opacity="0.8" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"></path><path d="M 45,24 27,14 27,34" fill="%23fff"></path></svg>');
+  filter: grayscale(100%);
+  transition: filter 0.1s cubic-bezier(0, 0, 0.2, 1);
 }
 .yt:hover > .yt-play-button,
 .yt .yt-play-button:focus {
-	@apply ring-0;
-	filter: none;
+  @apply ring-0;
+  filter: none;
 }
 /* Post-click styles */
 .yt.activated {
-	cursor: unset;
+  cursor: unset;
 }
 .yt.activated::before,
 .yt.activated > .yt-play-button {
-	opacity: 0;
-	pointer-events: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /**  notebook **/
@@ -146,7 +146,6 @@ html.dark button {
   @apply flex flex-col items-start max-w-4xl w-full min-h-screen mx-auto;
   text-rendering: optimizeLegibility;
 }
-
 
 /**
  * Notebook Editor
@@ -161,9 +160,6 @@ html.dark button {
 .notebook-editor > .ProseMirror {
   @apply relative w-full px-6 sm:px-24 overflow-visible outline-none break-words whitespace-pre-wrap leading-8 text-gray-700 dark:text-gray-300; /* room for yjs cursor */
 }
-
-
-
 
 .ProseMirror > strong,
 .ProseMirror > b {
@@ -217,13 +213,13 @@ html.dark button {
 .ProseMirror h2,
 .ProseMirror h3,
 .ProseMirror .heading {
-	@apply text-gray-800 dark:text-gray-200 font-semibold;
+  @apply text-gray-800 dark:text-gray-200 font-semibold;
 }
 .ProseMirror .heading .anchor {
-	@apply absolute right-full mt-1 pr-4 hidden opacity-50 text-xl;
+  @apply absolute right-full mt-1 pr-4 hidden opacity-50 text-xl;
 }
 .ProseMirror .heading:hover .anchor {
-	@apply block;
+  @apply block;
 }
 
 .ProseMirror h1 {
@@ -389,7 +385,6 @@ html.dark button {
   @apply w-full;
   min-height: 2rem;
 }
-
 
 /**
  * Code / Code Block
@@ -889,7 +884,6 @@ html.dark button {
   @apply text-orange-600 dark:text-orange-400;
 }
 
-
 /**
  * Image
  **/
@@ -1155,7 +1149,7 @@ html.dark button {
 .ProseMirror .iframe .content .preview.small .description {
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;  
+  -webkit-box-orient: vertical;
   overflow: hidden;
 }
 .ProseMirror .iframe .content .preview.large .thumbnail {
@@ -1238,8 +1232,6 @@ html.dark button {
   content: attr(data-empty-text);
 }
 
-
-
 .visuallyHidden {
   position: absolute !important;
   height: 1px;
@@ -1248,8 +1240,6 @@ html.dark button {
   clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
   clip: rect(1px, 1px, 1px, 1px);
 }
-
-
 
 .ProseMirror .inline-image {
   @apply relative inline-block align-middle;
@@ -1427,7 +1417,7 @@ article hr.divider {
 .mode::before {
   height: 100%;
   content: "";
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='#fff' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cpath d='M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='#999' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cpath d='M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42'/%3E%3C/svg%3E");
   background-size: cover;
   background-repeat: no-repeat;
   background-size: 50%;
@@ -1450,7 +1440,7 @@ html.dark .mode::after {
 }
 
 html.dark .mode::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='#fff' stroke-width='2' fill='#fff' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1' viewBox='0 0 24 24'%3E%3Cpath d='M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='#999' stroke-width='2' fill='#999' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1' viewBox='0 0 24 24'%3E%3Cpath d='M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z'/%3E%3C/svg%3E");
   transform: translateX(26px);
 }
 

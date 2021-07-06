@@ -12,9 +12,13 @@
 	
 		<div class="right">
 			{{include src="search.hbs"}}
-			<div class="theme-switch">
-				<button class="mode"></button>
-			</div>
+			{{#if config.web.features.themeSwitcher}}
+				<div class="theme-switch">
+					<button class="mode"></button>
+				</div>
+			{{/if}}
 		</div>
+
 	</div>
+	
 </div>
