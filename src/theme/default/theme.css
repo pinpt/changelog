@@ -243,10 +243,6 @@ footer .legal .links {
   @apply flex justify-center items-center md:justify-start flex-row divide-x divide-gray-700 space-x-2;
 }
 
-footer .legal .address {
-  @apply mt-1;
-}
-
 footer .legal .links a:not(:first-child) {
   @apply pl-2;
 }
