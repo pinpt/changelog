@@ -440,7 +440,10 @@ export const registerHelpers = ({
 
     Handlebars.registerHelper("cover_image_url", function (changelog) {
       if (changelog.cover_image) {
-        return changelog.cover_image;
+        const u = new URL(changelog.cover_image);
+        u.searchParams.set("rw", "600");
+        u.searchParams.set("rh", "314");
+        return new Handlebars.SafeString(u.toString());
       }
       return "";
     });
