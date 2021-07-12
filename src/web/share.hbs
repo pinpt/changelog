@@ -1,0 +1,46 @@
+{{#if config.web.features.share}}
+<div class="share">
+	<a
+		class="share-button twitter"
+		aria-label="Share on Twitter"
+		title="Share on Twitter"
+		target="_blank"
+		rel="noopener nofollower"
+		href="https://twitter.com/intent/tweet/?text={{site.name}} - {{changelog.title}}&amp;url={{changelog.url}}"
+	>
+		<span>
+			{{fontawesome-icon prefix="fab" icon="twitter"}}
+		</span>
+	</a>
+	<a
+		class="share-button facebook"
+		aria-label="Share on Facebook"
+		title="Share on Facebook"
+		target="_blank"
+		rel="noopener nofollower"
+		href="https://facebook.com/sharer/sharer.php?u={{changelog.url}}"
+	>
+		{{fontawesome-icon prefix="fab" icon="facebook-f"}}
+	</a>
+	<a
+		class="share-button linkedin"
+		ria-label="Share on LinkedIn"
+		title="Share on LinkedIn"
+		target="_blank"
+		rel="noopener nofollower"
+		href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{changelog.url}}&amp;title={{site.name}} - {{changelog.title}}&amp;summary={{changelog.headline}}"
+	>
+		{{fontawesome-icon prefix="fab" icon="linkedin-in"}}
+	</a>
+	<a
+		class="share-button email"
+		ria-label="Share by Email"
+		title="Share by Email"
+		target="_blank"
+		rel="noopener nofollower"
+		href="mailto:?subject={{site.name}} - {{changelog.title}}&amp;body={{site.name}} - {{changelog.title}}%0D%0A{{changelog.headline}}%0D%0A{{changelog.url}}"
+	>
+		{{fontawesome-icon icon="envelope"}}
+	</a>
+</div>
+{{/if}}
