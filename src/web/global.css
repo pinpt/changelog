@@ -216,10 +216,10 @@ html.dark button {
   @apply text-gray-800 dark:text-gray-200 font-semibold;
 }
 .ProseMirror .heading .anchor {
-  @apply absolute right-full mt-1.5 pr-2 hidden opacity-50 text-base;
+  @apply absolute right-full mt-1.5 pr-2 invisible opacity-50 text-base;
 }
 .ProseMirror .heading:hover .anchor {
-  @apply block;
+  @apply visible;
 }
 
 .ProseMirror h1 {
