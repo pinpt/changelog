@@ -8,8 +8,7 @@
   --page-bg-color: white;
   --page-text-color: #3F3F46; /* gray-700 */
   --page-secondary-text-color: #A1A1AA; /* gray-400 */
-  --page-tertiary-text-color: #6366F1; /* indigo-500 */ /* deprecated -> page-highlight-color */
-  --page-highlight-color: var(--page-tertiary-text-color);
+  --page-highlight-color: #6366F1; /* indigo-500 */
 
   /* header */
   --header-bg-color: var(--page-bg-color);
@@ -46,7 +45,7 @@
   --page-bg-color: #18181B; /* gray-900 */
   --page-text-color: #F4F4F5; /* gray-100 */
   --page-secondary-text-color: #A1A1AA; /* gray-400 */
-  --page-tertiary-text-color: #818CF8; /* indigo-400 */
+  --page-highlight-color: #818CF8; /* indigo-400 */
 
   /* content */
   --section-bg-color: #202023; /* gray-850 */
@@ -438,7 +437,7 @@ div.latest .tile {
 }
 
 .page main aside .highfive .image.animating {
-  color: var(--page-tertiary-color);
+  color: var(--page-highlight-color);
 }
 
 .page main aside .highfive .counter {
