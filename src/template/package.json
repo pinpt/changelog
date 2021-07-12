@@ -18,6 +18,7 @@
         "claps": true,
         "pageviews": true,
         "highfive": true,
+        "share": true,
         "social": true
       }
     }
