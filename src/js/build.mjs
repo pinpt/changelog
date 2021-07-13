@@ -222,15 +222,24 @@ const minifyAndWriteHTML = (fn, buf, quiet) => {
   });
 };
 
-const processIndex = (site, changelogs, flags, indexTemplate, config) => {
+const processIndex = (site, changelogs, flags, indexTemplate, page, pages, config) => {
+  debugLog(flags.debug, `Generating index page ${page} of ${pages} with ${changelogs.length} changelogs`);
+
+  const previousUrl = page === 2 ? '/' : page > 2 ? `/entries?page=${page - 1}` : undefined;
+  const nextUrl = page < pages ? `/entries?page=${page + 1}` : undefined;
+
   return new Promise((resolve, reject) => {
     const buf = indexTemplate({
       site,
       changelogs,
       url: site.url,
+      page,
+      pages,
+      previousUrl,
+      nextUrl,
       config,
     });
-    const fn = path.join(flags.output, "index.html");
+    const fn = path.join(flags.output, `index${page > 1 ? `_${page}` : ''}.html`);
     minifyAndWriteHTML(fn, buf, flags.quiet).then(resolve).catch(reject);
   });
 };
@@ -258,7 +267,7 @@ const processSearch = (site, flags, searchTemplate, config) => {
   });
 };
 
-const processPage = (site, changelog, flags, pageTemplate, config) => {
+const processPage = (site, changelog, nextChangelog, previousChangelog, flags, pageTemplate, config) => {
   if (!pageTemplate) {
     return Promise.resolve();
   }
@@ -267,6 +276,10 @@ const processPage = (site, changelog, flags, pageTemplate, config) => {
       site,
       changelog,
       url: changelog.url,
+      nextUrl: nextChangelog?.url,
+      nextTitle: nextChangelog?.title,
+      previousUrl: previousChangelog?.url,
+      previousTitle: previousChangelog?.title,
       config,
     });
     const basefn = path.join(flags.output, "entry", changelog.id + ".html");
@@ -339,19 +352,43 @@ const generate = async (changelogs, site, flags, templates, config) => {
     return;
   }
   if (flags.index) {
+    const FIRST_PAGE_SIZE = 11;
+    const PAGE_SIZE = 10;
+    const pages = changelogs.length > FIRST_PAGE_SIZE ? Math.ceil((changelogs.length - FIRST_PAGE_SIZE) / PAGE_SIZE) + 1 : 1;
+
+    debugLog(flags.debug, `${changelogs.length} changelogs found, generating ${pages} index pages`);
+
     await Promise.all([
-      processIndex(site, changelogs, flags, templates.indexTemplate, config), // run index before the others so we get all the styles,
+      processIndex(site, changelogs.slice(0, Math.min(changelogs.length, FIRST_PAGE_SIZE)), flags, templates.indexTemplate, 1, pages, config), // run index before the others so we get all the styles,
       processSearch(site, flags, templates.searchTemplate, config),
       processAssets(flags, templates.staticDistDir),
     ]);
+
+    if (pages > 1) {
+      const remainingChangelogs = changelogs.slice(FIRST_PAGE_SIZE);
+      let page = 2;
+      for (let i = 0; i < remainingChangelogs.length; i += PAGE_SIZE) {
+        processIndex(site, remainingChangelogs.slice(i, i + PAGE_SIZE), flags, templates.indexTemplate, page, pages, config);
+        page += 1;
+      }
+    }
   }
-  return await changelogs.map(async (changelog) => {
+
+  return await changelogs.map(async (changelog, index) => {
     debugLog(
       flags.debug,
       `processing changelog ${changelog.id} ${changelog.title}`
     );
     return await Promise.all([
-      await processPage(site, changelog, flags, templates.pageTemplate, config),
+      await processPage(
+        site,
+        changelog,
+        index < changelogs.length - 1 ? changelogs[index + 1] : undefined, // next changelog
+        index > 0 ? changelogs[index - 1] : undefined, // previous changelog
+        flags,
+        templates.pageTemplate,
+        config
+      ),
       flags.email
         ? await processEmail(
             site,

@@ -44,6 +44,24 @@ export default {
       );
       resp.send(fs.readFileSync(fn));
     });
+    app.get("/entries", (req, resp) => {
+      if (req.query.page && req.query.page !== "1") {
+        const fn = path.join(distDir, "index_" + req.query.page + ".html");
+        if (!fs.existsSync(fn)) {
+          resp.status(404).end();
+          return;
+        }
+        resp.set("Content-Type", "text/html");
+        resp.set(
+          "Cache-Control",
+          "public, max-age=0, must-revalidate, stale-if-error=0"
+        );
+        resp.send(fs.readFileSync(fn));
+      } else {
+        resp.redirect("/");
+        return;
+      }      
+    });
     app.get("/search", (_req, resp) => {
       const fn = path.join(distDir, "search.html");
       resp.set("Content-Type", "text/html");

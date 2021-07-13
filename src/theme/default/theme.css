@@ -291,6 +291,11 @@ main {
   @apply flex-shrink-0 mb-10 md:mb-0 w-auto md:w-1/4 mr-0 md:mr-4 text-2xl;
 }
 
+.home main .recent h1 span {
+  @apply ml-2 text-base font-normal;
+  color: var(--page-secondary-text-color);
+}
+
 .tiles {
   @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 grid-flow-row;
 }
@@ -378,13 +383,57 @@ div.latest .tile {
 }
 
 
+/**
+ * pagingation
+ */
+ .pagination {
+  @apply pb-14 md:text-lg;
+}
+
+.pagination > .content-wrapper > .content {
+  @apply md:ml-[calc(25%+1rem)] flex-grow flex justify-between items-center space-x-10;
+}
+
+.pagination > .content-wrapper > .content.next-only {
+  @apply justify-end;
+}
+
+.pagination > .content-wrapper > .content > div {
+  @apply min-w-0 flex;
+  flex: 1 1 50%;
+}
+
+.pagination .next {
+  @apply justify-end;
+}
+
+.pagination a {
+  @apply min-w-0 inline-flex items-center transition-all duration-200;
+  color: var(--page-highlight-color);
+}
+.pagination a:hover {
+  filter: brightness(1.5);
+}
+
+.pagination a span:not(.icon) {
+  @apply truncate;
+}
+
+.pagination .previous .icon {
+  @apply mr-2;
+}
+
+.pagination .next .icon {
+  @apply ml-2;
+}
+
 
 /**
  * article container and aside
  */
 
 .page > main > .content-wrapper > section {
-  @apply pt-14 md:py-20 flex flex-col md:flex-row border-t transition-colors duration-200;
+  @apply pt-14 md:py-14 flex flex-col md:flex-row border-t transition-colors duration-200;
   border-color: var(--section-border-color);
 }
 

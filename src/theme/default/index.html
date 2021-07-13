@@ -3,6 +3,22 @@
 
 <head>
 	{{include src="head.hbs"}}
+
+	{{#gte page 2}}
+		<link rel="prev" href="{{site.url}}{{previousUrl}}" />
+	{{/gte}}
+
+	{{#lt page pages}}
+		<link rel="next" href="{{site.url}}{{nextUrl}}" />
+	{{/lt}}
+
+	{{#gt page 1}}
+		<link rel="canonical" href="{{site.url}}/entries?page={{page}}" />
+	{{/gt}}
+
+	{{#eq page 1}}
+		<link rel="canonical" href="{{site.url}}" />
+	{{/eq}}
 </head>
 
 <body class="preload">
@@ -19,20 +35,34 @@
 		{{else}}
 		
 			<main>
-				<section class="latest">
-					<div class="content-wrapper">
-						<h1>Latest</h1>
-						{{include src="tile.hbs" context=(first changelogs)}}
-					</div>
-				</section>
-				<section class="recent">
-					<div class="content-wrapper">
-						<h1>Recent</h1>
-						{{include src="tiles.hbs" changelogs=(after changelogs 1 6)}}
-					</div>
-				</section>
-				
+				{{#lt page 2}}
+					<section class="latest">
+						<div class="content-wrapper">
+							<h1>Latest</h1>
+							{{include src="tile.hbs" context=(first changelogs)}}
+						</div>
+					</section>
+					<section class="recent">
+						<div class="content-wrapper">
+							<h1>Recent</h1>
+							{{include src="tiles.hbs" changelogs=(after changelogs 1 10)}}
+						</div>
+					</section>
+				{{/lt}}
+
+				{{#gte page 2}}
+					<section class="recent">
+						<div class="content-wrapper">
+							<h1>Recent <span>{{page}} of {{pages}}</span></h1>
+							{{include src="tiles.hbs" changelogs=changelogs}}
+						</div>
+					</section>
+				{{/gte}}
 			</main>
+
+			{{#gte pages 2}}
+				{{include src="pagination.hbs" context=. nextTitle="Next" previousTitle="Previous"}}
+			{{/gte}}
 
 		{{/if}}
 
