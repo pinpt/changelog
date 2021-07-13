@@ -239,41 +239,48 @@
   }
 
   // wire up youtube players
-  const ytPlayers = document.querySelectorAll(".yt");
+  const wireUpYouTubePlayer = (ytPlayer, playButtonSelector, overlaySelector, usePlayerUrl) => {
+    const playButton = ytPlayer.querySelector(playButtonSelector);
+    const overlay = overlaySelector ? ytPlayer.querySelector(overlaySelector) : undefined;
+    const play = function () {
+      ytPlayer.removeEventListener("click", play);
+      const iframe = document.createElement("iframe");
+      iframe.className = "embed-reponsive-item";
+      iframe.width = "560";
+      iframe.height = "315";
+      iframe.allow =
+        "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+      iframe.src = usePlayerUrl ? ytPlayer.getAttribute("data-url") : playButton.getAttribute("data-url");
+      iframe.allowFullscreen = true;
+      ytPlayer.appendChild(iframe);
+      playButton.style.display = "none";
+      if (overlay) {
+        overlay.style.display = "none";
+      }
+    };
+    const warm = function () {
+      ytPlayer.removeEventListener("pointerover", warm);
+      const link1 = document.createElement("link");
+      link1.rel = "preconnect";
+      link1.href = "https://www.youtube-nocookie.com";
+      const link2 = document.createElement("link");
+      link2.rel = "preconnect";
+      link2.href = "https://www.google.com";
+      document.body.appendChild(link1);
+      document.body.appendChild(link2);
+    };
+    ytPlayer.addEventListener("pointerover", warm);
+    ytPlayer.addEventListener("click", play);
+  };
+
+  let ytPlayers = document.querySelectorAll(".youtube.ryt-lite");
   if (ytPlayers && ytPlayers.length) {
-    ytPlayers.forEach((ytPlayer) => {
-      const playButton = ytPlayer.querySelector(":scope > .yt-play-button");
-      const overlay = ytPlayer.querySelector(":scope > .overlay");
-      const play = function () {
-        ytPlayer.removeEventListener("click", play);
-        const iframe = document.createElement("iframe");
-        iframe.className = "embed-reponsive-item";
-        iframe.width = "560";
-        iframe.height = "315";
-        iframe.allow =
-          "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
-        iframe.src = ytPlayer.getAttribute("data-url");
-        iframe.allowFullscreen = true;
-        ytPlayer.appendChild(iframe);
-        playButton.style.display = "none";
-        if (overlay) {
-          overlay.style.display = "none";
-        }
-      };
-      const warm = function () {
-        ytPlayer.removeEventListener("pointerover", warm);
-        const link1 = document.createElement("link");
-        link1.rel = "preconnect";
-        link1.href = "https://www.youtube-nocookie.com";
-        const link2 = document.createElement("link");
-        link2.rel = "preconnect";
-        link2.href = "https://www.google.com";
-        document.body.appendChild(link1);
-        document.body.appendChild(link2);
-      };
-      ytPlayer.addEventListener("pointerover", warm);
-      ytPlayer.addEventListener("click", play);
-    });
+    ytPlayers.forEach((ytPlayer) => wireUpYouTubePlayer(ytPlayer, ":scope .lty-playbtn"));
+  }
+
+  ytPlayers = document.querySelectorAll(".yt");
+  if (ytPlayers && ytPlayers.length) {
+    ytPlayers.forEach((ytPlayer) => wireUpYouTubePlayer(ytPlayer, ":scope > .yt-play-button", ":scope > .overlay", true));
   }
 
   // handle high-five clap interaction
