@@ -2,36 +2,32 @@
 
 	<div class="content-wrapper">
 		
-		<div class="content">
+		<div class="content{{#unless previousUrl}} next-only{{/unless}}">
 
 			{{#if previousUrl}}
-				<a
-					class="previous"
-					href="{{previousUrl}}"
-					title="{{previousTitle}}"
-				>
-					<span class="icon">
-						{{fontawesome-icon icon="arrow-left"}}
-					</span>
-					{{#if previousTitle}}
-						<span>{{previousTitle}}</span>
-					{{/if}}
-				</a>
+				<div class="previous">
+					<a href="{{previousUrl}}" title="{{previousTitle}}">
+						<span class="icon">
+							{{fontawesome-icon icon="arrow-left"}}
+						</span>
+						{{#if previousTitle}}
+							<span>{{previousTitle}}</span>
+						{{/if}}
+					</a>
+				</div>
 			{{/if}}
 
 			{{#if nextUrl}}
-				<a
-					class="next"
-					href="{{nextUrl}}"
-					title="{{nextTitle}}"
-				>
-					{{#if nextTitle}}
-						<span>{{nextTitle}}</span>
-					{{/if}}
-					<span class="icon">
-						{{fontawesome-icon icon="arrow-right"}}
-					</span>
-				</a>
+				<div class="next">
+					<a href="{{nextUrl}}" title="{{nextTitle}}">
+						{{#if nextTitle}}
+							<span>{{nextTitle}}</span>
+						{{/if}}
+						<span class="icon">
+							{{fontawesome-icon icon="arrow-right"}}
+						</span>
+					</a>
+				</div>
 			{{/if}}
 		
 		</div>
