@@ -19,20 +19,34 @@
 		{{else}}
 		
 			<main>
-				<section class="latest">
-					<div class="content-wrapper">
-						<h1>Latest</h1>
-						{{include src="tile.hbs" context=(first changelogs)}}
-					</div>
-				</section>
-				<section class="recent">
-					<div class="content-wrapper">
-						<h1>Recent</h1>
-						{{include src="tiles.hbs" changelogs=(after changelogs 1 6)}}
-					</div>
-				</section>
-				
+				{{#lt page 2}}
+					<section class="latest">
+						<div class="content-wrapper">
+							<h1>Latest</h1>
+							{{include src="tile.hbs" context=(first changelogs)}}
+						</div>
+					</section>
+					<section class="recent">
+						<div class="content-wrapper">
+							<h1>Recent</h1>
+							{{include src="tiles.hbs" changelogs=(after changelogs 1 10)}}
+						</div>
+					</section>
+				{{/lt}}
+
+				{{#gte page 2}}
+					<section class="recent">
+						<div class="content-wrapper">
+							<h1>Recent <span>{{page}}</span></h1>
+							{{include src="tiles.hbs" changelogs=changelogs}}
+						</div>
+					</section>
+				{{/gte}}
 			</main>
+
+			{{#gte pages 2}}
+				{{include src="pagination.hbs" context=. nextTitle="Next" previousTitle="Previous"}}
+			{{/gte}}
 
 		{{/if}}
 

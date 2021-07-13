@@ -1,0 +1,32 @@
+<div class="pagination">
+
+	<div class="content-wrapper">
+		
+		<div class="content">
+
+			{{#if previousUrl}}
+				<a class="previous" href="{{previousUrl}}" title="{{previousTitle}}">
+					<span class="icon">
+						{{fontawesome-icon icon="arrow-left"}}
+					</span>
+					{{#if previousTitle}}
+						<span>{{previousTitle}}</span>
+					{{/if}}
+				</a>
+			{{/if}}
+
+			{{#if nextUrl}}
+				<a class="next" href="{{nextUrl}}" title="{{nextTitle}}">
+					{{#if nextTitle}}
+						<span>{{nextTitle}}</span>
+					{{/if}}
+					<span class="icon">
+						{{fontawesome-icon icon="arrow-right"}}
+					</span>
+				</a>
+			{{/if}}
+		
+		</div>
+
+	</div>
+</div>

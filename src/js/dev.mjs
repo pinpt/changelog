@@ -44,6 +44,15 @@ export default {
       );
       resp.send(fs.readFileSync(fn));
     });
+    app.get("/page/:page", (req, resp) => {
+      const fn = path.join(distDir, "index_" + req.params.page + ".html");
+      resp.set("Content-Type", "text/html");
+      resp.set(
+        "Cache-Control",
+        "public, max-age=0, must-revalidate, stale-if-error=0"
+      );
+      resp.send(fs.readFileSync(fn));
+    });
     app.get("/search", (_req, resp) => {
       const fn = path.join(distDir, "search.html");
       resp.set("Content-Type", "text/html");

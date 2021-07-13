@@ -247,6 +247,27 @@ export const registerHelpers = ({
       throw new Error("first must be called with an array");
     });
 
+    Handlebars.registerHelper("add", function (v1, v2) {
+      if (isNaN(v1) || isNaN(v2)) {
+        throw new Error("operands must be numbers");
+      }
+      return v1 + v2;
+    });
+
+    Handlebars.registerHelper("subtract", function (v1, v2) {
+      if (isNaN(v1) || isNaN(v2)) {
+        throw new Error("operands must be numbers");
+      }
+      return v1 - v2;
+    });
+
+    Handlebars.registerHelper("eq", function (v1, v2, options) {
+      if (v1 === v2) {
+        return options.fn(this);
+      }
+      return options.inverse(this);
+    });
+
     Handlebars.registerHelper("gt", function (v1, v2, options) {
       if (v1 > v2) {
         return options.fn(this);
