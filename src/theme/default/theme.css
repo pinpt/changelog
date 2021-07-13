@@ -517,10 +517,6 @@ div.latest .tile {
   @apply mb-10 relative flex justify-center;
 }
 
- .covermedia .youtube {
-  @apply shadow-lg;
-}
-
 .covermedia .image > img {
   @apply object-cover object-center;
 }
