@@ -44,8 +44,19 @@ export default {
       );
       resp.send(fs.readFileSync(fn));
     });
-    app.get("/page/:page", (req, resp) => {
-      const fn = path.join(distDir, "index_" + req.params.page + ".html");
+    app.get("/entries", (req, resp) => {
+      let fn;
+      if (req.query.page && req.query.page !== "1") {
+        fn = path.join(distDir, "index_" + req.query.page + ".html");
+        console.log(fn);
+        if (!fs.existsSync(fn)) {
+          resp.status(404).end();
+          return;
+        }
+      } else {
+        resp.redirect("/");
+        return;
+      }
       resp.set("Content-Type", "text/html");
       resp.set(
         "Cache-Control",

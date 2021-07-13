@@ -292,7 +292,7 @@ main {
 }
 
 .home main .recent h1 span {
-  @apply ml-2 text-xl font-normal;
+  @apply ml-2 text-base font-normal;
   color: var(--page-secondary-text-color);
 }
 

@@ -225,8 +225,8 @@ const minifyAndWriteHTML = (fn, buf, quiet) => {
 const processIndex = (site, changelogs, flags, indexTemplate, page, pages, config) => {
   debugLog(flags.debug, `Generating index page ${page} of ${pages} with ${changelogs.length} changelogs`);
 
-  const previousUrl = page === 2 ? '/' : page > 2 ? `/page/${page - 1}` : undefined;
-  const nextUrl = page < pages ? `/page/${page + 1}` : undefined;
+  const previousUrl = page === 2 ? '/' : page > 2 ? `/entries?page=${page - 1}` : undefined;
+  const nextUrl = page < pages ? `/entries?page=${page + 1}` : undefined;
 
   return new Promise((resolve, reject) => {
     const buf = indexTemplate({
@@ -352,8 +352,8 @@ const generate = async (changelogs, site, flags, templates, config) => {
     return;
   }
   if (flags.index) {
-    const PAGE_SIZE = 10;
     const FIRST_PAGE_SIZE = 11;
+    const PAGE_SIZE = 10;
     const pages = changelogs.length > FIRST_PAGE_SIZE ? Math.ceil((changelogs.length - FIRST_PAGE_SIZE) / PAGE_SIZE) + 1 : 1;
 
     debugLog(flags.debug, `${changelogs.length} changelogs found, generating ${pages} index pages`);
@@ -368,8 +368,7 @@ const generate = async (changelogs, site, flags, templates, config) => {
       const remainingChangelogs = changelogs.slice(FIRST_PAGE_SIZE);
       let page = 2;
       for (let i = 0; i < remainingChangelogs.length; i += PAGE_SIZE) {
-        let length = Math.min(remainingChangelogs.length, PAGE_SIZE);
-        processIndex(site, remainingChangelogs.slice(i, length), flags, templates.indexTemplate, page, pages, config);
+        processIndex(site, remainingChangelogs.slice(i, i + PAGE_SIZE), flags, templates.indexTemplate, page, pages, config);
         page += 1;
       }
     }

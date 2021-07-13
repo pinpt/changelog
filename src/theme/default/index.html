@@ -3,6 +3,22 @@
 
 <head>
 	{{include src="head.hbs"}}
+
+	{{#gte page 2}}
+		<link rel="prev" href="{{site.url}}{{previousUrl}}" />
+	{{/gte}}
+
+	{{#lt page pages}}
+		<link rel="next" href="{{site.url}}{{nextUrl}}" />
+	{{/lt}}
+
+	{{#gt page 1}}
+		<link rel="canonical" href="{{site.url}}/entries?page={{page}}" />
+	{{/gt}}
+
+	{{#eq page 1}}
+		<link rel="canonical" href="{{site.url}}" />
+	{{/eq}}
 </head>
 
 <body class="preload">
@@ -37,7 +53,7 @@
 				{{#gte page 2}}
 					<section class="recent">
 						<div class="content-wrapper">
-							<h1>Recent <span>{{page}}</span></h1>
+							<h1>Recent <span>{{page}} of {{pages}}</span></h1>
 							{{include src="tiles.hbs" changelogs=changelogs}}
 						</div>
 					</section>
