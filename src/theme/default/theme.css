@@ -412,7 +412,10 @@ div.latest .tile {
   color: var(--page-highlight-color);
 }
 .pagination a:hover {
-  filter: brightness(1.5);
+  filter: brightness(0.7);
+}
+.dark .pagination a:hover {
+  filter: brightness(1.3);
 }
 
 .pagination a span:not(.icon) {
