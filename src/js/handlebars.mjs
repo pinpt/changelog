@@ -462,8 +462,8 @@ export const registerHelpers = ({
     Handlebars.registerHelper("cover_image_url", function (changelog) {
       if (changelog.cover_image) {
         const u = new URL(changelog.cover_image);
-        u.searchParams.set("rw", "600");
-        u.searchParams.set("rh", "314");
+        u.searchParams.set("rw", "1200");
+        u.searchParams.set("rh", "628");
         return new Handlebars.SafeString(u.toString());
       }
       return "";
