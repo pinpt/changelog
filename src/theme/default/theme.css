@@ -619,6 +619,13 @@ main .changelog > section p > a[href]:not(.mark-color) {
   color: unset;
 }
 
+article.changelog .linked-data-list-item {
+  @apply relative pl-6;
+}
+article.changelog .linked-data-list-item::before {
+  @apply text-gray-400 dark:text-gray-600 absolute top-0 left-1;
+  content: "\2022";
+}
 
 /**
  * search results
