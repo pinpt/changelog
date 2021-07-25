@@ -5,9 +5,90 @@ import _build from "./build.mjs";
 import fswatch from "node-watch";
 import express from "express";
 import mimetype from "mimetype";
+import bodyParser from "body-parser";
 import compression from "compression";
+import fetch from "node-fetch";
 import { sha1 } from "./handlebars.mjs";
-import { __dirname, ensureDir } from "./util.mjs";
+import { __dirname, ensureDir, debugLog } from "./util.mjs";
+
+const excludeHeaders = [
+  "content-encoding",
+  "content-length",
+  "server",
+  "transfer-encoding",
+];
+const filterHeaders = (headers) => {
+  const kv = {};
+  Object.keys(headers).forEach((key) => {
+    const val = headers[key];
+    if (val === undefined || val === null) {
+      return;
+    }
+    kv[key] = val;
+  });
+  return kv;
+};
+const createForwarder =
+  (flags, forwardURL, overridePath, addHeaders) => async (req, resp) => {
+    try {
+      const started = Date.now();
+      const { hostname } = new URL(forwardURL);
+      const _path = overridePath ? overridePath(req) : req.url;
+      const _qs = req.query ? new URLSearchParams(req.query).toString() : "";
+      const url = `${forwardURL}${_path}${_qs ? `?${_qs}` : ""}`;
+      debugLog(flags.debug, `fowarding ${url} -> ${req.hostname}`);
+      const canHaveBody = !(req.method === "GET" || req.method === "HEAD");
+      const body = !canHaveBody
+        ? undefined
+        : req.body
+        ? typeof req.body === "string"
+          ? req.body
+          : typeof req.body === "object"
+          ? req.body instanceof Buffer
+            ? req.body.toString("utf8")
+            : JSON.stringify(req.body)
+          : undefined
+        : undefined;
+      const headers = filterHeaders({
+        ...req.headers,
+        origin: req.headers.origin ? forwardURL : undefined,
+        host: hostname,
+        authority: req.headers.authority ? hostname : undefined,
+        "x-forwarded-host": req.hostname,
+        ...(addHeaders ?? {}),
+        "content-length": body ? String(Buffer.byteLength(body)) : null,
+        connection: "close",
+      });
+      const r = await fetch(url, {
+        method: req.method,
+        headers,
+        body,
+      });
+      resp.status(r.status);
+      r.headers.forEach((value, name) => {
+        if (!excludeHeaders.includes(name)) {
+          resp.set(name, value);
+        }
+      });
+      r.body.on("end", () => {
+        resp.end();
+        debugLog(flags.debug, "finished proxy request", {
+          status: r.status,
+          duration: Date.now() - started,
+          url,
+        });
+      });
+      r.body.pipe(resp, { end: true });
+    } catch (ex) {
+      console.error("error handling proxy request", {
+        method: req.method,
+        url: req.url,
+        hostname: req.hostname,
+        error: ex,
+      });
+      resp.status(500).end("Internal Server Error");
+    }
+  };
 
 export default {
   description: "Build your theme for local development",
@@ -20,6 +101,7 @@ export default {
     },
   }),
   run: async (_args, flags) => {
+    const apiURL = `https://${flags.site}.changelog.so`;
     const distDir = flags.output;
     const baseSrcDir = path.join(__dirname, "..");
     const webDir = path.join(baseSrcDir, "web");
@@ -60,7 +142,7 @@ export default {
       } else {
         resp.redirect("/");
         return;
-      }      
+      }
     });
     app.get("/search", (_req, resp) => {
       const fn = path.join(distDir, "search.html");
@@ -84,6 +166,27 @@ export default {
       resp.set("Cache-Control", "max-age=0, no-cache");
       resp.send(fs.readFileSync(fn));
     });
+    app.get(
+      "/api/analytics/:siteId",
+      createForwarder(
+        flags,
+        apiURL,
+        (req) => `/api/analytics/${req.params.siteId}`
+      )
+    );
+    app.get(
+      "/api/clap/count/:changelogId",
+      createForwarder(
+        flags,
+        apiURL,
+        (req) => `/api/clap/count/${req.params.changelogId}`
+      )
+    );
+    app.post(
+      "/api/clap",
+      bodyParser.json(),
+      createForwarder(flags, apiURL, () => `/api/clap`)
+    );
     app.get("*", (req, resp) => {
       let fn = req.url;
       fn = path.join(distDir, fn);

@@ -157,9 +157,7 @@
   const tiles = document.querySelectorAll(".tile");
   if (tiles.length) {
     fetch(
-      `https://${window.apiURL}/site/${
-        window.siteId
-      }/analytics?changelogIds=${encodeURIComponent(
+      `/api/analytics/${window.siteId}?changelogIds=${encodeURIComponent(
         JSON.stringify(window.changelogIds)
       )}`
     )
@@ -239,9 +237,16 @@
   }
 
   // wire up youtube players
-  const wireUpYouTubePlayer = (ytPlayer, playButtonSelector, overlaySelector, usePlayerUrl) => {
+  const wireUpYouTubePlayer = (
+    ytPlayer,
+    playButtonSelector,
+    overlaySelector,
+    usePlayerUrl
+  ) => {
     const playButton = ytPlayer.querySelector(playButtonSelector);
-    const overlay = overlaySelector ? ytPlayer.querySelector(overlaySelector) : undefined;
+    const overlay = overlaySelector
+      ? ytPlayer.querySelector(overlaySelector)
+      : undefined;
     const play = function () {
       ytPlayer.removeEventListener("click", play);
       const iframe = document.createElement("iframe");
@@ -250,7 +255,9 @@
       iframe.height = "315";
       iframe.allow =
         "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
-      iframe.src = usePlayerUrl ? ytPlayer.getAttribute("data-url") : playButton.getAttribute("data-url");
+      iframe.src = usePlayerUrl
+        ? ytPlayer.getAttribute("data-url")
+        : playButton.getAttribute("data-url");
       iframe.allowFullscreen = true;
       ytPlayer.appendChild(iframe);
       playButton.style.display = "none";
@@ -275,12 +282,21 @@
 
   let ytPlayers = document.querySelectorAll(".youtube.ryt-lite");
   if (ytPlayers && ytPlayers.length) {
-    ytPlayers.forEach((ytPlayer) => wireUpYouTubePlayer(ytPlayer, ":scope .lty-playbtn"));
+    ytPlayers.forEach((ytPlayer) =>
+      wireUpYouTubePlayer(ytPlayer, ":scope .lty-playbtn")
+    );
   }
 
   ytPlayers = document.querySelectorAll(".yt");
   if (ytPlayers && ytPlayers.length) {
-    ytPlayers.forEach((ytPlayer) => wireUpYouTubePlayer(ytPlayer, ":scope > .yt-play-button", ":scope > .overlay", true));
+    ytPlayers.forEach((ytPlayer) =>
+      wireUpYouTubePlayer(
+        ytPlayer,
+        ":scope > .yt-play-button",
+        ":scope > .overlay",
+        true
+      )
+    );
   }
 
   // handle high-five clap interaction
@@ -304,7 +320,7 @@
         counter.classList.add("animating");
         counterAnimation.classList.add("animating");
         counterAnimation.innerHTML = `+${deviceCount}`;
-        fetch(`https://${window.apiURL}/changelog/clap`, {
+        fetch(`/api/clap`, {
           method: "POST",
           body: JSON.stringify({
             siteId: window.siteId,
@@ -337,7 +353,7 @@
       });
     });
     const getHighfiveCount = function () {
-      const url = `https://${window.apiURL}/changelog/clap/count/${changelogId}?unique=true`;
+      const url = `/api/clap/count/${changelogId}?unique=true`;
       fetch(url)
         .then((resp) => resp.json())
         .then((val) => {
