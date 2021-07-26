@@ -301,7 +301,7 @@ main {
 }
 
 .tile {
-  @apply rounded-lg shadow-md hover:shadow-lg overflow-hidden flex flex-col transition-shadow duration-200;
+  @apply w-full rounded-lg shadow-md hover:shadow-lg overflow-hidden flex flex-col transition-shadow duration-200;
   background-color: var(--tile-bg-color);
 }
 
