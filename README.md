@@ -17,7 +17,7 @@
     <a href="https://github.com/pinpt/changelog"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://changelog.so">View Demo</a>
+    <a href="https://pinpoint.com">View Demo</a>
     ·
     <a href="https://github.com/pinpt/changelog/issues">Report Bug</a>
     ·
@@ -56,7 +56,7 @@
 
 Changelog.so is an app built for fast moving product teams to help them manage the way they communicate with their end users. This tool is used by changelog.so to generate static sites published by changelog.so as well as for development on new themes for yor own changelogs.
 
-[![Product Name Screen Shot][product-screenshot]](https://changelog.so)
+[![Product Name Screen Shot][product-screenshot]](https://pinpoint.com)
 
 ### Built With
 
