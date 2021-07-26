@@ -264,7 +264,7 @@ footer .powered-by a:hover {
 }
 
 footer .powered-by a span {
-  @apply ml-1 text-gray-300;
+  @apply ml-1 text-gray-300 transition-all duration-200;
 }
 footer .powered-by a:hover span {
   @apply text-white;
