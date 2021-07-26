@@ -320,7 +320,7 @@ const processEmail = (
         url: changelog.url,
         manageSubscriptionLink: "__MANAGE_SUBSCRIPTION_LINK__",
         unsubscribeLink: "__UNSUBSCRIBE_LINK__",
-        poweredByImage: "https://cdn.changelog.so/images/misc/poweredBy.png",
+        poweredByImage: "https://cdn.pinpoint.com/images/email/powered_by_30.png",
         poweredByLink: "__POWEREDBY_LINK__",
         config,
       });
