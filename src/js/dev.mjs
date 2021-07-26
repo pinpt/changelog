@@ -101,7 +101,9 @@ export default {
     },
   }),
   run: async (_args, flags) => {
-    const apiURL = `https://${flags.site}.changelog.so`;
+    const apiURL = flags.host.includes(".edge.")
+      ? `https://${flags.site}.edge.changelog.so`
+      : `https://${flags.site}.changelog.so`;
     const distDir = flags.output;
     const baseSrcDir = path.join(__dirname, "..");
     const webDir = path.join(baseSrcDir, "web");

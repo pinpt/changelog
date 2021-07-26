@@ -249,14 +249,25 @@ footer .legal .links a:not(:first-child) {
 }
 
 footer .powered-by {
-  @apply mt-8 flex-grow flex justify-center;
+  @apply mt-8 flex-grow flex justify-center items-center text-xs;
+}
+
+footer .powered-by > span {
+  @apply mr-1.5;
 }
 
 footer .powered-by a {
-  @apply text-sm inline-flex items-center hover:text-indigo-500;
+  @apply text-sm inline-flex items-center text-indigo-800 hover:text-indigo-600 font-medium;
 }
 footer .powered-by a:hover {
-  filter: none;
+  @apply filter-none;
+}
+
+footer .powered-by a span {
+  @apply ml-1 text-gray-300 transition-all duration-200;
+}
+footer .powered-by a:hover span {
+  @apply text-white;
 }
 
 
