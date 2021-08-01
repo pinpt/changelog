@@ -2,13 +2,13 @@
  * colors
  */
 
- /* regular / light theme */
- :root {
+/* regular / light theme */
+:root {
   /* page */
   --page-bg-color: white;
-  --page-text-color: #3F3F46; /* gray-700 */
-  --page-secondary-text-color: #A1A1AA; /* gray-400 */
-  --page-highlight-color: #6366F1; /* indigo-500 */
+  --page-text-color: #3f3f46; /* gray-700 */
+  --page-secondary-text-color: #a1a1aa; /* gray-400 */
+  --page-highlight-color: #6366f1; /* indigo-500 */
 
   /* header */
   --header-bg-color: var(--page-bg-color);
@@ -17,49 +17,48 @@
   --header-subscribe-color: var(--page-highlight-color);
 
   /* content */
-  --section-bg-color: #FAFAFA; /* gray-50 */
-  --section-border-color: #E4E4E7; /* gray-200 */
+  --section-bg-color: #fafafa; /* gray-50 */
+  --section-border-color: #e4e4e7; /* gray-200 */
 
   --tile-bg-color: white;
   --tile-title-color: var(--page-text-color);
   --tile-date-color: var(--page-secondary-text-color);
-  --tile-summary-color: #71717A; /* gray-500 */
+  --tile-summary-color: #71717a; /* gray-500 */
   --tile-info-color: var(--page-secondary-text-color);
   --tile-link-color: var(--page-highlight-color);
-  
+
   --article-bg-color: var(--page-bg-color);
   --article-text-color: var(--page-text-color);
-  --article-info-color: #71717A; /* gray-500 */
+  --article-info-color: #71717a; /* gray-500 */
   --article-link-color: var(--page-highlight-color);
   --article-border-color: var(--section-border-color);
   --article-block-bg-color: var(--section-bg-color);
 
   /* footer */
-  --footer-bg-color: #18181B; /* gray-900 */
-  --footer-text-color: #71717A; /* gray-500 */
+  --footer-bg-color: #18181b; /* gray-900 */
+  --footer-text-color: #71717a; /* gray-500 */
 }
 
 /* dark theme override */
 .dark:root {
   /* page */
-  --page-bg-color: #18181B; /* gray-900 */
-  --page-text-color: #F4F4F5; /* gray-100 */
-  --page-secondary-text-color: #A1A1AA; /* gray-400 */
-  --page-highlight-color: #818CF8; /* indigo-400 */
+  --page-bg-color: #18181b; /* gray-900 */
+  --page-text-color: #f4f4f5; /* gray-100 */
+  --page-secondary-text-color: #a1a1aa; /* gray-400 */
+  --page-highlight-color: #818cf8; /* indigo-400 */
 
   /* content */
   --section-bg-color: #202023; /* gray-850 */
-  --section-border-color: #3F3F46; /* gray-700 */
+  --section-border-color: #3f3f46; /* gray-700 */
 
-  --tile-bg-color: #27272A; /* gray-800 */
-  --tile-summary-color: #D4D4D8; /* gray-300 */
+  --tile-bg-color: #27272a; /* gray-800 */
+  --tile-summary-color: #d4d4d8; /* gray-300 */
 
-  --article-info-color: #D4D4D8; /* gray-300 */
+  --article-info-color: #d4d4d8; /* gray-300 */
 
   /* footer */
   --footer-bg-color: black;
 }
-
 
 /**
  * global
@@ -68,12 +67,15 @@
 body {
   @apply transition-colors duration-200;
   background-color: var(--page-bg-color);
-  color: var( --page-text-color);
+  color: var(--page-text-color);
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   @apply font-semibold;
-  color: var( --page-text-color);
+  color: var(--page-text-color);
 }
 
 .page,
@@ -83,10 +85,9 @@ h1, h2, h3, h4 {
 }
 
 /* content wraps inside sections to allow center alignment */
-.content-wrapper{
+.content-wrapper {
   @apply mx-auto px-4 md:px-10 max-w-7xl w-full flex-shrink-0;
 }
-
 
 /**
  * toolbar
@@ -118,7 +119,7 @@ h1, h2, h3, h4 {
 }
 
 .search:focus-within {
-	@apply bg-gray-300 dark:bg-gray-600 border-gray-300 dark:border-gray-600 text-white dark:text-gray-200;
+  @apply bg-gray-300 dark:bg-gray-600 border-gray-300 dark:border-gray-600 text-white dark:text-gray-200;
 }
 
 .search svg {
@@ -131,7 +132,6 @@ h1, h2, h3, h4 {
 .search-input:focus {
   @apply placeholder-gray-100 dark:placeholder-gray-500;
 }
-
 
 /**
  * header
@@ -160,7 +160,6 @@ header .title h1 {
   color: var(--header-title-color);
 }
 
-
 header .description {
   @apply mt-2 md:mt-4 text-center;
   color: var(--header-description-color);
@@ -177,11 +176,9 @@ header .subscribe:hover {
   filter: brightness(1.3);
 }
 
-
 header .subscribe .icon {
   @apply mr-2 text-base;
 }
-
 
 /**
  * footer
@@ -252,7 +249,7 @@ footer .powered-by {
   @apply mt-8 flex-grow flex justify-center items-center text-xs;
 }
 
-footer .powered-by > span {
+footer .powered-by > a > span {
   @apply mr-1.5;
 }
 
@@ -270,7 +267,6 @@ footer .powered-by a:hover span {
   @apply text-white;
 }
 
-
 /**
  * main content
  */
@@ -278,7 +274,6 @@ footer .powered-by a:hover span {
 main {
   @apply mt-12 md:mt-12 flex-grow;
 }
-
 
 /**
  * home page and tiles
@@ -351,7 +346,7 @@ div.latest .tile {
 }
 
 .tile > .container > .headline {
-  @apply mt-3 flex-grow leading-relaxed ;
+  @apply mt-3 flex-grow leading-relaxed;
   color: var(--tile-summary-color);
 }
 
@@ -365,7 +360,7 @@ div.latest .tile {
 }
 
 .tile > .container section .read {
-  @apply  inline-flex items-center ;
+  @apply inline-flex items-center;
   color: var(--tile-link-color);
 }
 
@@ -393,11 +388,10 @@ div.latest .tile {
   @apply h-6 w-6 mr-1;
 }
 
-
 /**
  * pagingation
  */
- .pagination {
+.pagination {
   @apply pb-14 md:text-lg;
 }
 
@@ -440,7 +434,6 @@ div.latest .tile {
 .pagination .next .icon {
   @apply ml-2;
 }
-
 
 /**
  * article container and aside
@@ -571,7 +564,6 @@ div.latest .tile {
   @apply bg-gray-500 hover:bg-gray-600;
 }
 
-
 /**
  * article
  */
@@ -641,7 +633,7 @@ article.changelog .linked-data-list-item::before {
 /**
  * search results
  **/
- .loader {
+.loader {
   @apply absolute left-0 top-0 right-0 bottom-0 flex items-center justify-center;
   background-color: var(--page-bg-color);
   color: var(--page-text-color);
@@ -653,11 +645,11 @@ article.changelog .linked-data-list-item::before {
 }
 
 .search-results > main {
-   @apply py-14 transition-colors duration-200;
-   background-color: var(--section-bg-color);
- }
+  @apply py-14 transition-colors duration-200;
+  background-color: var(--section-bg-color);
+}
 
- .search-results > main .content-wrapper h1 {
+.search-results > main .content-wrapper h1 {
   @apply mb-8 text-2xl;
 }
 
@@ -682,7 +674,6 @@ article.changelog .linked-data-list-item::before {
   @apply mr-2;
 }
 
-
 /**
  * coming soon
  */
@@ -702,4 +693,3 @@ article.changelog .linked-data-list-item::before {
 .coming-soon .image {
   @apply my-20 w-5/6;
 }
-
