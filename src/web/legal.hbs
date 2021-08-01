@@ -1,6 +1,6 @@
 <div class="legal">
 	{{#if site.logoUrl}}
-		<a href="{{site.theme.logoLink}}" class="logo">
+		<a href="{{site.theme.logoLink}}" class="logo" title="Site Logo Link">
 			<img src="{{site.logoUrl}}" alt="Back to website" />
 		</a>
 	{{/if}}
@@ -9,17 +9,17 @@
 	</p>
 	<p class="links">
 		{{#if site.theme.privacyLink}}
-		<a href="{{site.theme.privacyLink}}">
+		<a href="{{site.theme.privacyLink}}" title="Privacy Policy">
 			Privacy Policy
 		</a>
 		{{/if}}
 		{{#if site.theme.eulaLink}}
-		<a href="{{site.theme.eulaLink}}">
+		<a href="{{site.theme.eulaLink}}" title="EULA">
 			EULA
 		</a>
 		{{/if}}
 		{{#if site.theme.tosLink}}
-		<a href="{{site.theme.tosLink}}">
+		<a href="{{site.theme.tosLink}}" title="Terms of Service">
 			Terms of Service
 		</a>
 		{{/if}}
