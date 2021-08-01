@@ -5,14 +5,14 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/pinpt/changelog">
-    <img src=".github/logo.png" alt="Changelog Logo" width="370" height="100">
+  <a href="https://pinpoint.com/?ref=github">
+    <img src="https://cdn.pinpoint.com/card.png" alt="Pinpoint Logo" width="391" height="205">
   </a>
 
-  <h3 align="center">Changelog Generator</h3>
+  <h3 align="center">Pinpoint Site Generator</h3>
 
   <p align="center">
-    The project is the generator for Changelogs built using https://changelog.so and is also the project for developing new themes or otherwise customizing your own Changelog.
+    The project is the generator for Content Sites built using https://pinpoint.com and is also the project for developing new themes or otherwise customizing your own Pinpoint powered sites.
     <br />
     <a href="https://github.com/pinpt/changelog"><strong>Explore the docs »</strong></a>
     <br />
@@ -54,7 +54,7 @@
 
 ## About The Project
 
-Changelog.so is an app built for fast moving product teams to help them manage the way they communicate with their end users. This tool is used by changelog.so to generate static sites published by changelog.so as well as for development on new themes for yor own changelogs.
+pinpoint.com is an app built for fast moving product teams to help them manage the way they communicate with their end users. This tool is used by Pinpoint to generate static sites published by pinpoint.com as well as for development on new themes for your own site.
 
 [![Product Name Screen Shot][product-screenshot]](https://pinpoint.com)
 
@@ -250,7 +250,7 @@ Copyright &copy; 2021 by Pinpoint Software, Inc. Distributed under the MIT Licen
 
 ## Contact
 
-If you need any assistance at all, please contact support@changelog.so. You can also contact us up in the Changelog app using the chat bubble.
+If you need any assistance at all, please contact support@pinpoint.com. You can also contact us up in the Changelog app using the chat bubble.
 
 Jeff Haynie - [@jhaynie](https://twitter.com/jhaynie) - jeff@pinpoint.com
 
