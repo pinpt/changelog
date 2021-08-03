@@ -564,4 +564,7 @@ window.onload = function () {
       .querySelectorAll("a.subscribe[data-subscribe=true]")
       .forEach((item) => item.classList.remove("invisible"));
   }
+  if (typeof mediumZoom !== "undefined") {
+    mediumZoom(".covermedia img", { background: "#555" });
+  }
 };
