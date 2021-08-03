@@ -555,4 +555,13 @@
 // remove preload class from body on load
 window.onload = function () {
   document.querySelector("body").classList.remove("preload");
+  // check to see if we are a subscriber and if not, show the subscribe links
+  const subid = document.cookie
+    .split("; ")
+    .find((c) => c.includes("subscription_id="));
+  if (!subid) {
+    document
+      .querySelectorAll("a.subscribe[data-subscribe=true]")
+      .forEach((item) => item.classList.remove("invisible"));
+  }
 };
