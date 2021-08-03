@@ -564,4 +564,18 @@ window.onload = function () {
       .querySelectorAll("a.subscribe[data-subscribe=true]")
       .forEach((item) => item.classList.remove("invisible"));
   }
+  let scrolled = false;
+  window.onscroll = function () {
+    scrolled = true;
+  };
+  setTimeout(function () {
+    if (!scrolled) {
+      window.scrollTo(0, 0);
+    }
+    const el = document.querySelector("#hidden_focus");
+    if (el) {
+      el.focus();
+    }
+  }, 1500);
+  window.scrollTo(0, 0);
 };
