@@ -143,7 +143,7 @@ html.dark button {
  * Notebook Editor Container
  */
 .notebook-editor-container {
-  @apply flex flex-col items-start max-w-4xl w-full min-h-screen mx-auto;
+  @apply flex flex-col items-start max-w-4xl w-full mx-auto;
   text-rendering: optimizeLegibility;
 }
 
@@ -152,7 +152,7 @@ html.dark button {
  */
 .notebook-editor,
 .notebook-editor > .ProseMirror {
-  @apply w-full min-h-screen overflow-x-visible;
+  @apply w-full overflow-x-visible;
 }
 .notebook-editor > .ProseMirror {
   @apply relative w-full px-6 sm:px-24 overflow-visible outline-none break-words whitespace-pre-wrap leading-8 text-gray-700 dark:text-gray-300; /* room for yjs cursor */
