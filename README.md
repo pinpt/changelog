@@ -2,9 +2,16 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
+<br />
+
+> This site has been archived and should no longer be used. As a more capable replacement, please check out our [React library](https://github.com/pinpt/react) and the new [App Template](https://github.com/pinpt/app-template).
+
+<br />
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
+
   <a href="https://pinpoint.com/?ref=github">
     <img src="https://cdn.pinpoint.com/card.png" alt="Pinpoint Logo" width="391" height="205">
   </a>
